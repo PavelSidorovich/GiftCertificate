@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.epam.esm'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework:spring-core:5.3.14'
+    implementation 'org.springframework:spring-webmvc:5.3.14'
+
+}
+
+test {
+    useJUnitPlatform()
+}
