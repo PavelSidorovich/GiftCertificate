@@ -18,8 +18,6 @@ import java.util.Optional;
 @Repository
 public class TagRepository implements CRDRepository<TagModel> {
 
-    private static final String TAG_TABLE_NAME = "tag";
-
     private static final String FIND_ALL_QUERY = "SELECT id as id, name as name FROM tag";
     private static final String FIND_BY_ID_QUERY = "SELECT id as id, name as name FROM tag WHERE id = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM tag WHERE id = ?";
@@ -33,7 +31,7 @@ public class TagRepository implements CRDRepository<TagModel> {
     @Autowired
     public TagRepository(DataSource dataSource, TagRowMapper tagRowMapper) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName(TAG_TABLE_NAME)
+                .withTableName(TagColumn.getModelName())
                 .usingGeneratedKeyColumns(TagColumn.ID.getColumnName())
                 .usingColumns(TagColumn.NAME.getColumnName());
         this.jdbcTemplate = new JdbcTemplate(dataSource);
