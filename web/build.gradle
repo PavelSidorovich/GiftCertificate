@@ -1,20 +1,27 @@
 plugins {
     id 'java'
+    id 'war'
+    id "io.freefair.lombok" version "6.3.0"
 }
 
-group = 'com.epam.esm'
-version = '0.0.1-SNAPSHOT'
+group = 'com.epam.esm.gcs'
+version = '1.0-SNAPSHOT'
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework:spring-core:5.3.14'
     implementation 'org.springframework:spring-webmvc:5.3.14'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 
+    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+
+    implementation project(':service')
 }
 
 test {
