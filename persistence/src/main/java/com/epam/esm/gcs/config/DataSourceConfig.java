@@ -23,6 +23,8 @@ public class DataSourceConfig {
     private static final String CONNECTION_POOL_INITIAL_SIZE_PROPERTY_NAME = "connectionPool.initialSize";
     private static final String CONNECTION_POOL_MAX_SIZE_PROPERTY_NAME = "connectionPool.maxSize";
     private static final String PASSWORD_PROPERTY_NAME = "dataSource.password";
+    private static final String DB_SCHEMA_SQL_PATH = "classpath:/db/schema.sql";
+    private static final String DB_TEST_DATA_SQL_PATH = "classpath:/db/test-data.sql";
 
     private final Environment env;
 
@@ -36,8 +38,8 @@ public class DataSourceConfig {
     public DataSource embeddedDataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                .addScript("classpath:/db/schema.sql")
-                .addScript("classpath:/db/test-data.sql")
+                .addScript(DB_SCHEMA_SQL_PATH)
+                .addScript(DB_TEST_DATA_SQL_PATH)
                 .build();
     }
 
