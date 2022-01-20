@@ -11,6 +11,6 @@ public interface CRDRepository<T> {
 
     List<T> findAll();
 
-    void delete(long id);
+    boolean delete(long id);
 
 }
