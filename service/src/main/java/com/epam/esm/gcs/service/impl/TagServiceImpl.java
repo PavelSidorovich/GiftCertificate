@@ -1,10 +1,11 @@
 package com.epam.esm.gcs.service.impl;
 
 import com.epam.esm.gcs.dto.TagDto;
+import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.mapper.TagColumn;
 import com.epam.esm.gcs.model.TagModel;
-import com.epam.esm.gcs.repository.impl.TagRepository;
+import com.epam.esm.gcs.repository.impl.TagRepositoryImpl;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,20 +16,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-//@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class TagServiceImpl implements TagService {
 
-    private TagRepository tagRepository;
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public TagServiceImpl(TagRepository tagRepository, ModelMapper modelMapper) {
-        this.tagRepository = tagRepository;
-        this.modelMapper = modelMapper;
-    }
+    private final TagRepositoryImpl tagRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public TagDto create(TagDto model) {
+        final String tagName = model.getName();
+
+        if (tagRepository.existsWithName(tagName)) {
+            throw new DuplicatePropertyException(
+                    TagColumn.getModelName(), TagColumn.NAME.getColumnName(), tagName
+            );
+        }
+
         return modelMapper.map(
                 tagRepository.create(modelMapper.map(model, TagModel.class)),
                 TagDto.class
