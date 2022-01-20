@@ -2,9 +2,4 @@ rootProject.name = 'GiftCertificate'
 
 include 'web'
 include 'service'
-include 'repository'
-include 'repository:api'
-findProject(':repository:api')?.name = 'api'
-include 'repository:core'
-findProject(':repository:core')?.name = 'core'
-
+include 'persistence'
