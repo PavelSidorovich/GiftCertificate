@@ -13,8 +13,4 @@ public class TagModel {
     private Long id;
     private String name;
 
-    public TagModel(String name) {
-        this.name = name;
-    }
-
 }
