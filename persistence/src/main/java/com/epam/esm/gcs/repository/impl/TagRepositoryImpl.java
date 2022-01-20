@@ -3,8 +3,9 @@ package com.epam.esm.gcs.repository.impl;
 import com.epam.esm.gcs.mapper.TagColumn;
 import com.epam.esm.gcs.mapper.TagRowMapper;
 import com.epam.esm.gcs.model.TagModel;
-import com.epam.esm.gcs.repository.CRDRepository;
+import com.epam.esm.gcs.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -16,10 +17,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class TagRepository implements CRDRepository<TagModel> {
+public class TagRepositoryImpl implements TagRepository {
 
     private static final String FIND_ALL_QUERY = "SELECT id as id, name as name FROM tag";
     private static final String FIND_BY_ID_QUERY = "SELECT id as id, name as name FROM tag WHERE id = ?";
+    private static final String FIND_BY_NAME_QUERY = "SELECT id as id, name as name FROM tag WHERE name = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM tag WHERE id = ?";
 
     private static final int INITIAL_MAP_CAPACITY = 1;
@@ -29,7 +31,7 @@ public class TagRepository implements CRDRepository<TagModel> {
     private final TagRowMapper tagRowMapper;
 
     @Autowired
-    public TagRepository(DataSource dataSource, TagRowMapper tagRowMapper) {
+    public TagRepositoryImpl(DataSource dataSource, TagRowMapper tagRowMapper) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName(TagColumn.getModelName())
                 .usingGeneratedKeyColumns(TagColumn.ID.getColumnName())
@@ -63,6 +65,17 @@ public class TagRepository implements CRDRepository<TagModel> {
     @Override
     public boolean delete(long id) {
         return jdbcTemplate.update(DELETE_BY_ID_QUERY, id) == 1;
+    }
+
+    @Override
+    public boolean existsWithName(String name) {
+        try {
+            jdbcTemplate.queryForObject(FIND_BY_NAME_QUERY, tagRowMapper, name);
+
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 
 }
