@@ -17,6 +17,8 @@ dependencies {
     implementation 'org.springframework:spring-core:5.3.14'
     implementation 'org.springframework:spring-webmvc:5.3.14'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.22.Final'
 
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
     compileOnly 'org.projectlombok:lombok:1.18.22'
