@@ -28,7 +28,7 @@ public class TagServiceImpl implements TagService {
 
         if (tagRepository.existsWithName(tagName)) {
             throw new DuplicatePropertyException(
-                    TagColumn.getModelName(), TagColumn.NAME.getColumnName(), tagName
+                    TagDto.class, TagColumn.NAME.getColumnName(), tagName
             );
         }
 
@@ -43,7 +43,7 @@ public class TagServiceImpl implements TagService {
         return modelMapper.map(
                 tagRepository.findById(id).orElseThrow(
                         () -> new EntityNotFoundException(
-                                TagColumn.getModelName(), TagColumn.ID.getColumnName(), id
+                                TagDto.class, TagColumn.ID.getColumnName(), String.valueOf(id)
                         )
                 ), TagDto.class
         );
@@ -60,7 +60,7 @@ public class TagServiceImpl implements TagService {
     public void delete(long id) {
         if (!tagRepository.delete(id)) {
             throw new EntityNotFoundException(
-                    TagColumn.getModelName(), TagColumn.ID.getColumnName(), id
+                    TagDto.class, TagColumn.ID.getColumnName(), String.valueOf(id)
             );
         }
     }
