@@ -5,7 +5,7 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.mapper.TagColumn;
 import com.epam.esm.gcs.model.TagModel;
-import com.epam.esm.gcs.repository.impl.TagRepositoryImpl;
+import com.epam.esm.gcs.repository.TagRepository;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class TagServiceImpl implements TagService {
 
-    private final TagRepositoryImpl tagRepository;
+    private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -43,7 +43,7 @@ public class TagServiceImpl implements TagService {
         return modelMapper.map(
                 tagRepository.findById(id).orElseThrow(
                         () -> new EntityNotFoundException(
-                                TagDto.class, TagColumn.ID.getColumnName(), String.valueOf(id)
+                                TagDto.class, TagColumn.ID.getColumnName(), id
                         )
                 ), TagDto.class
         );
@@ -60,7 +60,7 @@ public class TagServiceImpl implements TagService {
     public void delete(long id) {
         if (!tagRepository.delete(id)) {
             throw new EntityNotFoundException(
-                    TagDto.class, TagColumn.ID.getColumnName(), String.valueOf(id)
+                    TagDto.class, TagColumn.ID.getColumnName(), id
             );
         }
     }
