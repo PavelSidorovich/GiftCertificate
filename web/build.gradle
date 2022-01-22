@@ -6,12 +6,6 @@ plugins {
 
 group = 'com.epam.esm.gcs'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '11'
-targetCompatibility = '11'
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation 'org.springframework:spring-core:5.3.14'
@@ -19,13 +13,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.hibernate.validator:hibernate-validator:6.0.22.Final'
+    implementation project(':service')
 
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-
-    implementation project(':service')
-}
-
-test {
-    useJUnitPlatform()
 }
