@@ -75,7 +75,9 @@ public class CommonExceptionHandler {
     public ResponseModel handleMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                   Locale locale) {
         final String message = clientErrorMsgSource.getMessage(
-                METHOD_NOT_ALLOWED, new Object[] { ex.getMethod() }, locale
+                METHOD_NOT_ALLOWED, new Object[] {
+                        ex.getMethod(), ex.getSupportedHttpMethods()
+                }, locale
         );
         return new ResponseModel(HttpStatus.METHOD_NOT_ALLOWED, message);
     }
@@ -104,7 +106,7 @@ public class CommonExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseModel handleCommonErrors(Exception ex, Locale locale) {
         final String message = serverErrorMsgSource.getMessage(
-                ERROR_NOT_DEFINED, null, locale
+                ERROR_NOT_DEFINED, new Object[] { ex.getMessage() }, locale
         );
         return new ResponseModel(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
