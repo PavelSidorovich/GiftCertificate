@@ -11,7 +11,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.Objects;
 
 @Configuration
 @PropertySource("classpath:/db/dataSource.properties")
@@ -52,11 +51,11 @@ public class DataSourceConfig {
         dataSource.setUrl(env.getProperty(URL_PROPERTY_NAME));
         dataSource.setUsername(env.getProperty(USER_NAME_PROPERTY_NAME));
         dataSource.setPassword(env.getProperty(PASSWORD_PROPERTY_NAME));
-        dataSource.setInitialSize(Integer.parseInt(
-                Objects.requireNonNull(env.getProperty(CONNECTION_POOL_INITIAL_SIZE_PROPERTY_NAME)))
+        dataSource.setInitialSize(env.getRequiredProperty(
+                CONNECTION_POOL_INITIAL_SIZE_PROPERTY_NAME, Integer.class)
         );
-        dataSource.setMaxTotal(Integer.parseInt(
-                Objects.requireNonNull(env.getProperty(CONNECTION_POOL_MAX_SIZE_PROPERTY_NAME)))
+        dataSource.setMaxTotal(env.getRequiredProperty(
+                CONNECTION_POOL_MAX_SIZE_PROPERTY_NAME, Integer.class)
         );
 
         return dataSource;
