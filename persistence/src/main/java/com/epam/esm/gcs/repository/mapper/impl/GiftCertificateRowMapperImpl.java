@@ -1,6 +1,6 @@
-package com.epam.esm.gcs.mapper.impl;
+package com.epam.esm.gcs.repository.mapper.impl;
 
-import com.epam.esm.gcs.mapper.GiftCertificateRowMapper;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.epam.esm.gcs.mapper.GiftCertificateColumn.*;
+import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Component
 public class GiftCertificateRowMapperImpl implements GiftCertificateRowMapper {

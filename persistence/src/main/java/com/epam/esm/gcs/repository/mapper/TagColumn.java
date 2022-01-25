@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.mapper;
+package com.epam.esm.gcs.repository.mapper;
 
 public enum TagColumn {
 

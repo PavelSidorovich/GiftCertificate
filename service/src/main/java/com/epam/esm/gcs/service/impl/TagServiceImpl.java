@@ -4,7 +4,7 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.mapper.TagColumn;
+import com.epam.esm.gcs.repository.mapper.TagColumn;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
 import com.epam.esm.gcs.service.TagService;

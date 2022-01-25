@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.gcs.mapper.GiftCertificateColumn.*;
+import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })

@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.mapper.TagColumn;
-import com.epam.esm.gcs.mapper.TagRowMapper;
+import com.epam.esm.gcs.repository.mapper.TagColumn;
+import com.epam.esm.gcs.repository.mapper.TagRowMapper;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;

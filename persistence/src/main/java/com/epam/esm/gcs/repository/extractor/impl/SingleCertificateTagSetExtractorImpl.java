@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.repository.extractor.impl;
 
-import com.epam.esm.gcs.mapper.GiftCertificateColumn;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.extractor.SingleCertificateTagSetExtractor;

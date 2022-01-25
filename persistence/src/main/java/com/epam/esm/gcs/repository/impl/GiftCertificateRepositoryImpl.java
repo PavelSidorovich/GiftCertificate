@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.mapper.GiftCertificateColumn;
-import com.epam.esm.gcs.mapper.GiftCertificateRowMapper;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.epam.esm.gcs.mapper.GiftCertificateColumn.*;
+import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Repository
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {

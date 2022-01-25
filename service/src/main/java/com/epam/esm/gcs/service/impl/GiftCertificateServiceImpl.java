@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.gcs.mapper.GiftCertificateColumn.*;
+import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })
