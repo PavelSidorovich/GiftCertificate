@@ -11,6 +11,7 @@ dependencies {
     implementation 'org.springframework:spring-core:5.3.14'
     implementation 'org.springframework:spring-webmvc:5.3.14'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.hibernate.validator:hibernate-validator:6.0.22.Final'
     implementation project(':service')

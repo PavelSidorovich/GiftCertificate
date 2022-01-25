@@ -20,7 +20,6 @@ public class ValidatorConfig {
         messageSource.setBasename("classpath:/l10n/client-error-messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setDefaultLocale(Locale.US);
-
         return messageSource;
     }
 
@@ -32,7 +31,6 @@ public class ValidatorConfig {
         messageSource.setBasename("classpath:/l10n/server-error-messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setDefaultLocale(Locale.US);
-
         return messageSource;
     }
 
@@ -42,7 +40,6 @@ public class ValidatorConfig {
                 = new LocalValidatorFactoryBean();
 
         validatorFactoryBean.setValidationMessageSource(clientErrorMsgSource());
-
         return validatorFactoryBean;
     }
 
