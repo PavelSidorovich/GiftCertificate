@@ -52,13 +52,7 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public Optional<TagModel> findById(long id) {
-        try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(FIND_BY_ID_QUERY, tagRowMapper, id)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        return singleParamQuery(FIND_BY_ID_QUERY, id);
     }
 
     @Override
@@ -79,6 +73,21 @@ public class TagRepositoryImpl implements TagRepository {
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
+        }
+    }
+
+    @Override
+    public Optional<TagModel> findByName(String name) {
+        return singleParamQuery(FIND_BY_NAME_QUERY, name);
+    }
+
+    private Optional<TagModel> singleParamQuery(String sqlQuery, Object columnValue){
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(sqlQuery, tagRowMapper, columnValue)
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 
