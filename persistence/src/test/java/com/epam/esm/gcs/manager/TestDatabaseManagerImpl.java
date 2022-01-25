@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public class TestDatabaseManagerImpl implements TestDatabaseManager {
 
     private static final String DB_SCHEMA_SQL_PATH = "/db/schema.sql";
-    private static final String DB_TEST_DATA_SQL_PATH = "/db/test-data.sql";
+    private static final String DB_TEST_DATA_SQL_PATH = "/db/test-model-data.sql";
     private static final String[] TABLE_NAMES = { "tag", "gift_certificate", "gift_certificates_by_tags" };
 
     private final DataSource dataSource;
