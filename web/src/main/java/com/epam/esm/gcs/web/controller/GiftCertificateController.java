@@ -2,10 +2,13 @@ package com.epam.esm.gcs.web.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.service.GiftCertificateService;
+import com.epam.esm.gcs.validator.CreateValidationGroup;
+import com.epam.esm.gcs.validator.UpdateValidateGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +30,8 @@ public class GiftCertificateController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateDto create(@Valid @RequestBody GiftCertificateDto certificate) {
+    public GiftCertificateDto create(@Validated({ CreateValidationGroup.class })
+                                     @RequestBody GiftCertificateDto certificate) {
         return certificateService.create(certificate);
     }
 
@@ -44,7 +47,8 @@ public class GiftCertificateController {
     }
 
     @PatchMapping
-    public GiftCertificateDto update(@Valid @RequestBody GiftCertificateDto certificate) {
+    public GiftCertificateDto update(
+            @Validated({ UpdateValidateGroup.class }) @RequestBody GiftCertificateDto certificate) {
         return certificateService.update(certificate);
     }
 
