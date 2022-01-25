@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.service;
 
-public interface CRUDService<T> extends CRDService<T> {
+public interface CrudService<T> extends CrdService<T> {
 
     T update(T model);
 

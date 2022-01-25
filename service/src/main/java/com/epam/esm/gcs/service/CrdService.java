@@ -2,7 +2,7 @@ package com.epam.esm.gcs.service;
 
 import java.util.List;
 
-public interface CRDService<T> {
+public interface CrdService<T> {
 
     T create(T model);
 

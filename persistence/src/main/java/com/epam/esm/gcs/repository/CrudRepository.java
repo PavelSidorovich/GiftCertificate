@@ -1,7 +1,9 @@
 package com.epam.esm.gcs.repository;
 
-public interface CRUDRepository<T> extends CRDRepository<T> {
+import java.util.Optional;
 
-    T update(T model);
+public interface CrudRepository<T> extends CrdRepository<T> {
+
+    Optional<T> update(T model);
 
 }
