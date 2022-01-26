@@ -5,6 +5,7 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateTagRepository;
 import com.epam.esm.gcs.repository.extractor.MultipleCertificateTagSetExtractor;
 import com.epam.esm.gcs.repository.extractor.SingleCertificateTagSetExtractor;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateIdRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,23 +34,28 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
             "RIGHT JOIN tag ON tag_id = tag.id " +
             "RIGHT JOIN gift_certificate ON gift_certificate_id = gift_certificate.id ";
     private static final String FIND_CERTIFICATE_BY_ID_QUERY =
-            SELECT_QUERY + "WHERE gift_certificate_id = ?";
+            SELECT_QUERY + "WHERE gift_certificate.id = ?";
     private static final String FIND_CERTIFICATE_BY_NAME_QUERY =
             SELECT_QUERY + "WHERE gift_certificate.name = ?";
     private static final String DELETE_ROWS_WITH_CERTIFICATE_ID = "DELETE FROM gift_certificates_by_tags " +
                                                                   "WHERE gift_certificate_id = ?";
+    private static final String FILTER_FUNCTION = "SELECT _gift_certificate_id as id " +
+                                                  "FROM \"find_certificates_by_filter\"(?, ?, ?);";
 
     private static final int INITIAL_CAPACITY = 2;
+    private static final String LIKE_EXPRESSION = "%";
 
     private final SimpleJdbcInsert jdbcInsert;
     private final JdbcTemplate jdbcTemplate;
     private final SingleCertificateTagSetExtractor singleCertificateExtractor;
     private final MultipleCertificateTagSetExtractor multipleCertificateExtractor;
+    private final GiftCertificateIdRowMapper idRowMapper;
 
     @Autowired
     public GiftCertificateTagRepositoryImpl(DataSource dataSource,
                                             SingleCertificateTagSetExtractor singleCertificateExtractor,
-                                            MultipleCertificateTagSetExtractor multipleCertificateExtractor) {
+                                            MultipleCertificateTagSetExtractor multipleCertificateExtractor,
+                                            GiftCertificateIdRowMapper idRowMapper) {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName(GIFT_CERTIFICATES_BY_TAGS_TABLE_NAME)
                 .usingGeneratedKeyColumns(ID_COLUMN_NAME)
@@ -57,6 +63,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.singleCertificateExtractor = singleCertificateExtractor;
         this.multipleCertificateExtractor = multipleCertificateExtractor;
+        this.idRowMapper = idRowMapper;
     }
 
     @Override
@@ -83,6 +90,26 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
     @Override
     public Optional<GiftCertificateModel> findByName(String name) {
         return singleParamQuery(FIND_CERTIFICATE_BY_NAME_QUERY, name);
+    }
+
+    @Override
+    public List<Long> findIdsByFilter(GiftCertificateModel certificate) {
+        final List<TagModel> tags = certificate.getTags();
+        final String certificateName = buildLikeExpression(certificate.getName());
+        final String description = buildLikeExpression(certificate.getDescription());
+        String tagName = null;
+        if (!tags.isEmpty()) {
+            tagName = tags.get(0).getName();
+        }
+
+        return jdbcTemplate.query(FILTER_FUNCTION, idRowMapper, tagName, certificateName, description);
+    }
+
+    private String buildLikeExpression(String param) {
+        if (param != null) {
+            return LIKE_EXPRESSION + param + LIKE_EXPRESSION;
+        }
+        return null;
     }
 
     @Override

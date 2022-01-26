@@ -1,5 +1,7 @@
 package com.epam.esm.gcs.service.impl;
 
+import com.epam.esm.gcs.comparator.ComparatorType;
+import com.epam.esm.gcs.comparator.GiftCertificateComparatorBuilder;
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
@@ -10,8 +12,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
@@ -19,8 +25,10 @@ import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDtoRepository {
 
+
     private final GiftCertificateTagRepository linker;
     private final ModelMapper modelMapper;
+    private final GiftCertificateComparatorBuilder certificateComparatorBuilder;
 
     @Override
     public void link(GiftCertificateDto model) {
@@ -48,7 +56,22 @@ public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDt
         ), GiftCertificateDto.class);
     }
 
-    // TODO: 1/25/2022
+    @Override
+    public List<GiftCertificateDto> findByFilter(GiftCertificateDto certificate,
+                                                 String sortByCreatedDate, String sortByName) {
+        Map<ComparatorType, String> sortByType = new LinkedHashMap<>();
+        sortByType.put(ComparatorType.CREATE_DATE_COMPARATOR, sortByCreatedDate);
+        sortByType.put(ComparatorType.NAME_COMPARATOR, sortByName);
+        Comparator<GiftCertificateDto> comparator = certificateComparatorBuilder.buildComparator(sortByType);
+        Stream<GiftCertificateDto> idStream =
+                linker.findIdsByFilter(modelMapper.map(certificate, GiftCertificateModel.class)).stream()
+                      .map(this::findById);
+
+        return comparator != null
+                ? idStream.sorted(comparator).collect(Collectors.toList())
+                : idStream.collect(Collectors.toList());
+    }
+
     @Override
     public List<GiftCertificateDto> findAll() {
         return linker.findAll().stream()

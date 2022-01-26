@@ -1,6 +1,7 @@
 package com.epam.esm.gcs.web.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidateGroup;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,9 +39,19 @@ public class GiftCertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> findAll() {
-        certificateService.findAll().forEach(System.out::println);
-        return certificateService.findAll();
+    public List<GiftCertificateDto> findAll(@RequestParam(required = false) String tagName,
+                                            @RequestParam(required = false) String certificateName,
+                                            @RequestParam(required = false) String description,
+                                            @RequestParam(required = false) String sortByCreatedDate,
+                                            @RequestParam(required = false) String sortByName) {
+        final List<TagDto> tagDtoList = new ArrayList<>();
+        tagDtoList.add(new TagDto(null, tagName));
+        final GiftCertificateDto certificate = GiftCertificateDto.builder()
+                                                                 .name(certificateName)
+                                                                 .description(description)
+                                                                 .tags(tagDtoList)
+                                                                 .build();
+        return certificateService.findByFilter(certificate, sortByCreatedDate, sortByName);
     }
 
     @GetMapping(value = "/{id}")

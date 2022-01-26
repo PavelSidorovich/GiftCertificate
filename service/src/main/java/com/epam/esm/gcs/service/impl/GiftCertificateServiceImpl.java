@@ -83,6 +83,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    public List<GiftCertificateDto> findByFilter(GiftCertificateDto certificate,
+                                                 String sortByCreatedDate, String sortByName) {
+        return linker.findByFilter(certificate, sortByCreatedDate, sortByName);
+    }
+
+    @Override
     public List<GiftCertificateDto> findAll() {
         return linker.findAll();
     }
