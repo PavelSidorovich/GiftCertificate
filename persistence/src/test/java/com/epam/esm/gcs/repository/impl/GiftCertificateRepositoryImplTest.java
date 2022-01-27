@@ -51,7 +51,7 @@ class GiftCertificateRepositoryImplTest {
     }
 
     @Test
-    void create_shouldThrowEntityNotFoundException_ifNameIsNotUnique() {
+    void create_shouldThrowDuplicateKeyException_ifNameIsNotUnique() {
         final GiftCertificateModel certificate = getTestGiftCertificate();
 
         certificateRepository.create(certificate);
@@ -160,7 +160,7 @@ class GiftCertificateRepositoryImplTest {
     }
 
     @Test
-    void update_shouldThrowEntityNotFoundException_whenNotExistsWithId() {
+    void update_shouldReturnOptionalEmpty_whenNotExistsWithId() {
         final GiftCertificateModel toUpdate =
                 GiftCertificateModel.builder()
                                     .id(10000L)
