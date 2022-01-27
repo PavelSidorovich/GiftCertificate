@@ -66,6 +66,11 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
         this.idRowMapper = idRowMapper;
     }
 
+    /**
+     * Creates rows linking certificate entity with tags in database<br>
+     * <strong>Note:</strong> certificate and tags should have ids
+     * @param certificate certificate with tags to link
+     */
     @Override
     public void link(GiftCertificateModel certificate) {
         for (TagModel tag : certificate.getTags()) {
@@ -77,21 +82,41 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
         }
     }
 
+    /**
+     * Unlinks all tags from provided certificate<br>
+     * <strong>Note:</strong> certificate should have id
+     * @param certificate certificate to unlink from tags
+     */
     @Override
     public void unlink(GiftCertificateModel certificate) {
         jdbcTemplate.update(DELETE_ROWS_WITH_CERTIFICATE_ID, certificate.getId());
     }
 
+    /**
+     * Finds certificate (including tags) with provided id
+     * @param id id of certificate to find
+     * @return Optional.empty if not found, Optional of certificate if found
+     */
     @Override
     public Optional<GiftCertificateModel> findById(long id) {
         return singleParamQuery(FIND_CERTIFICATE_BY_ID_QUERY, id);
     }
 
+    /**
+     * Finds certificate (including tags) with specified name
+     * @param name name of certificate to find
+     * @return Optional.empty if not found, certificate if found
+     */
     @Override
     public Optional<GiftCertificateModel> findByName(String name) {
         return singleParamQuery(FIND_CERTIFICATE_BY_NAME_QUERY, name);
     }
 
+    /**
+     * Finds certificates according to the entity-filter
+     * @param certificate entity-filter (contains fields to filter)
+     * @return list of certificates ids which satisfy filter
+     */
     @Override
     public List<Long> findIdsByFilter(GiftCertificateModel certificate) {
         final List<TagModel> tags = certificate.getTags();
@@ -112,6 +137,10 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
         return null;
     }
 
+    /**
+     * Finds all certificates (including tags)
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateModel> findAll() {
         return jdbcTemplate.query(SELECT_QUERY, multipleCertificateExtractor);

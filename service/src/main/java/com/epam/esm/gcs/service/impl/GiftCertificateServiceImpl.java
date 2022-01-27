@@ -30,6 +30,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepository certificateRepository;
     private final ModelMapper modelMapper;
 
+    /**
+     * Creates new certificate (including tags)
+     * @param certificate certificate to create
+     * @return created certificate with generated id
+     * @throws DuplicatePropertyException if certificate with such name already exists
+     */
     @Override
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto certificate) {
@@ -74,27 +80,55 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return createdTags;
     }
 
+    /**
+     * Finds certificate (including tags) with provided id
+     * @param id id of certificate to find
+     * @return certificate if found
+     * @throws EntityNotFoundException if certificate with specified id not found
+     */
     @Override
     public GiftCertificateDto findById(long id) {
         return linker.findById(id);
     }
 
+    /**
+     * Finds certificate (including tags) with provided name
+     * @param name name of certificate to find
+     * @return certificate if found
+     * @throws EntityNotFoundException if certificate with specified name not found
+     */
     @Override
     public GiftCertificateDto findByName(String name) {
         return linker.findByName(name);
     }
 
+    /**
+     * Finds certificates satisfying filter
+     * @param certificate entity-filter
+     * @param sortByCreatedDate string value of sort type by date of creation (ASC or DESC)
+     * @param sortByName string value of sort type by name (ASC or DESC)
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateDto> findByFilter(GiftCertificateDto certificate,
                                                  String sortByCreatedDate, String sortByName) {
         return linker.findByFilter(certificate, sortByCreatedDate, sortByName);
     }
 
+    /**
+     * Finds all certificates (including tags)
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateDto> findAll() {
         return linker.findAll();
     }
 
+    /**
+     * Deletes certificate with specified id
+     * @param id id of certificate to delete
+     * @throws EntityNotFoundException if certificate with specified id not found
+     */
     @Override
     public void delete(long id) {
         if (!certificateRepository.delete(id)) {
@@ -102,6 +136,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
+    /**
+     * Updates certificate with specified name
+     * @param model certificate to update. Should contain name
+     * @return old version of certificate
+     * @throws EntityNotFoundException if certificate with specified name not found
+     */
     @Transactional
     @Override
     public GiftCertificateDto update(GiftCertificateDto model) {

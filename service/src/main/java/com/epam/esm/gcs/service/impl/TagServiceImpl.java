@@ -23,6 +23,13 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final ModelMapper modelMapper;
 
+    /**
+     * Creates new tag
+     *
+     * @param model tag to create
+     * @return created tag with generated id
+     * @throws DuplicatePropertyException if tag with such name already exists
+     */
     @Override
     public TagDto create(TagDto model) {
         final String tagName = model.getName();
@@ -39,6 +46,13 @@ public class TagServiceImpl implements TagService {
         );
     }
 
+    /**
+     * Finds tag with provided id
+     *
+     * @param id id of tag to find
+     * @return tag if found
+     * @throws EntityNotFoundException if tag with provided id not found
+     */
     @Override
     public TagDto findById(long id) {
         return modelMapper.map(
@@ -50,6 +64,13 @@ public class TagServiceImpl implements TagService {
         );
     }
 
+    /**
+     * Finds tag with provided name
+     *
+     * @param name name of tag to find
+     * @return tag if found
+     * @throws EntityNotFoundException if tag with provided name not found
+     */
     @Override
     public TagDto findByName(String name) {
         return modelMapper.map(
@@ -62,6 +83,11 @@ public class TagServiceImpl implements TagService {
         );
     }
 
+    /**
+     * Finds all tags
+     *
+     * @return list of tags
+     */
     @Override
     public List<TagDto> findAll() {
         return tagRepository.findAll().stream()
@@ -69,6 +95,12 @@ public class TagServiceImpl implements TagService {
                             .collect(Collectors.toList());
     }
 
+    /**
+     * Deletes tag with specified id
+     *
+     * @param id id of tag to delete
+     * @throws EntityNotFoundException if tag with provided id not found
+     */
     @Override
     public void delete(long id) {
         if (!tagRepository.delete(id)) {
@@ -78,6 +110,12 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    /**
+     * Checks if tag with specified name exists
+     *
+     * @param name name of tag check for existence
+     * @return true if exists, otherwise - false
+     */
     @Override
     public boolean existsWithName(String name) {
         return tagRepository.existsWithName(name);

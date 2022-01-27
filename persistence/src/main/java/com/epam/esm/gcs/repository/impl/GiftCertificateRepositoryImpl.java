@@ -51,6 +51,11 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         this.certificateRowMapper = certificateRowMapper;
     }
 
+    /**
+     * Creates new certificate
+     * @param model certificate to create
+     * @return created certificate with generated id
+     */
     @Override
     public GiftCertificateModel create(GiftCertificateModel model) {
         Map<String, Object> columnsByValues = new HashMap<>();
@@ -69,21 +74,40 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         return model;
     }
 
+    /**
+     * Finds certificate with provided id
+     * @param id id of certificate to find
+     * @return Optional.empty if not found, Optional of certificate if found
+     */
     @Override
     public Optional<GiftCertificateModel> findById(long id) {
         return singleParamQuery(FIND_BY_ID_QUERY, id);
     }
 
+    /**
+     * Finds all certificates
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateModel> findAll() {
         return jdbcTemplate.query(FIND_ALL_QUERY, certificateRowMapper);
     }
 
+    /**
+     * Deletes certificate with specified id
+     * @param id id of certificate to delete
+     * @return true if deleted, otherwise - false
+     */
     @Override
     public boolean delete(long id) {
         return jdbcTemplate.update(DELETE_BY_ID_QUERY, id) == 1;
     }
 
+    /**
+     * Updates certificate with specified id
+     * @param model certificate to update. Should contain id
+     * @return old version of certificate or Optional.empty if not found
+     */
     @Override
     public Optional<GiftCertificateModel> update(GiftCertificateModel model) {
         Optional<GiftCertificateModel> oldCertificate = findById(model.getId());
@@ -95,6 +119,12 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         return oldCertificate;
     }
 
+
+    /**
+     * Checks if certificate with specified name exists
+     * @param name name of certificate check for existence
+     * @return true if exists, otherwise - false
+     */
     @Override
     public boolean existsWithName(String name) {
         try {
@@ -105,6 +135,11 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         }
     }
 
+    /**
+     * Finds certificate with specified name
+     * @param name name of certificate to find
+     * @return Optional.empty if not found, certificate if found
+     */
     @Override
     public Optional<GiftCertificateModel> findByName(String name) {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);

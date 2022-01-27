@@ -29,16 +29,32 @@ public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDt
     private final ModelMapper modelMapper;
     private final GiftCertificateComparatorBuilder certificateComparatorBuilder;
 
+    /**
+     * Creates rows linking certificate entity with tags in database<br>
+     * <strong>Note:</strong> certificate and tags should have ids
+     * @param model certificate with tags to link
+     */
     @Override
     public void link(GiftCertificateDto model) {
         linker.link(modelMapper.map(model, GiftCertificateModel.class));
     }
 
+    /**
+     * Unlinks all tags from provided certificate<br>
+     * <strong>Note:</strong> certificate should have id
+     * @param model certificate to unlink from tags
+     */
     @Override
     public void unlink(GiftCertificateDto model) {
         linker.unlink(modelMapper.map(model, GiftCertificateModel.class));
     }
 
+    /**
+     * Finds certificate (including tags) with provided id
+     * @param id id of certificate to find
+     * @return certificate if found
+     * @throws EntityNotFoundException if certificate with provided id not found
+     */
     @Override
     public GiftCertificateDto findById(long id) {
         return modelMapper.map(linker.findById(id).orElseThrow(
@@ -47,6 +63,12 @@ public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDt
         ), GiftCertificateDto.class);
     }
 
+    /**
+     * Finds certificate (including tags) with provided name
+     * @param name id of certificate to find
+     * @return certificate if found
+     * @throws EntityNotFoundException if certificate with provided name not found
+     */
     @Override
     public GiftCertificateDto findByName(String name) {
         return modelMapper.map(linker.findByName(name).orElseThrow(
@@ -55,6 +77,13 @@ public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDt
         ), GiftCertificateDto.class);
     }
 
+    /**
+     * Finds certificates satisfying filter
+     * @param certificate entity-filter
+     * @param sortByCreatedDate string value of sort type by date of creation (ASC or DESC)
+     * @param sortByName string value of sort type by name (ASC or DESC)
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateDto> findByFilter(GiftCertificateDto certificate,
                                                  String sortByCreatedDate, String sortByName) {
@@ -71,6 +100,10 @@ public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDt
                 : idStream.collect(Collectors.toList());
     }
 
+    /**
+     * Finds all certificates (including tags)
+     * @return list of certificates
+     */
     @Override
     public List<GiftCertificateDto> findAll() {
         return linker.findAll().stream()

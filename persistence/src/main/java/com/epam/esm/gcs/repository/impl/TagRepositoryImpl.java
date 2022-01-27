@@ -40,6 +40,11 @@ public class TagRepositoryImpl implements TagRepository {
         this.tagRowMapper = tagRowMapper;
     }
 
+    /**
+     * Creates new tag
+     * @param model tag to create
+     * @return created tag with generated id
+     */
     @Override
     public TagModel create(TagModel model) {
         Map<String, Object> columnsByValues = new HashMap<>(INITIAL_MAP_CAPACITY);
@@ -50,21 +55,40 @@ public class TagRepositoryImpl implements TagRepository {
         return model;
     }
 
+    /**
+     * Finds tag with provided id
+     * @param id id of tag to find
+     * @return Optional.empty if not found, Optional of tag if found
+     */
     @Override
     public Optional<TagModel> findById(long id) {
         return singleParamQuery(FIND_BY_ID_QUERY, id);
     }
 
+    /**
+     * Finds all tags
+     * @return list of tags
+     */
     @Override
     public List<TagModel> findAll() {
         return jdbcTemplate.query(FIND_ALL_QUERY, tagRowMapper);
     }
 
+    /**
+     * Deletes tag with specified id
+     * @param id id of tag to delete
+     * @return true if deleted, otherwise - false
+     */
     @Override
     public boolean delete(long id) {
         return jdbcTemplate.update(DELETE_BY_ID_QUERY, id) == 1;
     }
 
+    /**
+     * Checks if tag with specified name exists
+     * @param name name of tag check for existence
+     * @return true if exists, otherwise - false
+     */
     @Override
     public boolean existsWithName(String name) {
         try {
@@ -76,6 +100,11 @@ public class TagRepositoryImpl implements TagRepository {
         }
     }
 
+    /**
+     * Finds tag with specified name
+     * @param name name of tag to find
+     * @return Optional.empty if not found, tag if found
+     */
     @Override
     public Optional<TagModel> findByName(String name) {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
