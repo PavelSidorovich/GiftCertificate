@@ -4,6 +4,6 @@ import java.sql.SQLException;
 
 public interface TestDatabaseManager {
 
-    void cleanAndPopulateTables() throws SQLException;
+    void dropCreateAndPopulateTables() throws SQLException;
 
 }

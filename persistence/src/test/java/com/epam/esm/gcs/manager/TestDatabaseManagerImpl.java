@@ -15,7 +15,8 @@ public class TestDatabaseManagerImpl implements TestDatabaseManager {
 
     private static final String DB_SCHEMA_SQL_PATH = "/db/schema.sql";
     private static final String DB_TEST_DATA_SQL_PATH = "/db/test-model-data.sql";
-    private static final String[] TABLE_NAMES = { "tag", "gift_certificate", "gift_certificates_by_tags" };
+    private static final String DB_TEST_COMMON_DATA_SQL_PATH = "/db/test-common-data.sql";
+    private static final String[] TABLE_NAMES = { "gift_certificates_by_tags", "tag", "gift_certificate" };
 
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
@@ -27,11 +28,19 @@ public class TestDatabaseManagerImpl implements TestDatabaseManager {
     }
 
     @Override
-    public void cleanAndPopulateTables() throws SQLException {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, TABLE_NAMES);
+    public void dropCreateAndPopulateTables() throws SQLException {
+        JdbcTestUtils.dropTables(jdbcTemplate, TABLE_NAMES);
+        ScriptUtils.executeSqlScript(
+                dataSource.getConnection(),
+                new ClassPathResource(DB_SCHEMA_SQL_PATH)
+        );
         ScriptUtils.executeSqlScript(
                 dataSource.getConnection(),
                 new ClassPathResource(DB_TEST_DATA_SQL_PATH)
+        );
+        ScriptUtils.executeSqlScript(
+                dataSource.getConnection(),
+                new ClassPathResource(DB_TEST_COMMON_DATA_SQL_PATH)
         );
     }
 

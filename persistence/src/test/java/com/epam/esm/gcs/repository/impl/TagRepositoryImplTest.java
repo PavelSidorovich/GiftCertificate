@@ -35,7 +35,7 @@ class TagRepositoryImplTest {
 
     @BeforeEach
     public void refreshTables() throws SQLException {
-        databaseManager.cleanAndPopulateTables();
+        databaseManager.dropCreateAndPopulateTables();
     }
 
     @Test
@@ -70,6 +70,23 @@ class TagRepositoryImplTest {
     @Test
     void findById_shouldReturnOptionalEmpty_ifNotExistsWithId() {
         Optional<TagModel> actualTag = tagRepository.findById(100000L);
+
+        assertTrue(actualTag.isEmpty());
+    }
+
+    @Test
+    void findByName_shouldReturnTagModel_ifExistsWithName() {
+        final TagModel tag = tagRepository.create(new TagModel("testName"));
+
+        Optional<TagModel> actualTag = tagRepository.findByName(tag.getName());
+
+        assertTrue(actualTag.isPresent());
+        assertEquals(tag, actualTag.get());
+    }
+
+    @Test
+    void findByName_shouldReturnOptionalEmpty_ifNotExistsWithName() {
+        Optional<TagModel> actualTag = tagRepository.findByName("testName");
 
         assertTrue(actualTag.isEmpty());
     }
