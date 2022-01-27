@@ -1,7 +1,5 @@
 ## REST API Basics (second module)
 
-<hr>
-
 ### 1. Actions with tags
 
 - #### Creation (POST method)
