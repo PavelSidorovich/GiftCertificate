@@ -1,18 +1,19 @@
 package com.epam.esm.gcs.comparator;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Comparator;
 
 @Configuration
+@ComponentScan(basePackages = { "com.epam.esm.gcs" })
 public class ComparatorConfig {
 
     @Bean
-    public FactoryBean<Object> serviceLocatorFactoryBean() {
+    public ServiceLocatorFactoryBean serviceLocatorFactoryBean() {
         ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
         factoryBean.setServiceLocatorInterface(GiftCertificateComparatorFactory.class);
         return factoryBean;

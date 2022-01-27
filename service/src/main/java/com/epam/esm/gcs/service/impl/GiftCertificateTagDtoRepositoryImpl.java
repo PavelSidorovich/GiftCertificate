@@ -25,7 +25,6 @@ import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDtoRepository {
 
-
     private final GiftCertificateTagRepository linker;
     private final ModelMapper modelMapper;
     private final GiftCertificateComparatorBuilder certificateComparatorBuilder;

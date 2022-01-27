@@ -18,6 +18,7 @@ public class GiftCertificateComparatorBuilderImpl
         implements GiftCertificateComparatorBuilder {
 
     private static final String ASCENDING_SORT_TYPE = "ASC";
+    private static final String DESCENDING_SORT_TYPE = "DESC";
 
     private final GiftCertificateComparatorFactory comparatorFactory;
 
@@ -48,7 +49,11 @@ public class GiftCertificateComparatorBuilderImpl
 
     private Boolean isAscendingSort(String sortType) {
         if (sortType != null) {
-            return ASCENDING_SORT_TYPE.equalsIgnoreCase(sortType);
+            if (ASCENDING_SORT_TYPE.equalsIgnoreCase(sortType)) {
+                return true;
+            } else if (DESCENDING_SORT_TYPE.equalsIgnoreCase(sortType)) {
+                return false;
+            }
         }
         return null;
     }

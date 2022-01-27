@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,16 +59,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private List<TagDto> createTagsIfNotExist(List<TagDto> modelTags) {
-        List<TagDto> tagsToCreate = modelTags.stream()
-                                             .filter(tag -> !tagService.existsWithName(tag.getName()))
-                                             .collect(Collectors.toList());
-        modelTags.removeAll(tagsToCreate);
+        List<TagDto> tags = new ArrayList<>(modelTags);
+        List<TagDto> tagsToCreate = tags.stream()
+                                        .filter(tag -> !tagService.existsWithName(tag.getName()))
+                                        .collect(Collectors.toList());
+        tags.removeAll(tagsToCreate);
         List<TagDto> createdTags = tagsToCreate.stream()
-                                               .peek(tag -> tag.setId(tagService.create(tag).getId()))
+                                               .map(tagService::create)
                                                .collect(Collectors.toList());
-        List<TagDto> foundTags = modelTags.stream()
-                                          .peek(tag -> tag.setId(tagService.findByName(tag.getName()).getId()))
-                                          .collect(Collectors.toList());
+        List<TagDto> foundTags = tags.stream()
+                                     .map(tag -> tagService.findByName(tag.getName()))
+                                     .collect(Collectors.toList());
         createdTags.addAll(foundTags);
         return createdTags;
     }

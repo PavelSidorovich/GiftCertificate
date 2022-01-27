@@ -88,6 +88,29 @@ class TagServiceImplTest {
     }
 
     @Test
+    void findByName_shouldReturnTagDto_ifExistsWithName() {
+        final long tagId = 1L;
+        final String tagName = "testName";
+        final TagModel tagModel = new TagModel(tagId, tagName);
+        final TagDto expected = new TagDto(tagId, tagName);
+
+        when(tagRepository.findByName(tagName)).thenReturn(Optional.of(tagModel));
+
+        assertEquals(expected, tagService.findByName(tagName));
+        verify(tagRepository).findByName(tagName);
+    }
+
+    @Test
+    void findByName_shouldThrowEntityNotFoundException_ifCanNotFindTagWithName() {
+        final String tagName = "testName";
+
+        when(tagRepository.findByName(tagName)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> tagService.findByName(tagName));
+        verify(tagRepository).findByName(tagName);
+    }
+
+    @Test
     void findAll_shouldReturnListOfTags_always() {
         final List<TagModel> tagModels = List.of(
                 new TagModel(1L, "Car"),
@@ -126,6 +149,14 @@ class TagServiceImplTest {
 
         assertThrows(EntityNotFoundException.class, () -> tagService.delete(tagId));
         verify(tagRepository).delete(tagId);
+    }
+
+    @Test
+    void existsWithName_shouldReturnTrue_ifTagExistsWithName() {
+        final String testName = "testName";
+        when(tagRepository.existsWithName(testName)).thenReturn(true);
+
+        assertTrue(tagService.existsWithName(testName));
     }
 
 }
