@@ -1,5 +1,7 @@
 ## REST API Basics (second module)
 
+<hr>
+
 ### 1. Actions with tags
 
 - #### Creation (POST method)
@@ -18,6 +20,8 @@
 
 - #### Deleting (DELETE method)
     - ```http://url/tags/{id}``` — deletes tag with specified id
+
+<hr>
 
 ### 2. Actions with certificates
 
