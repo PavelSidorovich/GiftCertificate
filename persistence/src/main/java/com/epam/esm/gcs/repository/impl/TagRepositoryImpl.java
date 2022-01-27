@@ -1,9 +1,9 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.repository.mapper.TagColumn;
-import com.epam.esm.gcs.repository.mapper.TagRowMapper;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
+import com.epam.esm.gcs.repository.mapper.TagColumn;
+import com.epam.esm.gcs.repository.mapper.TagRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,7 +81,7 @@ public class TagRepositoryImpl implements TagRepository {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
     }
 
-    private Optional<TagModel> singleParamQuery(String sqlQuery, Object columnValue){
+    private Optional<TagModel> singleParamQuery(String sqlQuery, Object columnValue) {
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(sqlQuery, tagRowMapper, columnValue)

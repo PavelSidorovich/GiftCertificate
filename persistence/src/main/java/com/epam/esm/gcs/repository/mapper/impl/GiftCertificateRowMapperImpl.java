@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.repository.mapper.impl;
 
-import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;

@@ -3,8 +3,6 @@ package com.epam.esm.gcs.web.response;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-import java.util.Map;
-
 @Data
 public class ResponseModel {
 

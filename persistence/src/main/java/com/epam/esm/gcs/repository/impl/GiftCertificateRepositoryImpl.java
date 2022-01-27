@@ -1,9 +1,9 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
-import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

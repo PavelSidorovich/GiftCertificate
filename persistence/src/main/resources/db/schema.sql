@@ -4,12 +4,12 @@ create table if not exists gift_certificate
     id bigserial
         constraint gift_certificate_pk
         primary key,
-    name varchar(128) not null,
-    description varchar(256) not null,
-    price numeric(8,2) not null,
-    duration integer not null,
-    create_date timestamp not null,
-    last_update_date timestamp not null
+    name             varchar(128)  not null,
+    description      varchar(256)  not null,
+    price            numeric(8, 2) not null,
+    duration         integer       not null,
+    create_date      timestamp     not null,
+    last_update_date timestamp     not null
 );
 
 create unique index if not exists gift_certificate_id_uindex
@@ -45,7 +45,7 @@ create table gift_certificates_by_tags
         constraint gift_certificates_by_tags_gift_certificate_id_fk
         references gift_certificate
         on update cascade on delete cascade,
-    tag_id bigint not null
+    tag_id              bigint not null
         constraint gift_certificates_by_tags_tag_id_fk
         references tag
         on update cascade on delete cascade

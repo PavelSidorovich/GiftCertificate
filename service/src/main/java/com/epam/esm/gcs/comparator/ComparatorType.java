@@ -2,7 +2,6 @@ package com.epam.esm.gcs.comparator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 @AllArgsConstructor
 @Getter

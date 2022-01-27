@@ -1,9 +1,9 @@
 package com.epam.esm.gcs.repository.extractor.impl;
 
-import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.extractor.MultipleCertificateTagSetExtractor;
+import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
