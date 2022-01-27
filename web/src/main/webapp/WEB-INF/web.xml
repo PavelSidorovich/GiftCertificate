@@ -11,7 +11,7 @@
     </servlet-class>
     <init-param>
       <param-name>spring.profiles.default</param-name>
-      <param-value>dev</param-value>
+      <param-value>prod</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -23,7 +23,7 @@
 
   <context-param>
     <param-name>spring.profiles.default</param-name>
-    <param-value>dev</param-value>
+    <param-value>prod</param-value>
   </context-param>
 
 </web-app>
