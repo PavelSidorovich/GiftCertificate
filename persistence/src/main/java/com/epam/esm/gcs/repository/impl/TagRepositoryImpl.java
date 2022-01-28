@@ -6,7 +6,6 @@ import com.epam.esm.gcs.repository.mapper.TagColumn;
 import com.epam.esm.gcs.repository.mapper.TagRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class TagRepositoryImpl implements TagRepository {
+public class TagRepositoryImpl
+        extends AbstractRepository<TagModel> implements TagRepository {
 
     private static final String FIND_ALL_QUERY = "SELECT id as id, name as name FROM tag";
     private static final String FIND_BY_ID_QUERY = "SELECT id as id, name as name FROM tag WHERE id = ?";
@@ -27,21 +27,19 @@ public class TagRepositoryImpl implements TagRepository {
     private static final int INITIAL_MAP_CAPACITY = 1;
 
     private final SimpleJdbcInsert jdbcInsert;
-    private final JdbcTemplate jdbcTemplate;
-    private final TagRowMapper tagRowMapper;
 
     @Autowired
     public TagRepositoryImpl(DataSource dataSource, TagRowMapper tagRowMapper) {
+        super(dataSource, tagRowMapper);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName(TagColumn.getModelName())
                 .usingGeneratedKeyColumns(TagColumn.ID.getColumnName())
                 .usingColumns(TagColumn.NAME.getColumnName());
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.tagRowMapper = tagRowMapper;
     }
 
     /**
      * Creates new tag
+     *
      * @param model tag to create
      * @return created tag with generated id
      */
@@ -57,6 +55,7 @@ public class TagRepositoryImpl implements TagRepository {
 
     /**
      * Finds tag with provided id
+     *
      * @param id id of tag to find
      * @return Optional.empty if not found, Optional of tag if found
      */
@@ -67,15 +66,17 @@ public class TagRepositoryImpl implements TagRepository {
 
     /**
      * Finds all tags
+     *
      * @return list of tags
      */
     @Override
     public List<TagModel> findAll() {
-        return jdbcTemplate.query(FIND_ALL_QUERY, tagRowMapper);
+        return jdbcTemplate.query(FIND_ALL_QUERY, rowMapper);
     }
 
     /**
      * Deletes tag with specified id
+     *
      * @param id id of tag to delete
      * @return true if deleted, otherwise - false
      */
@@ -86,13 +87,14 @@ public class TagRepositoryImpl implements TagRepository {
 
     /**
      * Checks if tag with specified name exists
+     *
      * @param name name of tag check for existence
      * @return true if exists, otherwise - false
      */
     @Override
     public boolean existsWithName(String name) {
         try {
-            jdbcTemplate.queryForObject(FIND_BY_NAME_QUERY, tagRowMapper, name);
+            jdbcTemplate.queryForObject(FIND_BY_NAME_QUERY, rowMapper, name);
 
             return true;
         } catch (EmptyResultDataAccessException e) {
@@ -102,22 +104,13 @@ public class TagRepositoryImpl implements TagRepository {
 
     /**
      * Finds tag with specified name
+     *
      * @param name name of tag to find
      * @return Optional.empty if not found, tag if found
      */
     @Override
     public Optional<TagModel> findByName(String name) {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
-    }
-
-    private Optional<TagModel> singleParamQuery(String sqlQuery, Object columnValue) {
-        try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(sqlQuery, tagRowMapper, columnValue)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
     }
 
 }

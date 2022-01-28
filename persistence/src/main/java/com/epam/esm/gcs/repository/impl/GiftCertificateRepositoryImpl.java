@@ -6,7 +6,6 @@ import com.epam.esm.gcs.repository.mapper.GiftCertificateColumn;
 import com.epam.esm.gcs.repository.mapper.GiftCertificateRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +19,8 @@ import java.util.Optional;
 import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Repository
-public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
+public class GiftCertificateRepositoryImpl
+        extends AbstractRepository<GiftCertificateModel> implements GiftCertificateRepository {
 
     private static final String FIND_ALL_QUERY =
             "SELECT id as id, name as name, description as description," +
@@ -38,17 +38,14 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM gift_certificate WHERE id = ?";
 
     private final SimpleJdbcInsert jdbcInsert;
-    private final JdbcTemplate jdbcTemplate;
-    private final GiftCertificateRowMapper certificateRowMapper;
 
     @Autowired
     public GiftCertificateRepositoryImpl(DataSource dataSource, GiftCertificateRowMapper certificateRowMapper) {
+        super(dataSource, certificateRowMapper);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName(GiftCertificateColumn.getModelName())
                 .usingGeneratedKeyColumns(GiftCertificateColumn.ID.getColumnName())
                 .usingColumns(GiftCertificateColumn.getColumnNames());
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.certificateRowMapper = certificateRowMapper;
     }
 
     /**
@@ -90,7 +87,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
      */
     @Override
     public List<GiftCertificateModel> findAll() {
-        return jdbcTemplate.query(FIND_ALL_QUERY, certificateRowMapper);
+        return jdbcTemplate.query(FIND_ALL_QUERY, rowMapper);
     }
 
     /**
@@ -128,7 +125,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public boolean existsWithName(String name) {
         try {
-            jdbcTemplate.queryForObject(FIND_BY_NAME_QUERY, certificateRowMapper, name);
+            jdbcTemplate.queryForObject(FIND_BY_NAME_QUERY, rowMapper, name);
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
@@ -143,16 +140,6 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public Optional<GiftCertificateModel> findByName(String name) {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
-    }
-
-    private Optional<GiftCertificateModel> singleParamQuery(String sqlQuery, Object columnValue) {
-        try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(sqlQuery, certificateRowMapper, columnValue)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
     }
 
 }
