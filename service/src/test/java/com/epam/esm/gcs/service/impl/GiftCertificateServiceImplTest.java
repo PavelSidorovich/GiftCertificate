@@ -8,7 +8,7 @@ import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
-import com.epam.esm.gcs.service.GiftCertificateTagDtoRepository;
+import com.epam.esm.gcs.service.GiftCertificateTagService;
 import com.epam.esm.gcs.service.TagService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,12 +32,12 @@ class GiftCertificateServiceImplTest {
 
     private final TagService tagService;
     private final GiftCertificateRepository certificateRepository;
-    private final GiftCertificateTagDtoRepository certificateTagRepository;
+    private final GiftCertificateTagService certificateTagRepository;
     private final ModelMapper modelMapper;
     private final LocalDateTime dateTime = LocalDateTime.now();
 
     public GiftCertificateServiceImplTest(@Mock GiftCertificateRepository certificateRepository,
-                                          @Mock GiftCertificateTagDtoRepository certificateTagRepository,
+                                          @Mock GiftCertificateTagService certificateTagRepository,
                                           @Mock TagService tagService) {
         this.tagService = tagService;
         this.certificateRepository = certificateRepository;

@@ -4,7 +4,7 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 
 import java.util.List;
 
-public interface GiftCertificateTagDtoRepository
+public interface GiftCertificateTagService
         extends ModelLinkerService<GiftCertificateDto> {
 
     GiftCertificateDto findByName(String name);

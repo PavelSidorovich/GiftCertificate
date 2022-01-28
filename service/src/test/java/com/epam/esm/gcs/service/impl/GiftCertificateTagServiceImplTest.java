@@ -23,20 +23,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GiftCertificateTagDtoRepositoryImplTest {
+class GiftCertificateTagServiceImplTest {
 
-    private final GiftCertificateTagDtoRepositoryImpl certificateTagDtoRepository;
+    private final GiftCertificateTagServiceImpl certificateTagDtoRepository;
 
     private final GiftCertificateTagRepository linker;
     private final ModelMapper modelMapper;
     private final LocalDateTime localDateTime = LocalDateTime.now();
 
-    public GiftCertificateTagDtoRepositoryImplTest(@Mock GiftCertificateTagRepository linker,
-                                                   @Mock GiftCertificateComparatorBuilder comparatorBuilder) {
+    public GiftCertificateTagServiceImplTest(@Mock GiftCertificateTagRepository linker,
+                                             @Mock GiftCertificateComparatorBuilder comparatorBuilder) {
         this.linker = linker;
         this.modelMapper = new ModelMapperConfig().modelMapper();
         this.certificateTagDtoRepository =
-                new GiftCertificateTagDtoRepositoryImpl(linker, modelMapper, comparatorBuilder);
+                new GiftCertificateTagServiceImpl(linker, modelMapper, comparatorBuilder);
     }
 
     @Test

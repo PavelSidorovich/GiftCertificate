@@ -7,7 +7,7 @@ import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
-import com.epam.esm.gcs.service.GiftCertificateTagDtoRepository;
+import com.epam.esm.gcs.service.GiftCertificateTagService;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,7 +26,7 @@ import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final TagService tagService;
-    private final GiftCertificateTagDtoRepository linker;
+    private final GiftCertificateTagService linker;
     private final GiftCertificateRepository certificateRepository;
     private final ModelMapper modelMapper;
 

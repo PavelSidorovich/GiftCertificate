@@ -6,7 +6,7 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateTagRepository;
-import com.epam.esm.gcs.service.GiftCertificateTagDtoRepository;
+import com.epam.esm.gcs.service.GiftCertificateTagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = { @Autowired })
-public class GiftCertificateTagDtoRepositoryImpl implements GiftCertificateTagDtoRepository {
+public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
 
     private final GiftCertificateTagRepository linker;
     private final ModelMapper modelMapper;
