@@ -1,18 +1,16 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id "io.freefair.lombok" version "6.3.0"
 }
 
-version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
+group 'com.epam.esm.gcs'
+version '1.0-SNAPSHOT'
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-test {
-    useJUnitPlatform()
+    implementation "org.springframework:spring-context:${springFrameworkVersion}"
+    implementation "org.springframework:spring-tx:${springFrameworkVersion}"
+    implementation 'org.modelmapper:modelmapper:3.0.0'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.22.Final'
+    implementation project(':persistence')
 }

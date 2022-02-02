@@ -1,22 +1,24 @@
 plugins {
     id 'java'
+    id 'war'
+    id "io.freefair.lombok" version "6.3.0"
 }
 
-group = 'com.epam.esm'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+group = 'com.epam.esm.gcs'
+version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+ext {
+    jacksonVersion = '2.13.1'
 }
 
 dependencies {
-    implementation 'org.springframework:spring-core:5.3.14'
-    implementation 'org.springframework:spring-webmvc:5.3.14'
+    implementation "org.springframework:spring-core:${springFrameworkVersion}"
+    implementation "org.springframework:spring-webmvc:${springFrameworkVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+    implementation "javax.validation:validation-api:2.0.1.Final"
+    implementation "org.hibernate.validator:hibernate-validator:6.0.22.Final"
+    implementation project(':service')
 
-}
-
-test {
-    useJUnitPlatform()
+    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
