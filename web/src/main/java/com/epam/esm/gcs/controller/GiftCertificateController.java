@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.web.controller;
+package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor
 public class GiftCertificateController {
 
     private final GiftCertificateService certificateService;

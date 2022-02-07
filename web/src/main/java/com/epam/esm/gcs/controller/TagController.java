@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.web.controller;
+package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.service.TagService;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor
 public class TagController {
 
     private final TagService tagService;

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Comparator;
 
 @Configuration
-@ComponentScan(basePackages = { "com.epam.esm.gcs" })
 public class ComparatorConfig {
 
     @Bean

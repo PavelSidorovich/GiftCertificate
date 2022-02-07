@@ -1,6 +1,5 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.repository.CrdRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

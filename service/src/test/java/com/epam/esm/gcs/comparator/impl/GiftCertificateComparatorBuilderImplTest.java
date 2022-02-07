@@ -2,13 +2,13 @@ package com.epam.esm.gcs.comparator.impl;
 
 import com.epam.esm.gcs.comparator.ComparatorType;
 import com.epam.esm.gcs.comparator.GiftCertificateComparatorFactory;
+import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,9 +16,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles({ "dev" })
-@ContextConfiguration(locations = { "/test-config.xml" })
+@EnableAutoConfiguration
+@SpringBootTest(classes = { TestConfig.class })
 class GiftCertificateComparatorBuilderImplTest {
 
     private final GiftCertificateComparatorBuilderImpl comparatorBuilder;

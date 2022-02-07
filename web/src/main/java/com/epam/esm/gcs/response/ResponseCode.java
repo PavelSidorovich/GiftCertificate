@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.web.response;
+package com.epam.esm.gcs.response;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;

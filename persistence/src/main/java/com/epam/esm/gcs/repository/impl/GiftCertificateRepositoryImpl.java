@@ -39,7 +39,6 @@ public class GiftCertificateRepositoryImpl
 
     private final SimpleJdbcInsert jdbcInsert;
 
-    @Autowired
     public GiftCertificateRepositoryImpl(DataSource dataSource, GiftCertificateRowMapper certificateRowMapper) {
         super(dataSource, certificateRowMapper);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -50,6 +49,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Creates new certificate
+     *
      * @param model certificate to create
      * @return created certificate with generated id
      */
@@ -73,6 +73,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Finds certificate with provided id
+     *
      * @param id id of certificate to find
      * @return Optional.empty if not found, Optional of certificate if found
      */
@@ -83,6 +84,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Finds all certificates
+     *
      * @return list of certificates
      */
     @Override
@@ -92,6 +94,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Deletes certificate with specified id
+     *
      * @param id id of certificate to delete
      * @return true if deleted, otherwise - false
      */
@@ -102,6 +105,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Updates certificate with specified id
+     *
      * @param model certificate to update. Should contain id
      * @return old version of certificate or Optional.empty if not found
      */
@@ -119,6 +123,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Checks if certificate with specified name exists
+     *
      * @param name name of certificate check for existence
      * @return true if exists, otherwise - false
      */
@@ -134,6 +139,7 @@ public class GiftCertificateRepositoryImpl
 
     /**
      * Finds certificate with specified name
+     *
      * @param name name of certificate to find
      * @return Optional.empty if not found, certificate if found
      */

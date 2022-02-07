@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final TagService tagService;
@@ -32,6 +32,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Creates new certificate (including tags)
+     *
      * @param certificate certificate to create
      * @return created certificate with generated id
      * @throws DuplicatePropertyException if certificate with such name already exists
@@ -82,6 +83,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Finds certificate (including tags) with provided id
+     *
      * @param id id of certificate to find
      * @return certificate if found
      * @throws EntityNotFoundException if certificate with specified id not found
@@ -93,6 +95,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Finds certificate (including tags) with provided name
+     *
      * @param name name of certificate to find
      * @return certificate if found
      * @throws EntityNotFoundException if certificate with specified name not found
@@ -104,9 +107,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Finds certificates satisfying filter
-     * @param certificate entity-filter
+     *
+     * @param certificate       entity-filter
      * @param sortByCreatedDate string value of sort type by date of creation (ASC or DESC)
-     * @param sortByName string value of sort type by name (ASC or DESC)
+     * @param sortByName        string value of sort type by name (ASC or DESC)
      * @return list of certificates
      */
     @Override
@@ -117,6 +121,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Finds all certificates (including tags)
+     *
      * @return list of certificates
      */
     @Override
@@ -126,6 +131,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Deletes certificate with specified id
+     *
      * @param id id of certificate to delete
      * @throws EntityNotFoundException if certificate with specified id not found
      */
@@ -138,6 +144,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Updates certificate with specified name
+     *
      * @param model certificate to update. Should contain name
      * @return old version of certificate
      * @throws EntityNotFoundException if certificate with specified name not found

@@ -1,41 +1,35 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.manager.TestDatabaseManager;
+import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
+@Transactional
 @ActiveProfiles({ "dev" })
-@ContextConfiguration(locations = { "/test-config.xml" })
+@EnableAutoConfiguration
+@SpringBootTest(classes = { TestConfig.class })
 class TagRepositoryImplTest {
 
     private final TagRepository tagRepository;
-    private final TestDatabaseManager databaseManager;
 
     @Autowired
-    public TagRepositoryImplTest(TagRepository tagRepository,
-                                 TestDatabaseManager databaseManager) {
+    public TagRepositoryImplTest(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
-        this.databaseManager = databaseManager;
-    }
-
-    @BeforeEach
-    public void refreshTables() throws SQLException {
-        databaseManager.dropCreateAndPopulateTables();
     }
 
     @Test

@@ -28,7 +28,6 @@ public class TagRepositoryImpl
 
     private final SimpleJdbcInsert jdbcInsert;
 
-    @Autowired
     public TagRepositoryImpl(DataSource dataSource, TagRowMapper tagRowMapper) {
         super(dataSource, tagRowMapper);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)

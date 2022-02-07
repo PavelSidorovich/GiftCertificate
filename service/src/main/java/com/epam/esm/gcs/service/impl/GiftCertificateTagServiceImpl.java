@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
 
 @Component
-@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor
 public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
 
     private final GiftCertificateTagRepository linker;
@@ -32,6 +32,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     /**
      * Creates rows linking certificate entity with tags in database<br>
      * <strong>Note:</strong> certificate and tags should have ids
+     *
      * @param model certificate with tags to link
      */
     @Override
@@ -42,6 +43,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     /**
      * Unlinks all tags from provided certificate<br>
      * <strong>Note:</strong> certificate should have id
+     *
      * @param model certificate to unlink from tags
      */
     @Override
@@ -51,6 +53,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
 
     /**
      * Finds certificate (including tags) with provided id
+     *
      * @param id id of certificate to find
      * @return certificate if found
      * @throws EntityNotFoundException if certificate with provided id not found
@@ -65,6 +68,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
 
     /**
      * Finds certificate (including tags) with provided name
+     *
      * @param name id of certificate to find
      * @return certificate if found
      * @throws EntityNotFoundException if certificate with provided name not found
@@ -79,9 +83,10 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
 
     /**
      * Finds certificates satisfying filter
-     * @param certificate entity-filter
+     *
+     * @param certificate       entity-filter
      * @param sortByCreatedDate string value of sort type by date of creation (ASC or DESC)
-     * @param sortByName string value of sort type by name (ASC or DESC)
+     * @param sortByName        string value of sort type by name (ASC or DESC)
      * @return list of certificates
      */
     @Override
@@ -102,6 +107,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
 
     /**
      * Finds all certificates (including tags)
+     *
      * @return list of certificates
      */
     @Override

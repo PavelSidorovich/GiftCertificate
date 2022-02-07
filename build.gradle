@@ -1,8 +1,22 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
     sourceCompatibility = '11'
     targetCompatibility = '11'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -10,26 +24,22 @@ subprojects {
 
     ext {
         lombokVersion = '1.18.22'
-        springFrameworkVersion = '5.3.15'
-        junitVersion = '5.7.0'
-        mockitoVersion = '4.2.0'
-        log4jVersion = '2.17.1'
     }
 
     dependencies {
-        implementation "org.apache.logging.log4j:log4j-api:${log4jVersion}"
-        implementation "org.apache.logging.log4j:log4j-core:${log4jVersion}"
-        implementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-        testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 
-    test {
+    tasks.named('test') {
         useJUnitPlatform()
     }
 }

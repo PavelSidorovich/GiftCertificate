@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.web.response;
+package com.epam.esm.gcs.response;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

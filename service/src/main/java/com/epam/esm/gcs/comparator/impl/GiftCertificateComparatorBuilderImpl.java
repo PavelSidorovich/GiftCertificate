@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 @Component
-@RequiredArgsConstructor(onConstructor_ = { @Autowired })
+@RequiredArgsConstructor
 public class GiftCertificateComparatorBuilderImpl
         implements GiftCertificateComparatorBuilder {
 
@@ -30,9 +30,11 @@ public class GiftCertificateComparatorBuilderImpl
             final ComparatorType comparatorType = stringBooleanEntry.getKey();
             final Boolean ascSort = isAscendingSort(stringBooleanEntry.getValue());
             Comparator<GiftCertificateDto> comparatorToAdd = getComparatorToAdd(comparatorType, ascSort);
-            comparator = comparator != null
-                    ? comparator.thenComparing(comparatorToAdd)
-                    : comparatorToAdd;
+            if (comparatorToAdd != null) {
+                comparator = comparator != null
+                        ? comparator.thenComparing(comparatorToAdd)
+                        : comparatorToAdd;
+            }
         }
         return comparator;
     }

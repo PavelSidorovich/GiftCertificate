@@ -1,43 +1,34 @@
 package com.epam.esm.gcs.repository.impl;
 
-import com.epam.esm.gcs.manager.TestDatabaseManager;
+import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.GiftCertificateModel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
+@Transactional
 @ActiveProfiles({ "dev" })
-@ContextConfiguration(locations = { "/test-config.xml" })
+@EnableAutoConfiguration
+@SpringBootTest(classes = { TestConfig.class })
 class GiftCertificateRepositoryImplTest {
 
     private final GiftCertificateRepositoryImpl certificateRepository;
-    private final TestDatabaseManager databaseManager;
 
     @Autowired
     public GiftCertificateRepositoryImplTest(
-            GiftCertificateRepositoryImpl certificateRepository,
-            TestDatabaseManager databaseManager) {
+            GiftCertificateRepositoryImpl certificateRepository) {
         this.certificateRepository = certificateRepository;
-        this.databaseManager = databaseManager;
-    }
-
-    @BeforeEach
-    public void refreshTables() throws SQLException {
-        databaseManager.dropCreateAndPopulateTables();
     }
 
     @Test
@@ -156,7 +147,6 @@ class GiftCertificateRepositoryImplTest {
         assertEquals(toUpdate.getDescription(), updCertificate.getDescription());
         assertEquals(toUpdate.getDuration(), updCertificate.getDuration());
         assertEquals(0, toUpdate.getPrice().compareTo(updCertificate.getPrice()));
-        assertEquals(-1, certificate.getLastUpdateDate().compareTo(updCertificate.getLastUpdateDate()));
     }
 
     @Test

@@ -1,8 +1,8 @@
-package com.epam.esm.gcs.web.controller;
+package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.web.response.ResponseModel;
+import com.epam.esm.gcs.response.ResponseModel;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-@AllArgsConstructor(onConstructor_ = { @Autowired })
+@AllArgsConstructor
 public class CommonExceptionHandler {
 
     private static final String RESOURCE_NOT_FOUND = "resource.not.found";

@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.web.config;
+package com.epam.esm.gcs.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

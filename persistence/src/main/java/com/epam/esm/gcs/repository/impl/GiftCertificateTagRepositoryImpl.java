@@ -51,7 +51,6 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
     private final MultipleCertificateTagSetExtractor multipleCertificateExtractor;
     private final GiftCertificateIdRowMapper idRowMapper;
 
-    @Autowired
     public GiftCertificateTagRepositoryImpl(DataSource dataSource,
                                             SingleCertificateTagSetExtractor singleCertificateExtractor,
                                             MultipleCertificateTagSetExtractor multipleCertificateExtractor,
@@ -69,6 +68,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
     /**
      * Creates rows linking certificate entity with tags in database<br>
      * <strong>Note:</strong> certificate and tags should have ids
+     *
      * @param certificate certificate with tags to link
      */
     @Override
@@ -85,6 +85,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
     /**
      * Unlinks all tags from provided certificate<br>
      * <strong>Note:</strong> certificate should have id
+     *
      * @param certificate certificate to unlink from tags
      */
     @Override
@@ -94,6 +95,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
 
     /**
      * Finds certificate (including tags) with provided id
+     *
      * @param id id of certificate to find
      * @return Optional.empty if not found, Optional of certificate if found
      */
@@ -104,6 +106,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
 
     /**
      * Finds certificate (including tags) with specified name
+     *
      * @param name name of certificate to find
      * @return Optional.empty if not found, certificate if found
      */
@@ -114,6 +117,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
 
     /**
      * Finds certificates according to the entity-filter
+     *
      * @param certificate entity-filter (contains fields to filter)
      * @return list of certificates ids which satisfy filter
      */
@@ -139,6 +143,7 @@ public class GiftCertificateTagRepositoryImpl implements GiftCertificateTagRepos
 
     /**
      * Finds all certificates (including tags)
+     *
      * @return list of certificates
      */
     @Override
