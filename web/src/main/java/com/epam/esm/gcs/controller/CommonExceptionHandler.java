@@ -4,6 +4,7 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.response.ResponseModel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,8 +20,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
+@Slf4j
 @AllArgsConstructor
+@RestControllerAdvice
 public class CommonExceptionHandler {
 
     private static final String RESOURCE_NOT_FOUND = "resource.not.found";
@@ -41,6 +43,7 @@ public class CommonExceptionHandler {
                         ex.getEntityField(), ex.getFieldValue()
                 }, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.NOT_FOUND, ex.getClazz(), message);
     }
 
@@ -52,6 +55,7 @@ public class CommonExceptionHandler {
                         ex.getEntityField(), ex.getFieldValue()
                 }, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.CONFLICT, ex.getClazz(), message);
     }
 
@@ -63,7 +67,7 @@ public class CommonExceptionHandler {
         String message = bindingResult.getAllErrors().stream()
                                       .map(objectError -> clientErrorMsgSource.getMessage(objectError, locale))
                                       .collect(Collectors.joining("; ", "", "."));
-
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.BAD_REQUEST, Objects.requireNonNull(
                 bindingResult.getTarget()).getClass(), message
         );
@@ -78,6 +82,7 @@ public class CommonExceptionHandler {
                         ex.getMethod(), ex.getSupportedHttpMethods()
                 }, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.METHOD_NOT_ALLOWED, message);
     }
 
@@ -89,6 +94,7 @@ public class CommonExceptionHandler {
         final String message = clientErrorMsgSource.getMessage(
                 TYPE_MISMATCH, new Object[] { providedValue, requiredType }, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.UNPROCESSABLE_ENTITY, message);
     }
 
@@ -98,6 +104,7 @@ public class CommonExceptionHandler {
         final String message = clientErrorMsgSource.getMessage(
                 MESSAGE_NOT_READABLE, null, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.BAD_REQUEST, message);
     }
 
@@ -107,6 +114,7 @@ public class CommonExceptionHandler {
         final String message = serverErrorMsgSource.getMessage(
                 ERROR_NOT_DEFINED, new Object[] { ex.getMessage() }, locale
         );
+        log.error(message, ex);
         return new ResponseModel(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
