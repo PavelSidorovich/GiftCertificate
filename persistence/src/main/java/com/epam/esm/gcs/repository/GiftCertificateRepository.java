@@ -5,7 +5,7 @@ import com.epam.esm.gcs.model.GiftCertificateModel;
 import java.util.Optional;
 
 public interface GiftCertificateRepository
-        extends CrudRepository<GiftCertificateModel> {
+        extends CrudRepository<GiftCertificateModel>, Flushable {
 
     boolean existsWithName(String name);
 

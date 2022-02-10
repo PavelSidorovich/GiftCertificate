@@ -3,7 +3,6 @@ package com.epam.esm.gcs.controller;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -1,11 +1,11 @@
-package com.epam.esm.gcs.repository.mapper;
+package com.epam.esm.gcs.repository.column;
 
 public enum TagColumn {
 
     ID("id"),
     NAME("name");
 
-    private static final String MODEL_NAME = "tag";
+    private static final String MODEL_NAME = "gift_certificate_tag";
 
     private final String columnName;
 

@@ -4,7 +4,7 @@ import com.epam.esm.gcs.model.TagModel;
 
 import java.util.Optional;
 
-public interface TagRepository extends CrdRepository<TagModel> {
+public interface TagRepository extends CrdRepository<TagModel>, Flushable {
 
     boolean existsWithName(String name);
 

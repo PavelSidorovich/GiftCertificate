@@ -4,14 +4,11 @@ import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,10 +31,10 @@ class TagRepositoryImplTest {
 
     @Test
     void create_shouldReturnCreatedTag_ifNameIsUnique() {
-        final String tagName = "testName";
-        final TagModel tag = tagRepository.create(new TagModel(tagName));
+        final String expected = "testName";
+        final TagModel tag = tagRepository.create(new TagModel(expected));
 
-        assertEquals(tagName, tag.getName());
+        assertEquals(expected, tag.getName());
         assertTrue(tag.getId().compareTo(0L) > 0);
     }
 
@@ -46,19 +43,20 @@ class TagRepositoryImplTest {
         final String tagName = "testName";
 
         tagRepository.create(new TagModel(tagName));
-        assertThrows(DuplicateKeyException.class, () ->
+
+        assertThrows(DataIntegrityViolationException.class, () ->
                 tagRepository.create(new TagModel(tagName))
         );
     }
 
     @Test
     void findById_shouldReturnTagModel_ifExistsWithId() {
-        final TagModel tag = tagRepository.create(new TagModel("testName"));
+        final TagModel expected = tagRepository.create(new TagModel("testName"));
 
-        Optional<TagModel> actualTag = tagRepository.findById(tag.getId());
+        Optional<TagModel> actualTag = tagRepository.findById(expected.getId());
 
         assertTrue(actualTag.isPresent());
-        assertEquals(tag, actualTag.get());
+        assertEquals(expected, actualTag.get());
     }
 
     @Test
@@ -70,27 +68,30 @@ class TagRepositoryImplTest {
 
     @Test
     void findByName_shouldReturnTagModel_ifExistsWithName() {
-        final TagModel tag = tagRepository.create(new TagModel("testName"));
+        final TagModel expected = tagRepository.create(new TagModel("testName"));
 
-        Optional<TagModel> actualTag = tagRepository.findByName(tag.getName());
+        Optional<TagModel> actual = tagRepository.findByName(expected.getName());
 
-        assertTrue(actualTag.isPresent());
-        assertEquals(tag, actualTag.get());
+        assertTrue(actual.isPresent());
+        assertEquals(expected, actual.get());
     }
 
     @Test
     void findByName_shouldReturnOptionalEmpty_ifNotExistsWithName() {
-        Optional<TagModel> actualTag = tagRepository.findByName("testName");
+        Optional<TagModel> actual = tagRepository.findByName("testName");
 
-        assertTrue(actualTag.isEmpty());
+        assertTrue(actual.isEmpty());
     }
 
     @Test
     void findAll_shouldReturnListOfTags_always() {
-        final List<TagModel> tags = tagRepository.findAll();
+        tagRepository.create(new TagModel("testName1"));
+        tagRepository.create(new TagModel("testName2"));
 
-        assertNotNull(tags);
-        assertEquals(10, tags.size());
+        final List<TagModel> actual = tagRepository.findAll();
+
+        assertNotNull(actual);
+        assertEquals(2, actual.size());
     }
 
     @Test

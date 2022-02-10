@@ -6,12 +6,12 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
-import com.epam.esm.gcs.repository.mapper.TagColumn;
+import com.epam.esm.gcs.repository.column.TagColumn;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,19 +31,17 @@ public class TagServiceImpl implements TagService {
      * @throws DuplicatePropertyException if tag with such name already exists
      */
     @Override
+    @Transactional
     public TagDto create(TagDto model) {
         final String tagName = model.getName();
-
         if (tagRepository.existsWithName(tagName)) {
             throw new DuplicatePropertyException(
                     TagDto.class, TagColumn.NAME.getColumnName(), tagName
             );
         }
-
-        return modelMapper.map(
-                tagRepository.create(modelMapper.map(model, TagModel.class)),
-                TagDto.class
-        );
+        TagModel tag = tagRepository.create(modelMapper.map(model, TagModel.class));
+        tagRepository.flushAndClear();
+        return modelMapper.map(tag, TagDto.class);
     }
 
     /**
@@ -55,13 +53,13 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public TagDto findById(long id) {
-        return modelMapper.map(
-                tagRepository.findById(id).orElseThrow(
-                        () -> new EntityNotFoundException(
-                                TagDto.class, TagColumn.ID.getColumnName(), id
-                        )
-                ), TagDto.class
+        TagModel tag = tagRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        TagDto.class, TagColumn.ID.getColumnName(), id
+                )
         );
+        tagRepository.clear();
+        return modelMapper.map(tag, TagDto.class);
     }
 
     /**
@@ -73,14 +71,13 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public TagDto findByName(String name) {
-        return modelMapper.map(
-                tagRepository.findByName(name).orElseThrow(
-                        () -> new EntityNotFoundException(
-                                GiftCertificateDto.class,
-                                TagColumn.NAME.getColumnName(),
-                                name)
-                ), TagDto.class
+        TagModel tag = tagRepository.findByName(name).orElseThrow(
+                () -> new EntityNotFoundException(
+                        GiftCertificateDto.class, TagColumn.NAME.getColumnName(), name
+                )
         );
+        tagRepository.clear();
+        return modelMapper.map(tag, TagDto.class);
     }
 
     /**
@@ -90,9 +87,11 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public List<TagDto> findAll() {
-        return tagRepository.findAll().stream()
-                            .map(model -> modelMapper.map(model, TagDto.class))
-                            .collect(Collectors.toList());
+        List<TagDto> tags = tagRepository.findAll().stream()
+                                         .map(model -> modelMapper.map(model, TagDto.class))
+                                         .collect(Collectors.toList());
+        tagRepository.clear();
+        return tags;
     }
 
     /**
@@ -102,12 +101,14 @@ public class TagServiceImpl implements TagService {
      * @throws EntityNotFoundException if tag with provided id not found
      */
     @Override
+    @Transactional
     public void delete(long id) {
         if (!tagRepository.delete(id)) {
             throw new EntityNotFoundException(
                     TagDto.class, TagColumn.ID.getColumnName(), id
             );
         }
+        tagRepository.flushAndClear();
     }
 
     /**
@@ -118,7 +119,9 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public boolean existsWithName(String name) {
-        return tagRepository.existsWithName(name);
+        boolean exists = tagRepository.existsWithName(name);
+        tagRepository.clear();
+        return exists;
     }
 
 }

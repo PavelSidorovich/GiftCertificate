@@ -6,7 +6,6 @@ import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidateGroup;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -51,7 +50,8 @@ public class GiftCertificateController {
                                                                  .description(description)
                                                                  .tags(tagDtoList)
                                                                  .build();
-        return certificateService.findByFilter(certificate, sortByCreatedDate, sortByName);
+//        return certificateService.findByFilter(certificate, sortByCreatedDate, sortByName);
+        return certificateService.findAll();
     }
 
     @GetMapping(value = "/{id}")

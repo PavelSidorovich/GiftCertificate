@@ -7,31 +7,28 @@ import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
-import com.epam.esm.gcs.service.GiftCertificateTagService;
 import com.epam.esm.gcs.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.gcs.repository.mapper.GiftCertificateColumn.*;
+import static com.epam.esm.gcs.repository.column.GiftCertificateColumn.*;
 
 @Service
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private final TagService tagService;
-    private final GiftCertificateTagService linker;
     private final GiftCertificateRepository certificateRepository;
+    private final TagService tagService;
     private final ModelMapper modelMapper;
 
     /**
-     * Creates new certificate (including tags)
+     * Creates new certificate as well as tags in it
      *
      * @param certificate certificate to create
      * @return created certificate with generated id
@@ -43,42 +40,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         final String certificateName = certificate.getName();
 
         if (certificateRepository.existsWithName(certificateName)) {
-            throw new DuplicatePropertyException(GiftCertificateDto.class,
-                                                 NAME.getColumnName(), certificateName
+            throw new DuplicatePropertyException(
+                    GiftCertificateDto.class, NAME.getColumnName(), certificateName
             );
         }
-        certificate = createCertificateAndTags(certificate);
-        linker.link(certificate);
-
-        return findById(certificate.getId());
-    }
-
-    private GiftCertificateDto createCertificateAndTags(GiftCertificateDto certificate) {
-        List<TagDto> certificateTags = createTagsIfNotExist(certificate.getTags());
-
-        certificate = modelMapper.map(
-                certificateRepository.create(modelMapper.map(certificate, GiftCertificateModel.class)),
-                GiftCertificateDto.class
+        certificate.setTags(prepareTagsToMerge(certificate.getTags()));
+        GiftCertificateModel created = certificateRepository.create(
+                modelMapper.map(certificate, GiftCertificateModel.class)
         );
-        certificate.setTags(certificateTags);
-
-        return certificate;
+        certificateRepository.flushAndClear();
+        return modelMapper.map(created, GiftCertificateDto.class);
     }
 
-    private List<TagDto> createTagsIfNotExist(List<TagDto> modelTags) {
-        List<TagDto> tags = new ArrayList<>(modelTags);
-        List<TagDto> tagsToCreate = tags.stream()
-                                        .filter(tag -> !tagService.existsWithName(tag.getName()))
-                                        .collect(Collectors.toList());
-        tags.removeAll(tagsToCreate);
-        List<TagDto> createdTags = tagsToCreate.stream()
-                                               .map(tagService::create)
-                                               .collect(Collectors.toList());
-        List<TagDto> foundTags = tags.stream()
-                                     .map(tag -> tagService.findByName(tag.getName()))
-                                     .collect(Collectors.toList());
-        createdTags.addAll(foundTags);
-        return createdTags;
+    private List<TagDto> prepareTagsToMerge(List<TagDto> tags) {
+        return tags == null? null
+                : tags.stream()
+                      .map(tag -> tagService.existsWithName(tag.getName())
+                              ? tagService.findByName(tag.getName()) : tag)
+                      .collect(Collectors.toList());
     }
 
     /**
@@ -90,7 +69,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     public GiftCertificateDto findById(long id) {
-        return linker.findById(id);
+        GiftCertificateModel certificate = certificateRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(GiftCertificateDto.class, ID.getColumnName(), id)
+        );
+        certificateRepository.clear();
+        return modelMapper.map(certificate, GiftCertificateDto.class);
     }
 
     /**
@@ -102,7 +85,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     public GiftCertificateDto findByName(String name) {
-        return linker.findByName(name);
+        GiftCertificateDto certificate = findByNameWithoutClear(name);
+        certificateRepository.clear();
+        return certificate;
     }
 
     /**
@@ -116,7 +101,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDto> findByFilter(GiftCertificateDto certificate,
                                                  String sortByCreatedDate, String sortByName) {
-        return linker.findByFilter(certificate, sortByCreatedDate, sortByName);
+//        return linker.findByFilter(certificate, sortByCreatedDate, sortByName);
+        return null;
     }
 
     /**
@@ -126,7 +112,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     public List<GiftCertificateDto> findAll() {
-        return linker.findAll();
+        List<GiftCertificateDto> certificates =
+                certificateRepository.findAll().stream()
+                                     .map(certificate -> modelMapper.map(
+                                             certificate,
+                                             GiftCertificateDto.class))
+                                     .collect(Collectors.toList());
+        certificateRepository.clear();
+        return certificates;
     }
 
     /**
@@ -136,36 +129,40 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @throws EntityNotFoundException if certificate with specified id not found
      */
     @Override
+    @Transactional
     public void delete(long id) {
         if (!certificateRepository.delete(id)) {
             throw new EntityNotFoundException(GiftCertificateDto.class, ID.getColumnName(), id);
         }
+        certificateRepository.flushAndClear();
     }
 
     /**
      * Updates certificate with specified name
      *
      * @param model certificate to update. Should contain name
-     * @return old version of certificate
+     *              <b>Note:</b> only not null fields will be updated
+     * @return updated certificate
      * @throws EntityNotFoundException if certificate with specified name not found
      */
-    @Transactional
     @Override
+    @Transactional
     public GiftCertificateDto update(GiftCertificateDto model) {
-        GiftCertificateDto oldModel = linker.findByName(model.getName());
-        List<TagDto> tags = model.getTags();
-        model.setId(oldModel.getId());
-        modelMapper.map(certificateRepository.update(modelMapper.map(model, GiftCertificateModel.class))
-                                             .orElseThrow(() -> new EntityNotFoundException(
-                                                     GiftCertificateDto.class, ID.getColumnName(), model.getId())
-                                             ), GiftCertificateDto.class
+        model.setId(findByNameWithoutClear(model.getName()).getId());
+        model.setTags(prepareTagsToMerge(model.getTags()));
+        Optional<GiftCertificateModel> updated = certificateRepository.update(
+                modelMapper.map(model, GiftCertificateModel.class)
         );
-        if (tags != null) {
-            linker.unlink(model);
-            model.setTags(createTagsIfNotExist(tags));
-            linker.link(model);
-        }
-        return oldModel;
+        certificateRepository.flushAndClear();
+        return modelMapper.map(updated.orElseThrow(() -> new EntityNotFoundException(
+                GiftCertificateDto.class, NAME.getColumnName(), model.getName())
+        ), GiftCertificateDto.class);
+    }
+
+    private GiftCertificateDto findByNameWithoutClear(String name) {
+        return modelMapper.map(certificateRepository.findByName(name).orElseThrow(
+                () -> new EntityNotFoundException(GiftCertificateDto.class, NAME.getColumnName(), name)
+        ), GiftCertificateDto.class);
     }
 
 }

@@ -2,17 +2,19 @@ package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.model.TagModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,39 +35,42 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void create_shouldReturnCreatedCertificate_ifNameIsUnique() {
-        final GiftCertificateModel certificate = getTestGiftCertificate();
-        final GiftCertificateModel createdCertificate = certificateRepository.create(certificate);
-        certificate.setId(createdCertificate.getId());
+        final GiftCertificateModel expected = getTestGiftCertificates().get(0);
+        final GiftCertificateModel actual = certificateRepository.create(expected);
+        expected.setId(actual.getId());
 
-        assertEquals(certificate, createdCertificate);
-        assertTrue(createdCertificate.getId().compareTo(0L) > 0);
+        assertEquals(expected, actual);
+        assertTrue(actual.getId().compareTo(0L) > 0);
     }
 
     @Test
     void create_shouldThrowDuplicateKeyException_ifNameIsNotUnique() {
-        final GiftCertificateModel certificate = getTestGiftCertificate();
+        final GiftCertificateModel certificate = getTestGiftCertificates().get(0);
+        final GiftCertificateModel copy = getTestGiftCertificates().get(0);
 
         certificateRepository.create(certificate);
 
-        assertThrows(DuplicateKeyException.class, () ->
-                certificateRepository.create(certificate)
+        assertThrows(DataIntegrityViolationException.class, () ->
+                certificateRepository.create(copy)
         );
     }
 
     @Test
     void findById_shouldReturnCertificateModel_ifExistsWithId() {
-        final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificate());
+        final GiftCertificateModel expected =
+                certificateRepository.create(getTestGiftCertificates().get(0));
 
         Optional<GiftCertificateModel> actualCertificate =
-                certificateRepository.findById(certificate.getId());
+                certificateRepository.findById(expected.getId());
 
         assertTrue(actualCertificate.isPresent());
         GiftCertificateModel actual = actualCertificate.get();
-        assertEquals(certificate.getName(), actual.getName());
-        assertEquals(certificate.getDescription(), actual.getDescription());
-        assertEquals(0, certificate.getPrice().compareTo(actual.getPrice()));
-        assertEquals(certificate.getDuration(), actual.getDuration());
-        assertEquals(certificate.getTags(), actual.getTags());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(0, expected.getPrice().compareTo(actual.getPrice()));
+        assertEquals(expected.getDuration(), actual.getDuration());
+        assertTrue(Objects.deepEquals(expected.getTags() != null? expected.getTags().toArray() : null,
+                                      actual.getTags() != null? actual.getTags().toArray() : null));
     }
 
     @Test
@@ -77,15 +82,19 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void findAll_shouldReturnListOfTags_always() {
-        final List<GiftCertificateModel> certificates = certificateRepository.findAll();
+        certificateRepository.create(getTestGiftCertificates().get(0));
+        certificateRepository.create(getTestGiftCertificates().get(1));
+        certificateRepository.create(getTestGiftCertificates().get(2));
 
-        assertNotNull(certificates);
-        assertEquals(3, certificates.size());
+        final List<GiftCertificateModel> actual = certificateRepository.findAll();
+
+        assertNotNull(actual);
+        assertEquals(3, actual.size());
     }
 
     @Test
     void delete_shouldReturnTrue_whenIsDeleted() {
-        final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificate());
+        final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificates().get(0));
         final Long certificateId = certificate.getId();
 
         assertTrue(certificateRepository.delete(certificateId));
@@ -99,54 +108,56 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void findByName_shouldReturnCertificateModel_ifExistsWithName() {
-        final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificate());
+        final GiftCertificateModel expected =
+                certificateRepository.create(getTestGiftCertificates().get(0));
 
-        Optional<GiftCertificateModel> actualCertificate =
-                certificateRepository.findByName(certificate.getName());
+        Optional<GiftCertificateModel> actualOptional =
+                certificateRepository.findByName(expected.getName());
 
-        assertTrue(actualCertificate.isPresent());
-        GiftCertificateModel actual = actualCertificate.get();
-        assertEquals(certificate.getName(), actual.getName());
-        assertEquals(certificate.getDescription(), actual.getDescription());
-        assertEquals(0, certificate.getPrice().compareTo(actual.getPrice()));
-        assertEquals(certificate.getDuration(), actual.getDuration());
-        assertEquals(certificate.getTags(), actual.getTags());
+        assertTrue(actualOptional.isPresent());
+        GiftCertificateModel actual = actualOptional.get();
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(0, expected.getPrice().compareTo(actual.getPrice()));
+        assertEquals(expected.getDuration(), actual.getDuration());
+        assertTrue(Objects.deepEquals(expected.getTags() != null? expected.getTags().toArray() : null,
+                                      actual.getTags() != null? actual.getTags().toArray() : null));
     }
 
     @Test
     void findByName_shouldReturnOptionalEmpty_ifNotExistsWithName() {
-        Optional<GiftCertificateModel> actualCertificate = certificateRepository.findByName("testName");
+        Optional<GiftCertificateModel> actual = certificateRepository.findByName("testName");
 
-        assertTrue(actualCertificate.isEmpty());
+        assertTrue(actual.isEmpty());
     }
 
     @Test
     void update_shouldUpdateCertificate_whenExistsWithId() {
-        final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificate());
-        final GiftCertificateModel toUpdate =
+        final GiftCertificateModel certificate =
+                certificateRepository.create(getTestGiftCertificates().get(0));
+        final GiftCertificateModel certificateToUpdate =
                 GiftCertificateModel.builder()
                                     .id(certificate.getId())
-                                    .name("testName")
+                                    .name("testName1")
                                     .description("newDescription")
                                     .price(BigDecimal.ONE)
                                     .duration(1)
+                                    .tags(List.of(new TagModel("lol")))
                                     .build();
 
-        Optional<GiftCertificateModel> oldCertOptional = certificateRepository.update(toUpdate);
-        Optional<GiftCertificateModel> updatedCertOptional = certificateRepository.findById(certificate.getId());
+        Optional<GiftCertificateModel> actualOptional = certificateRepository.update(certificateToUpdate);
+        Optional<GiftCertificateModel> expectedOptional = certificateRepository.findByName("testName1");
 
-        assertFalse(oldCertOptional.isEmpty());
-        assertFalse(updatedCertOptional.isEmpty());
-        GiftCertificateModel updCertificate = updatedCertOptional.get();
-        GiftCertificateModel oldCertificate = oldCertOptional.get();
-        assertEquals(certificate.getName(), oldCertificate.getName());
-        assertEquals(certificate.getDescription(), oldCertificate.getDescription());
-        assertEquals(certificate.getDuration(), oldCertificate.getDuration());
-        assertEquals(0, certificate.getPrice().compareTo(oldCertificate.getPrice()));
-        assertEquals(toUpdate.getName(), updCertificate.getName());
-        assertEquals(toUpdate.getDescription(), updCertificate.getDescription());
-        assertEquals(toUpdate.getDuration(), updCertificate.getDuration());
-        assertEquals(0, toUpdate.getPrice().compareTo(updCertificate.getPrice()));
+        assertFalse(actualOptional.isEmpty());
+        assertFalse(expectedOptional.isEmpty());
+        GiftCertificateModel actual = actualOptional.get();
+        GiftCertificateModel expected = expectedOptional.get();
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(expected.getDuration(), actual.getDuration());
+        assertEquals(0, expected.getPrice().compareTo(actual.getPrice()));
+        assertTrue(Objects.deepEquals(expected.getTags() != null? expected.getTags().toArray() : null,
+                                      actual.getTags() != null? actual.getTags().toArray() : null));
     }
 
     @Test
@@ -165,9 +176,9 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void existsWithName_shouldReturnTrue_ifSuchRowExists() {
-        certificateRepository.create(getTestGiftCertificate());
+        certificateRepository.create(getTestGiftCertificates().get(0));
 
-        assertTrue(certificateRepository.existsWithName("testName"));
+        assertTrue(certificateRepository.existsWithName("testName1"));
     }
 
     @Test
@@ -175,14 +186,32 @@ class GiftCertificateRepositoryImplTest {
         assertFalse(certificateRepository.existsWithName("testName"));
     }
 
-    private GiftCertificateModel getTestGiftCertificate() {
-        return GiftCertificateModel.builder()
-                                   .name("testName")
-                                   .description("testDescription")
-                                   .price(BigDecimal.TEN)
-                                   .duration(10)
-                                   .tags(new ArrayList<>())
-                                   .build();
+    private List<GiftCertificateModel> getTestGiftCertificates() {
+        GiftCertificateModel certificate1 =
+                GiftCertificateModel.builder()
+                                    .name("testName1")
+                                    .description("testDescription1")
+                                    .price(BigDecimal.TEN)
+                                    .duration(10)
+                                    .tags(new ArrayList<>())
+                                    .build();
+        GiftCertificateModel certificate2 =
+                GiftCertificateModel.builder()
+                                    .name("testName2")
+                                    .description("testDescription2")
+                                    .price(BigDecimal.ONE)
+                                    .duration(30)
+                                    .tags(new ArrayList<>())
+                                    .build();
+        GiftCertificateModel certificate3 =
+                GiftCertificateModel.builder()
+                                    .name("testName3")
+                                    .description("testDescription3")
+                                    .price(BigDecimal.TEN)
+                                    .duration(5)
+                                    .tags(new ArrayList<>())
+                                    .build();
+        return List.of(certificate1, certificate2, certificate3);
     }
 
 }

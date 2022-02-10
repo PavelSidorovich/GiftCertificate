@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.repository.mapper;
+package com.epam.esm.gcs.repository.column;
 
 import java.util.EnumSet;
 

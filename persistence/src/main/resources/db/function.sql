@@ -6,7 +6,7 @@ REPLACE FUNCTION find_certificates_by_filter(_tag_name varchar(128),
     _description varchar (256)
     )
     RETURNS TABLE
-(_gift_certificate_id bigint)
+    (_gift_certificate_id bigint)
     LANGUAGE plpgsql
     AS
     $func$
