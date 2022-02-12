@@ -109,7 +109,7 @@ public abstract class AbstractRepository<T> implements CrdRepository<T> {
     }
 
     /**
-     * Cleares persistent context
+     * Clears persistent context
      */
     public void clear() {
         entityManager.clear();
