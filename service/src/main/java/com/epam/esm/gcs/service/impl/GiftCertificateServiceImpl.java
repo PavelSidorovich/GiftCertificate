@@ -4,11 +4,15 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.FieldUpdateException;
+import com.epam.esm.gcs.exception.NoFieldToUpdateException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.TagService;
+import com.epam.esm.gcs.util.EntityFieldService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +23,18 @@ import java.util.stream.Collectors;
 
 import static com.epam.esm.gcs.repository.column.GiftCertificateColumn.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
+    private static final String DATE_NAMING_PART = "date";
+    private static final String NAME_NAMING_PART = "name";
+    private static final String ID_NAMING_PART = "id";
+
     private final GiftCertificateRepository certificateRepository;
     private final TagService tagService;
+    private final EntityFieldService entityFieldService;
     private final ModelMapper modelMapper;
 
     /**
@@ -140,14 +150,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Updates certificate with specified name
      *
-     * @param model certificate to update. Should contain name
+     * @param model certificate to update. Should contain name<br>
      *              <b>Note:</b> only not null fields will be updated
      * @return updated certificate
-     * @throws EntityNotFoundException if certificate with specified name not found
+     * @throws EntityNotFoundException  if certificate with specified name not found
+     * @throws FieldUpdateException     if certificate contains more than one field to update (not null)
+     * @throws NoFieldToUpdateException if certificate doesn't contain any field to update
      */
     @Override
     @Transactional
     public GiftCertificateDto update(GiftCertificateDto model) {
+        countFieldsToEdit(model);
         model.setId(findByNameWithoutClear(model.getName()).getId());
         model.setTags(prepareTagsToMerge(model.getTags()));
         Optional<GiftCertificateModel> updated = certificateRepository.update(
@@ -163,6 +176,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return modelMapper.map(certificateRepository.findByName(name).orElseThrow(
                 () -> new EntityNotFoundException(GiftCertificateDto.class, NAME.getColumnName(), name)
         ), GiftCertificateDto.class);
+    }
+
+    private void countFieldsToEdit(GiftCertificateDto model) {
+        List<String> fields = entityFieldService.getNotNullFields(
+                model, DATE_NAMING_PART, NAME_NAMING_PART, ID_NAMING_PART
+        );
+        final int fieldsSize = fields.size();
+
+        if (fieldsSize > 1) {
+            throw new FieldUpdateException(GiftCertificateDto.class, fields);
+        } else if (fieldsSize < 1) {
+            throw new NoFieldToUpdateException(GiftCertificateDto.class);
+        }
     }
 
 }

@@ -5,10 +5,13 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.FieldUpdateException;
+import com.epam.esm.gcs.exception.NoFieldToUpdateException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.TagService;
+import com.epam.esm.gcs.util.EntityFieldService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,14 +37,19 @@ class GiftCertificateServiceImplTest {
     private final GiftCertificateRepository certificateRepository;
     private final TagService tagService;
     private final ModelMapper modelMapper;
+    private final EntityFieldService entityFieldService;
     private final LocalDateTime dateTime = LocalDateTime.now();
 
     public GiftCertificateServiceImplTest(@Mock GiftCertificateRepository certificateRepository,
-                                          @Mock TagService tagService) {
+                                          @Mock TagService tagService,
+                                          @Mock EntityFieldService entityFieldService) {
         this.tagService = tagService;
         this.certificateRepository = certificateRepository;
+        this.entityFieldService = entityFieldService;
         this.modelMapper = new ModelMapperConfig().modelMapper();
-        this.certificateService = new GiftCertificateServiceImpl(certificateRepository, tagService, modelMapper);
+        this.certificateService = new GiftCertificateServiceImpl(
+                certificateRepository, tagService, entityFieldService, modelMapper
+        );
     }
 
     @Test
@@ -176,6 +185,8 @@ class GiftCertificateServiceImplTest {
         beforeUpdateModel.setTags(List.of(new TagModel(1L, tagName1), new TagModel(2L, tagName2)));
         when(certificateRepository.update(beforeUpdateModel))
                 .thenReturn(Optional.of(updatedModel));
+        when(entityFieldService.getNotNullFields(beforeUpdateDto, "date", "name", "id"))
+                .thenReturn(List.of("price"));
 
         assertEquals(expected, certificateService.update(beforeUpdateDto));
         verify(certificateRepository).flushAndClear();
@@ -189,8 +200,34 @@ class GiftCertificateServiceImplTest {
         when(certificateRepository.findByName(certificateName)).thenReturn(Optional.empty());
         when(certificateRepository.update(getCertificateModelToUpdate()))
                 .thenReturn(Optional.empty());
+        when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
+                .thenReturn(List.of("price"));
 
         assertThrows(EntityNotFoundException.class, () -> certificateService.update(beforeUpdate));
+        verify(certificateRepository, times(0)).flushAndClear();
+    }
+
+    @Test
+    void update_shouldThrowFieldUpdateException_whenCertificateContainsMoreThanOneFieldToUpdate() {
+        final String certificateName = "testName";
+        final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
+
+        when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
+                .thenReturn(List.of("description", "price", "duration"));
+
+        assertThrows(FieldUpdateException.class, () -> certificateService.update(beforeUpdate));
+        verify(certificateRepository, times(0)).flushAndClear();
+    }
+
+    @Test
+    void update_shouldThrowNoFieldToUpdateException_whenCertificateHasNoFieldToUpdate() {
+        final String certificateName = "testName";
+        final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
+
+        when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
+                .thenReturn(Collections.emptyList());
+
+        assertThrows(NoFieldToUpdateException.class, () -> certificateService.update(beforeUpdate));
         verify(certificateRepository, times(0)).flushAndClear();
     }
 
