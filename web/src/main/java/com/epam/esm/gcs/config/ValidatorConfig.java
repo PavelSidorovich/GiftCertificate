@@ -35,7 +35,7 @@ public class ValidatorConfig {
     }
 
     @Bean
-    public Validator validator() {
+    public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean validatorFactoryBean
                 = new LocalValidatorFactoryBean();
 
