@@ -4,6 +4,7 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
 import com.epam.esm.gcs.exception.NoFieldToUpdateException;
+import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.response.ResponseModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class CommonExceptionHandler {
     private static final String MESSAGE_NOT_READABLE = "message.not.readable";
     private static final String SEVERAL_FIELD_UPDATE = "model.fields.update";
     private static final String NO_FIELD_TO_UPDATE = "model.field.empty.update";
+    private static final String NOT_ENOUGH_MONEY = "not.enough.money";
 
     private final MessageSource clientErrorMsgSource;
     private final MessageSource serverErrorMsgSource;
@@ -80,6 +82,20 @@ public class CommonExceptionHandler {
     public ResponseModel handleNoFieldToUpdate(NoFieldToUpdateException ex, Locale locale) {
         final String message = clientErrorMsgSource.getMessage(
                 NO_FIELD_TO_UPDATE, null, locale
+        );
+        log.error(message, ex);
+        return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);
+    }
+
+    @ExceptionHandler(NotEnoughMoneyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseModel handleNotEnoughMoney(NotEnoughMoneyException ex, Locale locale) {
+        final String message = clientErrorMsgSource.getMessage(
+                NOT_ENOUGH_MONEY, new Object[] {
+                        ex.getCertificateName(),
+                        ex.getCertificateCost(),
+                        ex.getUserBalance()
+                }, locale
         );
         log.error(message, ex);
         return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);

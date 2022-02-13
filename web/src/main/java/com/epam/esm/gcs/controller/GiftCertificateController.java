@@ -4,7 +4,7 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
-import com.epam.esm.gcs.validator.UpdateValidateGroup;
+import com.epam.esm.gcs.validator.UpdateValidationGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +61,7 @@ public class GiftCertificateController {
 
     @PatchMapping
     public GiftCertificateDto update(
-            @Validated({ UpdateValidateGroup.class }) @RequestBody GiftCertificateDto certificate) {
+            @Validated({ UpdateValidationGroup.class }) @RequestBody GiftCertificateDto certificate) {
         return certificateService.update(certificate);
     }
 
