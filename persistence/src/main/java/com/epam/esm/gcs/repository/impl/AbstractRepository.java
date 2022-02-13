@@ -1,6 +1,7 @@
 package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.repository.CrdRepository;
+import com.epam.esm.gcs.repository.Flushable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractRepository<T> implements CrdRepository<T> {
+public abstract class AbstractRepository<T>
+        implements CrdRepository<T>, Flushable {
 
     private static final String FIND_ALL_QUERY = "SELECT m FROM %s m";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM %s WHERE id = ?1";
@@ -96,6 +98,7 @@ public abstract class AbstractRepository<T> implements CrdRepository<T> {
     /**
      * Flushes and clears persistent context
      */
+    @Override
     public void flushAndClear() {
         flush();
         clear();
@@ -104,6 +107,7 @@ public abstract class AbstractRepository<T> implements CrdRepository<T> {
     /**
      * Flushes persistent context
      */
+    @Override
     public void flush() {
         entityManager.flush();
     }
@@ -111,6 +115,7 @@ public abstract class AbstractRepository<T> implements CrdRepository<T> {
     /**
      * Clears persistent context
      */
+    @Override
     public void clear() {
         entityManager.clear();
     }
