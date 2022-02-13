@@ -10,7 +10,8 @@ import java.util.Optional;
 
 @Repository
 @EntityScan(basePackages = { "com.epam.esm.gcs.model" })
-public class TagRepositoryImpl extends AbstractRepository<TagModel>
+public class TagRepositoryImpl
+        extends AbstractRepository<TagModel>
         implements TagRepository {
 
     private static final String FIND_BY_NAME_QUERY = "SELECT t FROM %s t WHERE t.name = ?1";

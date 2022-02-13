@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Repository
 @EntityScan(basePackages = { "com.epam.esm.gcs.model" })
-public class GiftCertificateRepositoryImpl extends AbstractRepository<GiftCertificateModel>
+public class GiftCertificateRepositoryImpl
+        extends AbstractRepository<GiftCertificateModel>
         implements GiftCertificateRepository {
 
     private static final String FIND_BY_NAME_QUERY = "SELECT c FROM %s c WHERE c.name = ?1";

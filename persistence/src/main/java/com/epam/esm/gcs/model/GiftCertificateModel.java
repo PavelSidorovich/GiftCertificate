@@ -38,17 +38,22 @@ public class GiftCertificateModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(nullable = false)
     private Integer duration;
 
-    @Column(name = "create_date")
+    @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "last_update_date")
+    @Column(name = "last_update_date", nullable = false)
     private LocalDateTime lastUpdateDate;
 
     @Exclude
