@@ -18,6 +18,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -64,6 +66,17 @@ public class GiftCertificateModel {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<TagModel> tags;
+
+    @PrePersist
+    public void onPrePersist() {
+        createDate = LocalDateTime.now();
+        onPreUpdate();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        lastUpdateDate = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -51,7 +51,6 @@ public class PurchaseRepositoryImpl
         model.setUser(user);
         model.setCertificate(certificate);
         model.setCost(certificate.getPrice());
-        model.setPurchaseDate(LocalDateTime.now());
 
         return super.create(model);
     }

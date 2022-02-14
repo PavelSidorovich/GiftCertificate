@@ -42,9 +42,6 @@ public class GiftCertificateRepositoryImpl
     @Override
     @Transactional
     public GiftCertificateModel create(GiftCertificateModel model) {
-        final LocalDateTime currentTime = LocalDateTime.now();
-        model.setCreateDate(currentTime);
-        model.setLastUpdateDate(currentTime);
         if (model.getTags() != null) {
             model.setTags(attachTags(model.getTags()));
         }
@@ -65,7 +62,6 @@ public class GiftCertificateRepositoryImpl
             try {
                 GiftCertificateModel certificateToUpdate = byId.get();
                 beanUtilsBean.copyProperties(certificateToUpdate, model);
-                certificateToUpdate.setLastUpdateDate(LocalDateTime.now());
                 if (model.getTags() != null) {
                     certificateToUpdate.setTags(attachTags(model.getTags()));
                 }
