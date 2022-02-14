@@ -1,8 +1,9 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.service.GiftCertificateService;
+import com.epam.esm.gcs.util.Limiter;
+import com.epam.esm.gcs.util.impl.QueryLimiter;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,21 +37,11 @@ public class GiftCertificateController {
         return certificateService.create(certificate);
     }
 
+    // TODO: 2/14/2022 make hateaos and limits
     @GetMapping
-    public List<GiftCertificateDto> findAll(@RequestParam(required = false) String tagName,
-                                            @RequestParam(required = false) String certificateName,
-                                            @RequestParam(required = false) String description,
-                                            @RequestParam(required = false) String sortByCreatedDate,
-                                            @RequestParam(required = false) String sortByName) {
-        final List<TagDto> tagDtoList = new ArrayList<>();
-        tagDtoList.add(new TagDto(null, tagName));
-        final GiftCertificateDto certificate = GiftCertificateDto.builder()
-                                                                 .name(certificateName)
-                                                                 .description(description)
-                                                                 .tags(tagDtoList)
-                                                                 .build();
-//        return certificateService.findByFilter(certificate, sortByCreatedDate, sortByName);
-        return certificateService.findAll();
+    public List<GiftCertificateDto> findAll(@RequestParam(required = false) Integer limit,
+                                            @RequestParam(required = false) Integer offset) {
+        return certificateService.findAll(new QueryLimiter(limit, offset));
     }
 
     @GetMapping(value = "/{id}")
