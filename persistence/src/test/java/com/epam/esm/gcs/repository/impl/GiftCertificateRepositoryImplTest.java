@@ -37,8 +37,11 @@ class GiftCertificateRepositoryImplTest {
     @Test
     void create_shouldReturnCreatedCertificate_ifNameIsUnique() {
         final GiftCertificateModel expected = getTestGiftCertificates().get(0);
-        final GiftCertificateModel actual = certificateRepository.create(expected);
+        final GiftCertificateModel actual = certificateRepository.create(getTestGiftCertificates().get(0));
+
         expected.setId(actual.getId());
+        expected.setCreateDate(actual.getCreateDate());
+        expected.setLastUpdateDate(actual.getLastUpdateDate());
 
         assertEquals(expected, actual);
         assertTrue(actual.getId().compareTo(0L) > 0);
