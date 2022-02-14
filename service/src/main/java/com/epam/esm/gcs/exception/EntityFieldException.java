@@ -1,14 +1,17 @@
 package com.epam.esm.gcs.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public class CommonEntityException extends RuntimeException {
+public class EntityFieldException extends CommonEntityException {
 
-    private final Class<?> clazz;
     private final String entityField;
     private final Object fieldValue;
+
+    public EntityFieldException(Class<?> clazz, String entityField, Object fieldValue) {
+        super(clazz);
+        this.entityField = entityField;
+        this.fieldValue = fieldValue;
+    }
 
 }

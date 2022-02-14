@@ -1,17 +1,22 @@
 package com.epam.esm.gcs.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Getter
-@AllArgsConstructor
-public class NotEnoughMoneyException extends RuntimeException {
+public class NotEnoughMoneyException extends CommonEntityException {
 
     private final String certificateName;
     private final BigDecimal certificateCost;
     private final BigDecimal userBalance;
-    private final Class<?> clazz;
+
+    public NotEnoughMoneyException(Class<?> clazz, String certificateName,
+                                   BigDecimal certificateCost, BigDecimal userBalance) {
+        super(clazz);
+        this.certificateName = certificateName;
+        this.certificateCost = certificateCost;
+        this.userBalance = userBalance;
+    }
 
 }
