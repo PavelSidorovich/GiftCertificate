@@ -1,14 +1,10 @@
-package com.epam.esm.gcs.controller;
+package com.epam.esm.gcs.exception;
 
-import com.epam.esm.gcs.exception.DuplicatePropertyException;
-import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.exception.FieldUpdateException;
-import com.epam.esm.gcs.exception.NoFieldToUpdateException;
-import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.response.ResponseModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -26,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 @RestControllerAdvice
+@Order
 public class CommonExceptionHandler {
 
     private static final String RESOURCE_NOT_FOUND = "resource.not.found";
@@ -34,9 +31,6 @@ public class CommonExceptionHandler {
     private static final String METHOD_NOT_ALLOWED = "method.not.allowed";
     private static final String TYPE_MISMATCH = "type.mismatch";
     private static final String MESSAGE_NOT_READABLE = "message.not.readable";
-    private static final String SEVERAL_FIELD_UPDATE = "model.fields.update";
-    private static final String NO_FIELD_TO_UPDATE = "model.field.empty.update";
-    private static final String NOT_ENOUGH_MONEY = "not.enough.money";
 
     private final MessageSource clientErrorMsgSource;
     private final MessageSource serverErrorMsgSource;
@@ -63,42 +57,6 @@ public class CommonExceptionHandler {
         );
         log.error(message, ex);
         return new ResponseModel(HttpStatus.CONFLICT, ex.getClazz(), message);
-    }
-
-    @ExceptionHandler(FieldUpdateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseModel handleSeveralFieldsToUpdateError(FieldUpdateException ex, Locale locale) {
-        final String message = clientErrorMsgSource.getMessage(
-                SEVERAL_FIELD_UPDATE, new Object[] {
-                        String.join(", ", ex.getValuesByFields())
-                }, locale
-        );
-        log.error(message, ex);
-        return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);
-    }
-
-    @ExceptionHandler(NoFieldToUpdateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseModel handleNoFieldToUpdate(NoFieldToUpdateException ex, Locale locale) {
-        final String message = clientErrorMsgSource.getMessage(
-                NO_FIELD_TO_UPDATE, null, locale
-        );
-        log.error(message, ex);
-        return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);
-    }
-
-    @ExceptionHandler(NotEnoughMoneyException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseModel handleNotEnoughMoney(NotEnoughMoneyException ex, Locale locale) {
-        final String message = clientErrorMsgSource.getMessage(
-                NOT_ENOUGH_MONEY, new Object[] {
-                        ex.getCertificateName(),
-                        ex.getCertificateCost(),
-                        ex.getUserBalance()
-                }, locale
-        );
-        log.error(message, ex);
-        return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

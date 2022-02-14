@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.util;
+package com.epam.esm.gcs.util.impl;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.stereotype.Component;
