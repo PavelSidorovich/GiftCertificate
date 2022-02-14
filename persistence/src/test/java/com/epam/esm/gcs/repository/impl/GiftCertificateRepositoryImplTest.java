@@ -3,6 +3,7 @@ package com.epam.esm.gcs.repository.impl;
 import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
+import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -86,10 +87,24 @@ class GiftCertificateRepositoryImplTest {
         certificateRepository.create(getTestGiftCertificates().get(1));
         certificateRepository.create(getTestGiftCertificates().get(2));
 
-        final List<GiftCertificateModel> actual = certificateRepository.findAll();
+        final List<GiftCertificateModel> actual =
+                certificateRepository.findAll(new QueryLimiter(10, 0));
 
         assertNotNull(actual);
         assertEquals(3, actual.size());
+    }
+
+    @Test
+    void findAll_shouldReturnLimitedList_whenHasLimits() {
+        certificateRepository.create(getTestGiftCertificates().get(0));
+        certificateRepository.create(getTestGiftCertificates().get(1));
+        certificateRepository.create(getTestGiftCertificates().get(2));
+
+        final List<GiftCertificateModel> actual =
+                certificateRepository.findAll(new QueryLimiter(1, 0));
+
+        assertNotNull(actual);
+        assertEquals(1, actual.size());
     }
 
     @Test

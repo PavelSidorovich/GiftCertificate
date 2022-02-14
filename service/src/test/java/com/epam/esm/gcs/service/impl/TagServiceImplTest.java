@@ -6,6 +6,8 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
+import com.epam.esm.gcs.util.Limiter;
+import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -117,9 +119,10 @@ class TagServiceImplTest {
                 new TagModel(2L, "Game"),
                 new TagModel(5L, "Courses")
         );
-        when(tagRepository.findAll()).thenReturn(tagModels);
+        Limiter limiter = new QueryLimiter(10, 0);
+        when(tagRepository.findAll(limiter)).thenReturn(tagModels);
 
-        final List<TagDto> dtoList = tagService.findAll();
+        final List<TagDto> dtoList = tagService.findAll(limiter);
 
         assertEquals(3, dtoList.size());
         assertTrue(dtoList.containsAll(
@@ -129,7 +132,7 @@ class TagServiceImplTest {
                         new TagDto(5L, "Courses")
                 )
         ));
-        verify(tagRepository).findAll();
+        verify(tagRepository).findAll(limiter);
     }
 
     @Test

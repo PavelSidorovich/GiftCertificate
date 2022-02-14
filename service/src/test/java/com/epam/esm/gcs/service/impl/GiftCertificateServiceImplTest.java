@@ -12,6 +12,8 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.TagService;
 import com.epam.esm.gcs.util.EntityFieldService;
+import com.epam.esm.gcs.util.Limiter;
+import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -138,11 +140,12 @@ class GiftCertificateServiceImplTest {
         final String certificateName = "testName";
         List<GiftCertificateDto> expected = List.of(getCreatedCertificateDto(certificateName));
         List<GiftCertificateModel> certificateModels = mapCertificatesToModels(expected);
+        Limiter limiter = new QueryLimiter(10, 0);
 
-        when(certificateRepository.findAll()).thenReturn(certificateModels);
+        when(certificateRepository.findAll(limiter)).thenReturn(certificateModels);
 
-        assertEquals(expected, certificateService.findAll());
-        verify(certificateRepository).findAll();
+        assertEquals(expected, certificateService.findAll(limiter));
+        verify(certificateRepository).findAll(limiter);
         verify(certificateRepository).clear();
     }
 

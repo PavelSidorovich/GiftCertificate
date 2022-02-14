@@ -46,6 +46,11 @@ public class PurchaseModel {
     @Column(name = "purchase_date", nullable = false)
     private LocalDateTime purchaseDate;
 
+    public PurchaseModel withoutUser() {
+        user = null;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

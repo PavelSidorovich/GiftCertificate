@@ -11,6 +11,7 @@ import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.TagService;
 import com.epam.esm.gcs.util.EntityFieldService;
+import com.epam.esm.gcs.util.Limiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -121,9 +122,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return list of certificates
      */
     @Override
-    public List<GiftCertificateDto> findAll() {
+    public List<GiftCertificateDto> findAll(Limiter limiter) {
         List<GiftCertificateDto> certificates =
-                certificateRepository.findAll().stream()
+                certificateRepository.findAll(limiter).stream()
                                      .map(certificate -> modelMapper.map(
                                              certificate,
                                              GiftCertificateDto.class))

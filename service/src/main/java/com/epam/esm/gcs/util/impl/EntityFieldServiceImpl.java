@@ -33,7 +33,8 @@ public class EntityFieldServiceImpl implements EntityFieldService {
 
     /**
      * Return list of not null fields according to exclude field names
-     * @param entity entity to get fields of
+     *
+     * @param entity       entity to get fields of
      * @param excludeNames parts of field names to exclude
      * @return not null fields of the entity according to exclude rule
      */

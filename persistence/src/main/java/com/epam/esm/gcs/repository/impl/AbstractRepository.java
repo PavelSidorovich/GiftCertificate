@@ -2,6 +2,7 @@ package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.repository.CrdRepository;
 import com.epam.esm.gcs.repository.Flushable;
+import com.epam.esm.gcs.util.Limiter;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -61,9 +62,11 @@ public abstract class AbstractRepository<T>
      */
     @Override
     @Transactional
-    public List<T> findAll() {
+    public List<T> findAll(Limiter limiter) {
         return entityManager
                 .createQuery(fillEntityClassInQuery(FIND_ALL_QUERY), entityBeanType)
+                .setFirstResult(limiter.getOffset())
+                .setMaxResults(limiter.getLimit())
                 .getResultList();
     }
 
@@ -95,6 +98,15 @@ public abstract class AbstractRepository<T>
         }
     }
 
+    protected List<T> listSingleParamQuery(String sqlQuery, Object columnValue, Limiter limiter) {
+        String queryWithEntityClass = fillEntityClassInQuery(sqlQuery);
+        return entityManager.createQuery(queryWithEntityClass, entityBeanType)
+                            .setParameter(1, columnValue)
+                            .setFirstResult(limiter.getOffset())
+                            .setMaxResults(limiter.getLimit())
+                            .getResultList();
+    }
+
     /**
      * Flushes and clears persistent context
      */
@@ -120,7 +132,7 @@ public abstract class AbstractRepository<T>
         entityManager.clear();
     }
 
-    private String fillEntityClassInQuery(String query) {
+    protected String fillEntityClassInQuery(String query) {
         return String.format(query, entityBeanType.getSimpleName());
     }
 

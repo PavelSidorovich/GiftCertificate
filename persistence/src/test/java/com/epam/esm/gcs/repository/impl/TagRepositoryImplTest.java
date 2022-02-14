@@ -3,6 +3,7 @@ package com.epam.esm.gcs.repository.impl;
 import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
+import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -88,10 +89,22 @@ class TagRepositoryImplTest {
         tagRepository.create(new TagModel("testName1"));
         tagRepository.create(new TagModel("testName2"));
 
-        final List<TagModel> actual = tagRepository.findAll();
+        final List<TagModel> actual = tagRepository.findAll(new QueryLimiter(10, 0));
 
         assertNotNull(actual);
         assertEquals(2, actual.size());
+    }
+
+    @Test
+    void findAll_shouldReturnLimitedListOfTags_whenHasLimits() {
+        tagRepository.create(new TagModel("testName1"));
+        tagRepository.create(new TagModel("testName2"));
+        tagRepository.create(new TagModel("testName3"));
+
+        final List<TagModel> actual = tagRepository.findAll(new QueryLimiter(1, 0));
+
+        assertNotNull(actual);
+        assertEquals(1, actual.size());
     }
 
     @Test

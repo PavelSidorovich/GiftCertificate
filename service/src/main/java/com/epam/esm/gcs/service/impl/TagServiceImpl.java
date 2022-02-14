@@ -8,6 +8,7 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
 import com.epam.esm.gcs.repository.column.TagColumn;
 import com.epam.esm.gcs.service.TagService;
+import com.epam.esm.gcs.util.Limiter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -86,8 +87,8 @@ public class TagServiceImpl implements TagService {
      * @return list of tags
      */
     @Override
-    public List<TagDto> findAll() {
-        List<TagDto> tags = tagRepository.findAll().stream()
+    public List<TagDto> findAll(Limiter limiter) {
+        List<TagDto> tags = tagRepository.findAll(limiter).stream()
                                          .map(model -> modelMapper.map(model, TagDto.class))
                                          .collect(Collectors.toList());
         tagRepository.clear();

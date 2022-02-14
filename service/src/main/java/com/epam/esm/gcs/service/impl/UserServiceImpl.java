@@ -6,6 +6,7 @@ import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.UserRepository;
 import com.epam.esm.gcs.repository.column.UserColumn;
 import com.epam.esm.gcs.service.UserService;
+import com.epam.esm.gcs.util.Limiter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -43,9 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDto> findAll(Limiter limiter) {
         List<UserDto> users =
-                userRepository.findAll().stream()
+                userRepository.findAll(limiter).stream()
                               .map(user -> modelMapper.map(user, UserDto.class))
                               .collect(Collectors.toList());
         userRepository.clear();
