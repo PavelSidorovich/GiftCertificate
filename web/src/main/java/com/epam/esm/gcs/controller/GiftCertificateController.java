@@ -2,7 +2,6 @@ package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.service.GiftCertificateService;
-import com.epam.esm.gcs.util.Limiter;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
@@ -37,7 +36,6 @@ public class GiftCertificateController {
         return certificateService.create(certificate);
     }
 
-    // TODO: 2/14/2022 make hateaos and limits
     @GetMapping
     public List<GiftCertificateDto> findAll(@RequestParam(required = false) Integer limit,
                                             @RequestParam(required = false) Integer offset) {
@@ -50,8 +48,8 @@ public class GiftCertificateController {
     }
 
     @PatchMapping
-    public GiftCertificateDto update(
-            @Validated({ UpdateValidationGroup.class }) @RequestBody GiftCertificateDto certificate) {
+    public GiftCertificateDto update(@Validated({ UpdateValidationGroup.class })
+                                     @RequestBody GiftCertificateDto certificate) {
         return certificateService.update(certificate);
     }
 
