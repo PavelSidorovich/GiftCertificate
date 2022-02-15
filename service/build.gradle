@@ -12,4 +12,5 @@ ext {
 dependencies {
     implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
     implementation project(':persistence')
+    implementation project(':repository')
 }
