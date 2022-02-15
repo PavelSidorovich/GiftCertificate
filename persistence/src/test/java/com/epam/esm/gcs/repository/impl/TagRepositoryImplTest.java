@@ -35,7 +35,7 @@ class TagRepositoryImplTest {
         final String expected = "testName";
         final TagModel tag = tagRepository.create(new TagModel(expected));
 
-        assertEquals(expected, tag.getName());
+        assertEquals("testname", tag.getName());
         assertTrue(tag.getId().compareTo(0L) > 0);
     }
 
@@ -125,7 +125,7 @@ class TagRepositoryImplTest {
     void existsWithName_shouldReturnTrue_ifSuchRowExists() {
         tagRepository.create(new TagModel("testName"));
 
-        assertTrue(tagRepository.existsWithName("testName"));
+        assertTrue(tagRepository.existsWithName("testname"));
     }
 
     @Test

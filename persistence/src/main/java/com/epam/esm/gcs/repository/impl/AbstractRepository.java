@@ -61,7 +61,7 @@ public abstract class AbstractRepository<T>
      * @return list of instances
      */
     @Override
-    @Transactional
+//    @Transactional
     public List<T> findAll(Limiter limiter) {
         return entityManager
                 .createQuery(fillEntityClassInQuery(FIND_ALL_QUERY), entityBeanType)

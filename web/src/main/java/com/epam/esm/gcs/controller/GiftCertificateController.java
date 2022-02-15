@@ -42,6 +42,13 @@ public class GiftCertificateController {
         return certificateService.findAll(new QueryLimiter(limit, offset));
     }
 
+    @GetMapping(params = "tag")
+    public List<GiftCertificateDto> findByTags(@RequestParam List<String> tag,
+                                               @RequestParam(required = false) Integer limit,
+                                               @RequestParam(required = false) Integer offset) {
+        return certificateService.findByTags(tag, new QueryLimiter(limit, offset));
+    }
+
     @GetMapping(value = "/{id}")
     public GiftCertificateDto findById(@PathVariable long id) {
         return certificateService.findById(id);

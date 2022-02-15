@@ -133,6 +133,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificates;
     }
 
+    @Override
+    public List<GiftCertificateDto> findByTags(List<String> tags, Limiter limiter) {
+        List<String> tagModels = tags.stream()
+                                     .map(String::toLowerCase)
+                                     .collect(Collectors.toList());
+        List<GiftCertificateDto> certificates =
+                certificateRepository.findByTags(tagModels, limiter).stream()
+                                     .map(certificateModel -> modelMapper.map(
+                                             certificateModel,
+                                             GiftCertificateDto.class))
+                                     .collect(Collectors.toList());
+        certificateRepository.clear();
+        return certificates;
+    }
+
     /**
      * Deletes certificate with specified id
      *

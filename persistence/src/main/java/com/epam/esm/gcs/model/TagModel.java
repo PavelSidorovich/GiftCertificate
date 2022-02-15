@@ -11,7 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import java.util.Locale;
 import java.util.Objects;
 
 @Getter
@@ -32,6 +35,12 @@ public class TagModel {
 
     public TagModel(String name) {
         this.name = name;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void onPrePersistAndUpdate() {
+        name = name.toLowerCase(Locale.ROOT);
     }
 
     @Override

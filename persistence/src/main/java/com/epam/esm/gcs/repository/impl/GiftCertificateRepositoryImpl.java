@@ -3,6 +3,8 @@ package com.epam.esm.gcs.repository.impl;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
+import com.epam.esm.gcs.util.Limiter;
+import com.epam.esm.gcs.util.impl.QueryGeneratorImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -11,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +25,17 @@ public class GiftCertificateRepositoryImpl
         implements GiftCertificateRepository {
 
     private static final String FIND_BY_NAME_QUERY = "SELECT c FROM %s c WHERE c.name = ?1";
+    private static final String FIND_BY_TAGS_QUERY =
+            "SELECT DISTINCT c FROM %s c\n" +
+            "JOIN c.tags as t\n" +
+            "WHERE t.name IN ?1\n" +
+            "group by c.id, c.name, c.price, c.duration,\n" +
+            "c.description, c.createDate, c.lastUpdateDate\n" +
+            "having count (t.id) = ?2";
 
     private final BeanUtilsBean beanUtilsBean;
+
+    private QueryGeneratorImpl queryGenerator;
 
     public GiftCertificateRepositoryImpl(EntityManager entityManager,
                                          BeanUtilsBean beanUtilsBean) {
@@ -100,6 +110,17 @@ public class GiftCertificateRepositoryImpl
     @Override
     public Optional<GiftCertificateModel> findByName(String name) {
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
+    }
+
+    @Override
+    public List<GiftCertificateModel> findByTags(List<String> tags, Limiter limiter) {
+        final String query = fillEntityClassInQuery(FIND_BY_TAGS_QUERY);
+        return entityManager.createQuery(query, entityBeanType)
+                            .setParameter(1, tags)
+                            .setParameter(2, (long) tags.size())
+                            .setFirstResult(limiter.getOffset())
+                            .setMaxResults(limiter.getLimit())
+                            .getResultList();
     }
 
 }
