@@ -55,6 +55,7 @@ public class PurchaseModel {
     @PrePersist
     public void onPrePersist() {
         purchaseDate = LocalDateTime.now();
+        cost = certificate.getPrice();
     }
 
     @Override
