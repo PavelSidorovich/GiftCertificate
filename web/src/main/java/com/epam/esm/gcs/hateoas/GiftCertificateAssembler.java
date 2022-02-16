@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-// TODO: 2/16/2022 filtering, sorting
 @Component
 public class GiftCertificateAssembler
         implements RepresentationModelAssembler<GiftCertificateDto, EntityModel<GiftCertificateDto>> {
