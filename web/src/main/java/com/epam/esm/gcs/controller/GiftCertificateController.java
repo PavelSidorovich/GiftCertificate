@@ -1,11 +1,14 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -28,36 +31,45 @@ import java.util.List;
 public class GiftCertificateController {
 
     private final GiftCertificateService certificateService;
+    private final GiftCertificateAssembler certificateAssembler;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateDto create(@Validated({ CreateValidationGroup.class })
-                                     @RequestBody GiftCertificateDto certificate) {
-        return certificateService.create(certificate);
+    public EntityModel<GiftCertificateDto> create(
+            @Validated({ CreateValidationGroup.class })
+            @RequestBody GiftCertificateDto certificate) {
+        return certificateAssembler.toModel(certificateService.create(certificate));
     }
 
     @GetMapping
-    public List<GiftCertificateDto> findAll(@RequestParam(required = false) Integer limit,
-                                            @RequestParam(required = false) Integer offset) {
-        return certificateService.findAll(new QueryLimiter(limit, offset));
+    public CollectionModel<EntityModel<GiftCertificateDto>> findAll(
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) Integer offset) {
+        return certificateAssembler.toCollectionModel(
+                certificateService.findAll(new QueryLimiter(limit, offset))
+        );
     }
 
     @GetMapping(params = "tag")
-    public List<GiftCertificateDto> findByTags(@RequestParam List<String> tag,
-                                               @RequestParam(required = false) Integer limit,
-                                               @RequestParam(required = false) Integer offset) {
-        return certificateService.findByTags(tag, new QueryLimiter(limit, offset));
+    public CollectionModel<EntityModel<GiftCertificateDto>> findByTags(
+            @RequestParam List<String> tag,
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) Integer offset) {
+        return certificateAssembler.toCollectionModel(
+                certificateService.findByTags(tag, new QueryLimiter(limit, offset))
+        );
     }
 
     @GetMapping(value = "/{id}")
-    public GiftCertificateDto findById(@PathVariable long id) {
-        return certificateService.findById(id);
+    public EntityModel<GiftCertificateDto> findById(@PathVariable long id) {
+        return certificateAssembler.toModel(certificateService.findById(id));
     }
 
     @PatchMapping
-    public GiftCertificateDto update(@Validated({ UpdateValidationGroup.class })
-                                     @RequestBody GiftCertificateDto certificate) {
-        return certificateService.update(certificate);
+    public EntityModel<GiftCertificateDto> update(
+            @Validated({ UpdateValidationGroup.class })
+            @RequestBody GiftCertificateDto certificate) {
+        return certificateAssembler.toModel(certificateService.update(certificate));
     }
 
     @DeleteMapping(value = "/{id}")

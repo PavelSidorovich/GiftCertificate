@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface PurchaseService {
 
-    PurchaseDto purchase(PurchaseDto purchaseDto);
+    PurchaseDto purchase(long userId, PurchaseDto purchaseDto);
 
-    List<PurchaseDto> findByUserId(long id, Limiter limiter);
+    List<PurchaseDto> findByUserId(long userId, Limiter limiter);
 
     TruncatedPurchaseDto findTruncatedByIds(long userId, long certificateId);
 

@@ -42,8 +42,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     @Transactional
-    public PurchaseDto purchase(PurchaseDto purchaseDto) {
-        UserDto user = userService.findById(purchaseDto.getUser().getId());
+    public PurchaseDto purchase(long userId, PurchaseDto purchaseDto) {
+        UserDto user = userService.findById(userId);
         GiftCertificateDto certificate = certificateService.findByName(
                 purchaseDto.getCertificate().getName()
         );
@@ -60,10 +60,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public List<PurchaseDto> findByUserId(long id, Limiter limiter) {
+    public List<PurchaseDto> findByUserId(long userId, Limiter limiter) {
+        userService.findById(userId); // checks if user exists (throws exception if not)
         List<PurchaseDto> purchases =
-                purchaseRepository.findByUserId(id, limiter).stream()
-                                  .map(purchase -> modelMapper.map(purchase.withoutUser(), PurchaseDto.class))
+                purchaseRepository.findByUserId(userId, limiter).stream()
+                                  .map(purchase -> modelMapper.map(purchase, PurchaseDto.class))
                                   .collect(Collectors.toList());
         purchaseRepository.clear();
         return purchases;
@@ -71,7 +72,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public TruncatedPurchaseDto findTruncatedByIds(long userId, long purchaseId) {
-        userService.findById(userId);
+        userService.findById(userId); // checks if user exists (throws exception if not)
         PurchaseModel certificate = purchaseRepository.findByIds(userId, purchaseId).orElseThrow(
                 () -> new EntityNotFoundException(PurchaseDto.class, ID.getColumnName(), purchaseId)
         );

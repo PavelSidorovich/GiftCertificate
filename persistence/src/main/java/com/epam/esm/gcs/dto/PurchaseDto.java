@@ -1,6 +1,7 @@
 package com.epam.esm.gcs.dto;
 
 import com.epam.esm.gcs.validator.PurchaseValidationGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AccessLevel;
@@ -19,12 +20,10 @@ import javax.validation.constraints.Null;
 @JsonInclude(Include.NON_NULL)
 public class PurchaseDto extends TruncatedPurchaseDto {
 
-    @Null(message = "{model.field.not.null}")
-    private long id;
-
     @NotNull(message = "{model.field.null}", groups = PurchaseValidationGroup.class)
     private GiftCertificateDto certificate;
 
+    @JsonIgnore
     private UserDto user;
 
 }

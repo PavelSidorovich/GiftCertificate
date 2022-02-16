@@ -14,7 +14,7 @@ public class TagRepositoryImpl
         extends AbstractRepository<TagModel>
         implements TagRepository {
 
-    private static final String FIND_BY_NAME_QUERY = "SELECT t FROM %s t WHERE t.name = ?1";
+    private static final String FIND_BY_NAME_QUERY = "SELECT t FROM %s t WHERE t.name = lower(?1)";
 
     public TagRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
