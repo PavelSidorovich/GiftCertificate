@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.util.Locale;
@@ -44,6 +43,7 @@ public class TagModel {
         name = name.toLowerCase(Locale.ROOT);
     }
 
+    // should contain equalIgnoreCase on name field
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -53,7 +53,7 @@ public class TagModel {
             return false;
         }
         TagModel tagModel = (TagModel) o;
-        return Objects.equals(id, tagModel.id) && Objects.equals(name, tagModel.name);
+        return Objects.equals(id, tagModel.id) && name.equalsIgnoreCase(tagModel.name);
     }
 
     @Override
