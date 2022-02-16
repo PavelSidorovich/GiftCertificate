@@ -23,8 +23,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -65,7 +65,7 @@ public class GiftCertificateModel {
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<TagModel> tags;
+    private Set<TagModel> tags;
 
     @PrePersist
     public void onPrePersist() {
@@ -75,6 +75,7 @@ public class GiftCertificateModel {
 
     @PreUpdate
     public void onPreUpdate() {
+        name = name.toLowerCase();
         lastUpdateDate = LocalDateTime.now();
     }
 
@@ -90,9 +91,7 @@ public class GiftCertificateModel {
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
                Objects.equals(description, that.description) && Objects.equals(price, that.price) &&
                Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) &&
-               Objects.equals(lastUpdateDate, that.lastUpdateDate) &&
-               Objects.deepEquals(tags != null? tags.toArray() : null,
-                                  that.tags != null? that.tags.toArray() : null);
+               Objects.deepEquals(lastUpdateDate, that.lastUpdateDate) && Objects.deepEquals(tags, that.tags);
     }
 
     @Override

@@ -12,20 +12,22 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.TagService;
 import com.epam.esm.gcs.util.EntityFieldService;
+import com.epam.esm.gcs.util.EntityMapper;
 import com.epam.esm.gcs.util.Limiter;
+import com.epam.esm.gcs.util.impl.EntityMapperImpl;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +40,7 @@ class GiftCertificateServiceImplTest {
 
     private final GiftCertificateRepository certificateRepository;
     private final TagService tagService;
-    private final ModelMapper modelMapper;
+    private final EntityMapper modelMapper;
     private final EntityFieldService entityFieldService;
     private final LocalDateTime dateTime = LocalDateTime.now();
 
@@ -48,7 +50,7 @@ class GiftCertificateServiceImplTest {
         this.tagService = tagService;
         this.certificateRepository = certificateRepository;
         this.entityFieldService = entityFieldService;
-        this.modelMapper = new ModelMapperConfig().modelMapper();
+        this.modelMapper = new EntityMapperImpl(new ModelMapperConfig().modelMapper());
         this.certificateService = new GiftCertificateServiceImpl(
                 certificateRepository, tagService, entityFieldService, modelMapper
         );
@@ -68,7 +70,7 @@ class GiftCertificateServiceImplTest {
         when(tagService.existsWithName(tagName2)).thenReturn(true);
         when(tagService.findByName(tagName1)).thenReturn(new TagDto(1L, tagName1));
         when(tagService.findByName(tagName2)).thenReturn(new TagDto(2L, tagName2));
-        certificateDto.setTags(List.of(new TagDto(1L, tagName1), new TagDto(2L, tagName2)));
+        certificateDto.setTags(Set.of(new TagDto(1L, tagName1), new TagDto(2L, tagName2)));
         when(certificateRepository.create(mapCertificateToModel(certificateDto)))
                 .thenReturn(certificateModel);
 
@@ -185,7 +187,7 @@ class GiftCertificateServiceImplTest {
         when(tagService.existsWithName(tagName2)).thenReturn(true);
         when(tagService.findByName(tagName1)).thenReturn(new TagDto(1L, tagName1));
         when(tagService.findByName(tagName2)).thenReturn(new TagDto(2L, tagName2));
-        beforeUpdateModel.setTags(List.of(new TagModel(1L, tagName1), new TagModel(2L, tagName2)));
+        beforeUpdateModel.setTags(Set.of(new TagModel(1L, tagName1), new TagModel(2L, tagName2)));
         when(certificateRepository.update(beforeUpdateModel))
                 .thenReturn(Optional.of(updatedModel));
         when(entityFieldService.getNotNullFields(beforeUpdateDto, "date", "name", "id"))
@@ -250,7 +252,7 @@ class GiftCertificateServiceImplTest {
                                  .description("testDescription")
                                  .price(new BigDecimal("10.00"))
                                  .duration(10)
-                                 .tags(List.of(
+                                 .tags(Set.of(
                                          new TagDto(null, "tag1"),
                                          new TagDto(null, "tag2")
                                  ))
@@ -266,7 +268,7 @@ class GiftCertificateServiceImplTest {
                                    .duration(10)
                                    .createDate(dateTime)
                                    .lastUpdateDate(dateTime)
-                                   .tags(List.of(
+                                   .tags(Set.of(
                                            new TagModel(1L, "tag1"),
                                            new TagModel(2L, "tag2")
                                    ))
@@ -282,7 +284,7 @@ class GiftCertificateServiceImplTest {
                                  .duration(10)
                                  .createDate(dateTime)
                                  .lastUpdateDate(dateTime)
-                                 .tags(List.of(
+                                 .tags(Set.of(
                                          new TagDto(1L, "tag1"),
                                          new TagDto(2L, "tag2")
                                  ))
@@ -298,7 +300,7 @@ class GiftCertificateServiceImplTest {
                                  .duration(1)
                                  .createDate(dateTime)
                                  .lastUpdateDate(dateTime)
-                                 .tags(List.of(
+                                 .tags(Set.of(
                                          new TagDto(1L, "tag1"),
                                          new TagDto(2L, "tag2")
                                  ))
@@ -312,7 +314,7 @@ class GiftCertificateServiceImplTest {
                                    .description("")
                                    .price(new BigDecimal("6.00"))
                                    .duration(1)
-                                   .tags(new ArrayList<>())
+                                   .tags(new HashSet<>())
                                    .build();
     }
 
