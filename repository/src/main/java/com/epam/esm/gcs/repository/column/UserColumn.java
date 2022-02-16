@@ -1,5 +1,10 @@
 package com.epam.esm.gcs.repository.column;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum UserColumn {
 
     ID("id"),
@@ -11,16 +16,8 @@ public enum UserColumn {
 
     private final String columnName;
 
-    UserColumn(String columnName) {
-        this.columnName = columnName;
-    }
-
     public static String getModelName() {
         return MODEL_NAME;
-    }
-
-    public String getColumnName() {
-        return columnName;
     }
 
 }

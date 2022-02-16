@@ -1,7 +1,12 @@
 package com.epam.esm.gcs.repository.column;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.EnumSet;
 
+@Getter
+@AllArgsConstructor
 public enum GiftCertificateColumn {
 
     ID("id"),
@@ -16,16 +21,8 @@ public enum GiftCertificateColumn {
 
     private final String columnName;
 
-    GiftCertificateColumn(String columnName) {
-        this.columnName = columnName;
-    }
-
     public static String getModelName() {
         return MODEL_NAME;
-    }
-
-    public String getColumnName() {
-        return columnName;
     }
 
     public static String[] getColumnNames() {
