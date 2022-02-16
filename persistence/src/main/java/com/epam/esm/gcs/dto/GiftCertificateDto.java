@@ -16,7 +16,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -50,6 +50,8 @@ public class GiftCertificateDto {
 
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<TagDto> tags;
+
+    @NotNull(message = "{model.field.null}", groups = { CreateValidationGroup.class })
+    private Set<TagDto> tags;
 
 }
