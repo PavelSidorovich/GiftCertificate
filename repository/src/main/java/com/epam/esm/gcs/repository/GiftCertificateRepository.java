@@ -1,5 +1,6 @@
 package com.epam.esm.gcs.repository;
 
+import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.util.Limiter;
 
@@ -12,6 +13,8 @@ public interface GiftCertificateRepository
     Optional<GiftCertificateModel> findByName(String name);
 
     List<GiftCertificateModel> findByTags(List<String> tags, Limiter limiter);
+
+    List<GiftCertificateModel> findByFilter(GiftCertificateFilter filter, Limiter limiter);
 
     boolean existsWithName(String name);
 

@@ -31,6 +31,7 @@ public class CommonExceptionHandler {
     private static final String METHOD_NOT_ALLOWED = "method.not.allowed";
     private static final String TYPE_MISMATCH = "type.mismatch";
     private static final String MESSAGE_NOT_READABLE = "message.not.readable";
+    private static final String WIRED_ENTITY_DELETION = "model.wired.deletion";
 
     private final MessageSource clientErrorMsgSource;
     private final MessageSource serverErrorMsgSource;
@@ -52,6 +53,18 @@ public class CommonExceptionHandler {
     public ResponseModel handleDuplicateProperty(DuplicatePropertyException ex, Locale locale) {
         final String message = clientErrorMsgSource.getMessage(
                 DUPLICATE_PROPERTY, new Object[] {
+                        ex.getEntityField(), ex.getFieldValue()
+                }, locale
+        );
+        log.error(message, ex);
+        return new ResponseModel(HttpStatus.CONFLICT, ex.getClazz(), message);
+    }
+
+    @ExceptionHandler(WiredEntityDeletionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseModel handleWiredEntityDeletionException(WiredEntityDeletionException ex, Locale locale) {
+        final String message = clientErrorMsgSource.getMessage(
+                WIRED_ENTITY_DELETION, new Object[] {
                         ex.getEntityField(), ex.getFieldValue()
                 }, locale
         );

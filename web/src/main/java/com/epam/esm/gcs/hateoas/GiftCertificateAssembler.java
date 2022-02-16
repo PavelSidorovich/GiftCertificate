@@ -20,6 +20,14 @@ public class GiftCertificateAssembler
 
     private static final String CERTIFICATES_WITH_TAGS_REL = "certificatesWithTags";
     private static final String CERTIFICATES_REL = "certificates";
+    private static final String TAGS_REL = "tags";
+    private static final String TAG_REL = "tag";
+    private static final String TAG_NAME_1 = "gift";
+    private static final String CERT_NAME = "swimming pool";
+    private static final String DESCRIPTION = "10% discount";
+    private static final String SORT_BY_CREATED_DATE = "DESC";
+    private static final String SORT_BY_NAME = "ASC";
+    private static final String TAG_NAME_2 = "self-development";
     private static final int LIMIT = 10;
     private static final int OFFSET = 0;
 
@@ -29,8 +37,10 @@ public class GiftCertificateAssembler
                 certificate,
                 linkTo(methodOn(GiftCertificateController.class).findById(certificate.getId())).withSelfRel(),
                 linkTo(methodOn(GiftCertificateController.class).findByTags(
-                        List.of("gift", "self-development"), LIMIT, OFFSET)).withRel(CERTIFICATES_WITH_TAGS_REL),
-                linkTo(methodOn(GiftCertificateController.class).findAll(LIMIT, OFFSET)).withRel(CERTIFICATES_REL)
+                        List.of(TAG_NAME_1, TAG_NAME_2), LIMIT, OFFSET)).withRel(CERTIFICATES_WITH_TAGS_REL),
+                linkTo(methodOn(GiftCertificateController.class).findByFilter(
+                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, LIMIT, OFFSET
+                )).withRel(CERTIFICATES_REL)
         );
     }
 
@@ -40,11 +50,16 @@ public class GiftCertificateAssembler
         List<EntityModel<GiftCertificateDto>> certificateDtos = new ArrayList<>();
         certificates.forEach(cert -> certificateDtos.add(EntityModel.of(
                 cert,
-                linkTo(methodOn(TagController.class).findById(cert.getId())).withSelfRel())
+                linkTo(methodOn(TagController.class).findById(cert.getId())).withRel(TAG_REL))
         ));
         return CollectionModel.of(
                 certificateDtos,
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withSelfRel()
+                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
+                linkTo(methodOn(GiftCertificateController.class).findByTags(
+                        List.of(TAG_NAME_1, TAG_NAME_2), LIMIT, OFFSET)).withRel(CERTIFICATES_WITH_TAGS_REL),
+                linkTo(methodOn(GiftCertificateController.class).findByFilter(
+                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, LIMIT, OFFSET
+                )).withRel(CERTIFICATES_REL)
         );
     }
 

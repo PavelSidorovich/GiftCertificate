@@ -1,12 +1,14 @@
 package com.epam.esm.gcs.repository.impl;
 
+import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
+import com.epam.esm.gcs.util.FilterQueryGenerator;
 import com.epam.esm.gcs.util.Limiter;
-import com.epam.esm.gcs.util.impl.QueryGeneratorImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,23 +27,27 @@ public class GiftCertificateRepositoryImpl
         extends AbstractRepository<GiftCertificateModel>
         implements GiftCertificateRepository {
 
-    private static final String FIND_BY_NAME_QUERY = "SELECT c FROM %s c WHERE c.name = ?1";
+    private static final String FIND_BY_NAME_QUERY = "SELECT c FROM %s c WHERE lower(c.name) = lower(?1)";
     private static final String FIND_BY_TAGS_QUERY =
             "SELECT DISTINCT c FROM %s c\n" +
             "JOIN c.tags as t\n" +
-            "WHERE t.name IN ?1\n" +
+            "WHERE lower(t.name) IN ?1\n" +
             "group by c.id, c.name, c.price, c.duration,\n" +
             "c.description, c.createDate, c.lastUpdateDate\n" +
             "having count (t.id) = ?2";
 
     private final BeanUtilsBean beanUtilsBean;
-
-    private QueryGeneratorImpl queryGenerator;
+    private FilterQueryGenerator<GiftCertificateFilter> filterQueryGenerator;
 
     public GiftCertificateRepositoryImpl(EntityManager entityManager,
                                          BeanUtilsBean beanUtilsBean) {
         super(entityManager);
         this.beanUtilsBean = beanUtilsBean;
+    }
+
+    @Autowired
+    public void setFilterQueryGenerator(FilterQueryGenerator<GiftCertificateFilter> filterQueryGenerator) {
+        this.filterQueryGenerator = filterQueryGenerator;
     }
 
     /**
@@ -84,10 +91,10 @@ public class GiftCertificateRepositoryImpl
         return Optional.empty();
     }
 
-    private List<TagModel> attachTags(List<TagModel> tags) {
+    private Set<TagModel> attachTags(Set<TagModel> tags) {
         return tags.stream()
                    .map(tag -> tag.getId() != null? entityManager.merge(tag) : tag)
-                   .collect(Collectors.toList());
+                   .collect(Collectors.toSet());
     }
 
     /**
@@ -118,6 +125,15 @@ public class GiftCertificateRepositoryImpl
         return entityManager.createQuery(query, entityBeanType)
                             .setParameter(1, tags)
                             .setParameter(2, (long) tags.size())
+                            .setFirstResult(limiter.getOffset())
+                            .setMaxResults(limiter.getLimit())
+                            .getResultList();
+    }
+
+    @Override
+    public List<GiftCertificateModel> findByFilter(GiftCertificateFilter filter, Limiter limiter) {
+        String sqlQuery = filterQueryGenerator.getSqlQuery(filter);
+        return entityManager.createQuery(sqlQuery, entityBeanType)
                             .setFirstResult(limiter.getOffset())
                             .setMaxResults(limiter.getLimit())
                             .getResultList();

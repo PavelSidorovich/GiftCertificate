@@ -1,6 +1,7 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
@@ -42,12 +43,27 @@ public class GiftCertificateController {
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<GiftCertificateDto>> findAll(
+    public CollectionModel<EntityModel<GiftCertificateDto>> findByFilter(
+            @RequestParam(required = false) String tagName,
+            @RequestParam(required = false) String certName,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String sortByCreatedDate,
+            @RequestParam(required = false) String sortByName,
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false) Integer offset) {
-        return certificateAssembler.toCollectionModel(
-                certificateService.findAll(new QueryLimiter(limit, offset))
-        );
+        if (tagName == null && certName == null && description == null
+            && sortByCreatedDate == null && sortByName == null) {
+            return certificateAssembler.toCollectionModel(
+                    certificateService.findAll(new QueryLimiter(limit, offset))
+            );
+        } else {
+            GiftCertificateFilter filter = new GiftCertificateFilter(
+                    certName, tagName, description, sortByCreatedDate, sortByName
+            );
+            return certificateAssembler.toCollectionModel(
+                    certificateService.findByFilter(filter, new QueryLimiter(limit, offset))
+            );
+        }
     }
 
     @GetMapping(params = "tag")
