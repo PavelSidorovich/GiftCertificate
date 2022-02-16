@@ -1,13 +1,16 @@
 package com.epam.esm.gcs.repository.impl;
 
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.repository.CrdRepository;
 import com.epam.esm.gcs.repository.Flushable;
+import com.epam.esm.gcs.repository.column.CommonColumn;
 import com.epam.esm.gcs.util.Limiter;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +64,6 @@ public abstract class AbstractRepository<T>
      * @return list of instances
      */
     @Override
-//    @Transactional
     public List<T> findAll(Limiter limiter) {
         return entityManager
                 .createQuery(fillEntityClassInQuery(FIND_ALL_QUERY), entityBeanType)
@@ -75,15 +77,20 @@ public abstract class AbstractRepository<T>
      *
      * @param id id of instance to delete
      * @return true if deleted, otherwise — false
+     * @throws WiredEntityDeletionException if entity is wired with another(s) in db tables
      */
     @Override
     @Transactional
     public boolean delete(long id) {
-        boolean deleted = entityManager.createQuery(fillEntityClassInQuery(DELETE_BY_ID_QUERY))
-                                       .setParameter(1, id)
-                                       .executeUpdate() == 1;
-        flushAndClear();
-        return deleted;
+        try {
+            boolean deleted = entityManager.createQuery(fillEntityClassInQuery(DELETE_BY_ID_QUERY))
+                                           .setParameter(1, id)
+                                           .executeUpdate() == 1;
+            flushAndClear();
+            return deleted;
+        } catch (PersistenceException ex) {
+            throw new WiredEntityDeletionException(entityBeanType, CommonColumn.ID.getColumnName(), id);
+        }
     }
 
     protected Optional<T> singleParamQuery(String sqlQuery, Object columnValue) {

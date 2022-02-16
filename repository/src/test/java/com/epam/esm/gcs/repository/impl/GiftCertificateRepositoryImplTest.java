@@ -13,10 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -160,7 +161,7 @@ class GiftCertificateRepositoryImplTest {
                                     .description("newDescription")
                                     .price(BigDecimal.ONE)
                                     .duration(1)
-                                    .tags(List.of(new TagModel("lol")))
+                                    .tags(Set.of(new TagModel("lol")))
                                     .build();
 
         Optional<GiftCertificateModel> actualOptional = certificateRepository.update(certificateToUpdate);
@@ -207,27 +208,27 @@ class GiftCertificateRepositoryImplTest {
     private List<GiftCertificateModel> getTestGiftCertificates() {
         GiftCertificateModel certificate1 =
                 GiftCertificateModel.builder()
-                                    .name("testName1")
+                                    .name("testname1")
                                     .description("testDescription1")
                                     .price(BigDecimal.TEN)
                                     .duration(10)
-                                    .tags(new ArrayList<>())
+                                    .tags(new HashSet<>())
                                     .build();
         GiftCertificateModel certificate2 =
                 GiftCertificateModel.builder()
-                                    .name("testName2")
+                                    .name("testname2")
                                     .description("testDescription2")
                                     .price(BigDecimal.ONE)
                                     .duration(30)
-                                    .tags(new ArrayList<>())
+                                    .tags(new HashSet<>())
                                     .build();
         GiftCertificateModel certificate3 =
                 GiftCertificateModel.builder()
-                                    .name("testName3")
+                                    .name("testname3")
                                     .description("testDescription3")
                                     .price(BigDecimal.TEN)
                                     .duration(5)
-                                    .tags(new ArrayList<>())
+                                    .tags(new HashSet<>())
                                     .build();
         return List.of(certificate1, certificate2, certificate3);
     }
