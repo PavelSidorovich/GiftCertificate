@@ -1,6 +1,8 @@
 package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
+import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
@@ -13,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,10 +32,16 @@ class GiftCertificateRepositoryImplTest {
 
     private final GiftCertificateRepositoryImpl certificateRepository;
 
+    private final TagRepositoryImpl tagRepository;
+    private final QueryLimiter queryLimiter;
+
     @Autowired
     public GiftCertificateRepositoryImplTest(
-            GiftCertificateRepositoryImpl certificateRepository) {
+            GiftCertificateRepositoryImpl certificateRepository,
+            TagRepositoryImpl tagRepository) {
         this.certificateRepository = certificateRepository;
+        this.tagRepository = tagRepository;
+        this.queryLimiter = new QueryLimiter(10, 0);
     }
 
     @Test
@@ -40,12 +49,14 @@ class GiftCertificateRepositoryImplTest {
         final GiftCertificateModel expected = getTestGiftCertificates().get(0);
         final GiftCertificateModel actual = certificateRepository.create(getTestGiftCertificates().get(0));
 
-        expected.setId(actual.getId());
-        expected.setCreateDate(actual.getCreateDate());
-        expected.setLastUpdateDate(actual.getLastUpdateDate());
-
-        assertEquals(expected, actual);
-        assertTrue(actual.getId().compareTo(0L) > 0);
+        assertTrue(actual.getId() > 0);
+        assertEquals(expected.getName().toLowerCase(), actual.getName());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(0, expected.getPrice().compareTo(actual.getPrice()));
+        assertEquals(expected.getDuration(), actual.getDuration());
+        assertEquals(1, actual.getTags().size());
+        assertEquals(actual.getCreateDate(), actual.getLastUpdateDate());
+        assertEquals(1, actual.getTags().size());
     }
 
     @Test
@@ -91,11 +102,15 @@ class GiftCertificateRepositoryImplTest {
         certificateRepository.create(getTestGiftCertificates().get(1));
         certificateRepository.create(getTestGiftCertificates().get(2));
 
-        final List<GiftCertificateModel> actual =
+        final List<GiftCertificateModel> actual1 =
                 certificateRepository.findAll(new QueryLimiter(10, 0));
+        final List<GiftCertificateModel> actual2 =
+                certificateRepository.findAll(new QueryLimiter(1, 0));
 
-        assertNotNull(actual);
-        assertEquals(3, actual.size());
+        assertNotNull(actual1);
+        assertEquals(3, actual1.size());
+        assertNotNull(actual2);
+        assertEquals(1, actual2.size());
     }
 
     @Test
@@ -112,6 +127,62 @@ class GiftCertificateRepositoryImplTest {
     }
 
     @Test
+    void findByTags_shouldReturnCertificatesWithByTags_always() {
+        GiftCertificateModel cert1 = certificateRepository.create(getTestGiftCertificates().get(0));
+        GiftCertificateModel cert2 = getTestGiftCertificates().get(1);
+        cert2.setTags(cert1.getTags());
+        certificateRepository.create(cert2);
+        certificateRepository.create(getTestGiftCertificates().get(2));
+
+        final List<GiftCertificateModel> actual1 =
+                certificateRepository.findByTags(Collections.emptyList(), queryLimiter);
+        final List<GiftCertificateModel> actual2 =
+                certificateRepository.findByTags(List.of("tagname1"), queryLimiter);
+        final List<GiftCertificateModel> actual3 =
+                certificateRepository.findByTags(List.of("tagname3", "tagname4"), queryLimiter);
+        final List<GiftCertificateModel> actual4 =
+                certificateRepository.findByTags(List.of("tagname4"), queryLimiter);
+
+        assertNotNull(actual1);
+        assertEquals(0, actual1.size());
+        assertNotNull(actual2);
+        assertEquals(2, actual2.size());
+        assertNotNull(actual3);
+        assertEquals(1, actual3.size());
+        assertNotNull(actual4);
+        assertEquals(1, actual4.size());
+    }
+
+    @Test
+    void findByFilter_shouldReturnCertificatesByAppliedFilter_always() {
+        certificateRepository.create(getTestGiftCertificates().get(0));
+        certificateRepository.create(getTestGiftCertificates().get(1));
+        certificateRepository.create(getTestGiftCertificates().get(2));
+
+        GiftCertificateFilter filter1 = new GiftCertificateFilter("testName1", null, null, null, null);
+        GiftCertificateFilter filter2 = new GiftCertificateFilter("testName1", "tagName3", null, null, null);
+        GiftCertificateFilter filter3 = new GiftCertificateFilter(null, null, "desc", null, null);
+        GiftCertificateFilter filter4 = new GiftCertificateFilter("testName", null, "desc", "DESC", null);
+
+        final List<GiftCertificateModel> actual1 =
+                certificateRepository.findByFilter(filter1, queryLimiter);
+        final List<GiftCertificateModel> actual2 =
+                certificateRepository.findByFilter(filter2, queryLimiter);
+        final List<GiftCertificateModel> actual3 =
+                certificateRepository.findByFilter(filter3, queryLimiter);
+        final List<GiftCertificateModel> actual4 =
+                certificateRepository.findByFilter(filter4, queryLimiter);
+
+        assertEquals(1, actual1.size());
+        assertEquals(0, actual2.size());
+        assertEquals(3, actual3.size());
+        assertEquals(3, actual4.size());
+        assertEquals(1, actual4.get(0).getCreateDate().compareTo(actual4.get(1).getCreateDate()));
+        assertEquals(1, actual4.get(1).getCreateDate().compareTo(actual4.get(2).getCreateDate()));
+        assertEquals(1, actual4.get(0).getCreateDate().compareTo(actual4.get(2).getCreateDate()));
+    }
+
+    @Test
     void delete_shouldReturnTrue_whenIsDeleted() {
         final GiftCertificateModel certificate = certificateRepository.create(getTestGiftCertificates().get(0));
         final Long certificateId = certificate.getId();
@@ -123,6 +194,15 @@ class GiftCertificateRepositoryImplTest {
     @Test
     void delete_shouldReturnFalse_whenSuchRowNotExists() {
         assertFalse(certificateRepository.delete(100000L));
+    }
+
+    @Test
+    void delete_shouldThrowWiredEntityDeletionException_whenEntityIsWired() {
+        certificateRepository.create(getTestGiftCertificates().get(0));
+        Optional<TagModel> tagOpt = tagRepository.findByName("tagName1");
+
+        assertTrue(tagOpt.isPresent());
+        assertThrows(WiredEntityDeletionException.class, () -> tagRepository.delete(tagOpt.get().getId()));
     }
 
     @Test
@@ -208,27 +288,27 @@ class GiftCertificateRepositoryImplTest {
     private List<GiftCertificateModel> getTestGiftCertificates() {
         GiftCertificateModel certificate1 =
                 GiftCertificateModel.builder()
-                                    .name("testname1")
+                                    .name("testName1")
                                     .description("testDescription1")
                                     .price(BigDecimal.TEN)
                                     .duration(10)
-                                    .tags(new HashSet<>())
+                                    .tags(Set.of(new TagModel("tagName1")))
                                     .build();
         GiftCertificateModel certificate2 =
                 GiftCertificateModel.builder()
-                                    .name("testname2")
+                                    .name("testName2")
                                     .description("testDescription2")
                                     .price(BigDecimal.ONE)
                                     .duration(30)
-                                    .tags(new HashSet<>())
+                                    .tags(Set.of(new TagModel("tagName2")))
                                     .build();
         GiftCertificateModel certificate3 =
                 GiftCertificateModel.builder()
-                                    .name("testname3")
+                                    .name("testName3")
                                     .description("testDescription3")
                                     .price(BigDecimal.TEN)
                                     .duration(5)
-                                    .tags(new HashSet<>())
+                                    .tags(Set.of(new TagModel("tagName3"), new TagModel("tagName4")))
                                     .build();
         return List.of(certificate1, certificate2, certificate3);
     }

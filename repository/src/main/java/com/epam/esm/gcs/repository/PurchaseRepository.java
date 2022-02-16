@@ -15,9 +15,4 @@ public interface PurchaseRepository extends CrdRepository<PurchaseModel> {
 
     Optional<UserModel> findTheMostActiveUser();
 
-    @Override
-    default boolean delete(long id) {
-        throw new UnsupportedOperationException();
-    }
-
 }

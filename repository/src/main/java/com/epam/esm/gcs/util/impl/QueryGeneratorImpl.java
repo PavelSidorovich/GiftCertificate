@@ -122,7 +122,7 @@ public class QueryGeneratorImpl implements QueryGenerator {
         if (orderConditionsSize > 0
             && (typeByColumn.containsValue(trimmedAsc)
                 || typeByColumn.containsValue(trimmedDesc))) {
-            sqlQuery += ORDER_BY + WHITE_SPACE;
+            sqlQuery += ORDER_BY;
         }
     }
 

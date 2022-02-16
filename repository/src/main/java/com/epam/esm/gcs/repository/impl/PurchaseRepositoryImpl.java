@@ -49,7 +49,6 @@ public class PurchaseRepositoryImpl
 
         model.setUser(user);
         model.setCertificate(certificate);
-        model.setCost(certificate.getPrice());
 
         return super.create(model);
     }
@@ -84,6 +83,11 @@ public class PurchaseRepositoryImpl
         } catch (NoResultException ex) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean delete(long id) {
+        throw new UnsupportedOperationException();
     }
 
     private GiftCertificateModel getCertificateFromJPAContext(GiftCertificateModel certificate) {
