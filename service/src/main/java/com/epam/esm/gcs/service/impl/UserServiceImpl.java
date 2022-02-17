@@ -55,7 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean existsWithEmail(String email) {
-        return userRepository.existsWithEmail(email);
+        boolean exists = userRepository.existsWithEmail(email);
+        userRepository.clear();
+        return exists;
     }
 
 }

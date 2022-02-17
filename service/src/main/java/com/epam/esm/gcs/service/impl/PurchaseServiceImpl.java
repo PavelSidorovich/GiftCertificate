@@ -95,9 +95,9 @@ public class PurchaseServiceImpl implements PurchaseService {
         throw new NoWidelyUsedTagException(TagDto.class);
     }
 
-    private Optional<TagModel> findWidelyUsedTag(UserModel purchase) {
+    private Optional<TagModel> findWidelyUsedTag(UserModel user) {
         Limiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
-        return purchaseRepository.findByUserId(purchase.getId(), limiter).stream()
+        return purchaseRepository.findByUserId(user.getId(), limiter).stream()
                                  .map(purchaseModel -> purchaseModel.getCertificate()
                                                                     .getTags())
                                  .flatMap(Set::stream)

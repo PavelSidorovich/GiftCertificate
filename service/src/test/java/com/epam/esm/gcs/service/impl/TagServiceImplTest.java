@@ -48,6 +48,7 @@ class TagServiceImplTest {
         assertEquals(tagDtoToReturn, tagService.create(tagDtoToCreate));
         verify(tagRepository).existsWithName(tagName);
         verify(tagRepository).create(tagModelToCreate);
+        verify(tagRepository).flushAndClear();
     }
 
     @Test
@@ -77,6 +78,7 @@ class TagServiceImplTest {
 
         assertEquals(expected, tagService.findById(tagId));
         verify(tagRepository).findById(tagId);
+        verify(tagRepository).clear();
     }
 
     @Test
@@ -100,6 +102,7 @@ class TagServiceImplTest {
 
         assertEquals(expected, tagService.findByName(tagName));
         verify(tagRepository).findByName(tagName);
+        verify(tagRepository).clear();
     }
 
     @Test
@@ -133,6 +136,7 @@ class TagServiceImplTest {
                 )
         ));
         verify(tagRepository).findAll(limiter);
+        verify(tagRepository).clear();
     }
 
     @Test
@@ -143,6 +147,7 @@ class TagServiceImplTest {
         tagService.delete(tagId);
 
         verify(tagRepository).delete(tagId);
+        verify(tagRepository).flushAndClear();
     }
 
     @Test

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class PurchaseDto extends TruncatedPurchaseDto {
 

@@ -7,6 +7,7 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
 import com.epam.esm.gcs.exception.NoFieldToUpdateException;
+import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
@@ -106,7 +107,7 @@ class GiftCertificateServiceImplTest {
     void findById_shouldThrowEntityNotFoundException_ifNotExistsWithId() {
         final long certificateId = 1L;
 
-        when(certificateRepository.findById(certificateId)).thenThrow(EntityNotFoundException.class);
+        when(certificateRepository.findById(certificateId)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> certificateService.findById(certificateId));
         verify(certificateRepository).findById(certificateId);
@@ -135,6 +136,38 @@ class GiftCertificateServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> certificateService.findByName(certificateName));
         verify(certificateRepository).findByName(certificateName);
         verify(certificateRepository, times(0)).flushAndClear();
+    }
+
+    @Test
+    void findByFilter_shouldReturnListOfCertificates_whenSatisfyFilter() {
+        QueryLimiter limiter = new QueryLimiter(10, 0);
+        GiftCertificateFilter filter = new GiftCertificateFilter(
+                null, "test", "desc",
+                "ASC", "NONE");
+
+        List<GiftCertificateDto> expected = List.of(getCreatedCertificateDto("testName"));
+        List<GiftCertificateModel> certificateModels = mapCertificatesToModels(expected);
+
+        when(certificateRepository.findByFilter(filter, limiter))
+                .thenReturn(certificateModels);
+
+        assertEquals(expected, certificateService.findByFilter(filter, limiter));
+        verify(certificateRepository).clear();
+    }
+
+    @Test
+    void findByTags_shouldReturnCertificateModel_ifExistsWithName() {
+        final String certificateName = "testName";
+        List<GiftCertificateDto> expected = List.of(getCreatedCertificateDto(certificateName));
+        List<GiftCertificateModel> certificateModels = mapCertificatesToModels(expected);
+        final List<String> tags = List.of("tag1", "tag2");
+        final QueryLimiter limiter = new QueryLimiter(10, 0);
+
+        when(certificateRepository.findByTags(tags, limiter))
+                .thenReturn(certificateModels);
+
+        assertEquals(expected, certificateService.findByTags(tags, limiter));
+        verify(certificateRepository).clear();
     }
 
     @Test
@@ -198,13 +231,26 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
+    void update_shouldThrowEntityNotFoundException_whenCertificateWasNotUpdated() {
+        final String certificateName = "testName";
+        final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
+        final GiftCertificateModel certificateModel = mapCertificateToModel(beforeUpdate);
+
+        when(certificateRepository.findByName(certificateName)).thenReturn(Optional.of(certificateModel));
+        when(certificateRepository.update(certificateModel)).thenReturn(Optional.empty());
+        when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
+                .thenReturn(List.of("price"));
+
+        assertThrows(EntityNotFoundException.class, () -> certificateService.update(beforeUpdate));
+        verify(certificateRepository).flushAndClear();
+    }
+
+    @Test
     void update_shouldThrowEntityNotFoundException_whenCertificateWithIdNotFound() {
         final String certificateName = "testName";
         final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
 
         when(certificateRepository.findByName(certificateName)).thenReturn(Optional.empty());
-        when(certificateRepository.update(getCertificateModelToUpdate()))
-                .thenReturn(Optional.empty());
         when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
                 .thenReturn(List.of("price"));
 
