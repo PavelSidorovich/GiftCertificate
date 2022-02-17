@@ -1,6 +1,7 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.hateoas.PurchaseAssembler;
@@ -9,13 +10,11 @@ import com.epam.esm.gcs.hateoas.UserAssembler;
 import com.epam.esm.gcs.service.PurchaseService;
 import com.epam.esm.gcs.service.UserService;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
-import com.epam.esm.gcs.validator.PurchaseValidationGroup;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,10 +52,10 @@ public class UserController {
     @PostMapping("/{userId}/certificates")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<PurchaseDto> makePurchase(
-            @Validated(PurchaseValidationGroup.class)
-            @RequestBody PurchaseDto purchaseDto,
+            @Valid
+            @RequestBody TruncatedGiftCertificateDto certificateDto,
             @PathVariable long userId) {
-        return purchaseAssembler.toModel(purchaseService.purchase(userId, purchaseDto));
+        return purchaseAssembler.toModel(purchaseService.purchase(userId, certificateDto));
     }
 
     @GetMapping("/{userId}/certificates")

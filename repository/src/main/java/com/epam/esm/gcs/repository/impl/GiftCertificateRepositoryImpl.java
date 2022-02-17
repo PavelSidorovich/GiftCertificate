@@ -119,6 +119,13 @@ public class GiftCertificateRepositoryImpl
         return singleParamQuery(FIND_BY_NAME_QUERY, name);
     }
 
+    /**
+     * Find certificates with provided tags
+     *
+     * @param tags    tags in certificate
+     * @param limiter query limiter
+     * @return list of certificates with containing tags
+     */
     @Override
     public List<GiftCertificateModel> findByTags(List<String> tags, Limiter limiter) {
         final String query = fillEntityClassInQuery(FIND_BY_TAGS_QUERY);
@@ -130,6 +137,13 @@ public class GiftCertificateRepositoryImpl
                             .getResultList();
     }
 
+    /**
+     * Finds certificates according to provided filter
+     *
+     * @param filter  certificate filter
+     * @param limiter query limiter
+     * @return list of certificates found by filter
+     */
     @Override
     public List<GiftCertificateModel> findByFilter(GiftCertificateFilter filter, Limiter limiter) {
         String sqlQuery = filterQueryGenerator.getSqlQuery(filter);

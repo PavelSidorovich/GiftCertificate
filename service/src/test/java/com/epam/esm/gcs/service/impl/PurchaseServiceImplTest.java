@@ -3,6 +3,7 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.PurchaseDto;
 import com.epam.esm.gcs.dto.TagDto;
+import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
@@ -56,35 +57,40 @@ class PurchaseServiceImplTest {
     @Test
     void purchase_shouldThrowEntityNotFoundException_whenUserNotFound() {
         final long userId = 1L;
-        final PurchaseDto purchase = getPurchaseDto();
+        final TruncatedGiftCertificateDto giftCertificateDto = new TruncatedGiftCertificateDto("certName");
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
 
-        assertThrows(EntityNotFoundException.class, () -> purchaseService.purchase(userId, purchase));
+        assertThrows(EntityNotFoundException.class,
+                     () -> purchaseService.purchase(userId, giftCertificateDto));
     }
 
     @Test
     void purchase_shouldThrowEntityNotFoundException_whenCertificateNotFound() {
         final UserDto user = getUser();
         final long userId = user.getId();
-        final PurchaseDto purchase = getPurchaseDto();
+        final TruncatedGiftCertificateDto giftCertificateDto =
+                new TruncatedGiftCertificateDto("certName");
         when(userService.findById(userId)).thenReturn(user);
         when(certificateService.findByName("certName")).thenThrow(EntityNotFoundException.class);
 
-        assertThrows(EntityNotFoundException.class, () -> purchaseService.purchase(userId, purchase));
+        assertThrows(EntityNotFoundException.class,
+                     () -> purchaseService.purchase(userId, giftCertificateDto));
     }
 
     @Test
     void purchase_shouldThrowEntityNotFoundException_whenUserHasGotNotEnoughMoneyForPurchase() {
         final UserDto user = getUser();
         final long userId = user.getId();
-        final PurchaseDto purchase = getPurchaseDto();
+        final TruncatedGiftCertificateDto giftCertificateDto =
+                new TruncatedGiftCertificateDto("certName");
         final GiftCertificateDto certificate = getCertificate1(LocalDateTime.now());
         user.setBalance(BigDecimal.ZERO);
 
         when(userService.findById(userId)).thenReturn(user);
         when(certificateService.findByName("certName")).thenReturn(certificate);
 
-        assertThrows(NotEnoughMoneyException.class, () -> purchaseService.purchase(userId, purchase));
+        assertThrows(NotEnoughMoneyException.class,
+                     () -> purchaseService.purchase(userId, giftCertificateDto));
     }
 
     @Test
@@ -92,6 +98,8 @@ class PurchaseServiceImplTest {
         final LocalDateTime time = LocalDateTime.now();
         final UserDto user = getUser();
         final long userId = user.getId();
+        final TruncatedGiftCertificateDto giftCertificateDto =
+                new TruncatedGiftCertificateDto("certName");
         final PurchaseDto purchase = getPurchaseDto();
         final PurchaseModel beforePurchase = mapper.map(purchase, PurchaseModel.class);
         final PurchaseDto expected = mapper.map(getPurchaseModel(time), PurchaseDto.class);
@@ -102,7 +110,7 @@ class PurchaseServiceImplTest {
         when(certificateService.findByName("certName")).thenReturn(certificate);
         when(purchaseRepository.create(beforePurchase)).thenReturn(getPurchaseModel(time));
 
-        PurchaseDto actual = purchaseService.purchase(userId, purchase);
+        PurchaseDto actual = purchaseService.purchase(userId, giftCertificateDto);
 
         assertEquals(expected, actual);
         verify(purchaseRepository).flushAndClear();
@@ -136,7 +144,8 @@ class PurchaseServiceImplTest {
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
         when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(purchaseModel));
 
-        assertThrows(EntityNotFoundException.class, () -> purchaseService.findByUserId(userId, limiter));
+        assertThrows(EntityNotFoundException.class,
+                     () -> purchaseService.findByUserId(userId, limiter));
     }
 
     @Test

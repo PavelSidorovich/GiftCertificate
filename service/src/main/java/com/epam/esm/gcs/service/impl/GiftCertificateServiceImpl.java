@@ -106,7 +106,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Finds certificates satisfying filter
      *
-     * @param filter filter to search by
+     * @param filter  filter to search by
+     * @param limiter query limiter
      * @return list of certificates which satisfy applied filter
      */
     @Override
@@ -132,6 +133,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificates;
     }
 
+    /**
+     * Find certificates with provided tags
+     *
+     * @param tags    tags in certificate
+     * @param limiter query limiter
+     * @return list of certificates with containing tags
+     */
     @Override
     public List<GiftCertificateDto> findByTags(List<String> tags, Limiter limiter) {
         List<String> tagModels = tags.stream()

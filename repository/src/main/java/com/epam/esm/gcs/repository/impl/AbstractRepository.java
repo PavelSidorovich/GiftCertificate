@@ -61,6 +61,7 @@ public abstract class AbstractRepository<T>
     /**
      * Finds all instances in db
      *
+     * @param limiter query limiter
      * @return list of instances
      */
     @Override

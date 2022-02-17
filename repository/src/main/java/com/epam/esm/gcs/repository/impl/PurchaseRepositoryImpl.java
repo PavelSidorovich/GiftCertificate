@@ -38,6 +38,13 @@ public class PurchaseRepositoryImpl
         super(entityManager);
     }
 
+    /**
+     * Creates purchase model
+     *
+     * @param model purchase to create<br>
+     *              <i><b>Note:</b></i> model should contain user and certificate
+     * @return created purchase model
+     */
     @Override
     @Transactional
     public PurchaseModel create(PurchaseModel model) {
@@ -53,11 +60,25 @@ public class PurchaseRepositoryImpl
         return super.create(model);
     }
 
+    /**
+     * Finds user purchases
+     *
+     * @param id      user id
+     * @param limiter query limiter
+     * @return user purchases
+     */
     @Override
     public List<PurchaseModel> findByUserId(long id, Limiter limiter) {
         return listSingleParamQuery(FIND_ALL_BY_USER_ID_QUERY, id, limiter);
     }
 
+    /**
+     * Finds purchase by user and purchase ids
+     *
+     * @param userId     user id
+     * @param purchaseId purchase id
+     * @return purchase or Optional.empty() if not exists
+     */
     @Override
     public Optional<PurchaseModel> findByIds(long userId, long purchaseId) {
         final String sqlQuery = fillEntityClassInQuery(FIND_BY_IDS_QUERY);
@@ -73,6 +94,11 @@ public class PurchaseRepositoryImpl
         }
     }
 
+    /**
+     * Finds the most active user by total spent money on certificates
+     *
+     * @return user if such exists, otherwise — Optional.empty()
+     */
     @Override
     public Optional<UserModel> findTheMostActiveUser() {
         try {
@@ -85,6 +111,9 @@ public class PurchaseRepositoryImpl
         }
     }
 
+    /**
+     * Unsupported operation
+     */
     @Override
     public boolean delete(long id) {
         throw new UnsupportedOperationException();

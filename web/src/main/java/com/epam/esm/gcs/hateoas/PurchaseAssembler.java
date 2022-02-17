@@ -2,6 +2,7 @@ package com.epam.esm.gcs.hateoas;
 
 import com.epam.esm.gcs.controller.UserController;
 import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -23,6 +24,8 @@ public class PurchaseAssembler implements RepresentationModelAssembler<PurchaseD
 
     @Override
     public EntityModel<PurchaseDto> toModel(PurchaseDto purchase) {
+        TruncatedGiftCertificateDto giftCertificateDto =
+                new TruncatedGiftCertificateDto(purchase.getCertificate().getName());
         long userId = purchase.getUser().getId();
         return EntityModel.of(
                 purchase,
@@ -30,7 +33,7 @@ public class PurchaseAssembler implements RepresentationModelAssembler<PurchaseD
                         USER_PURCHASES_REL),
                 linkTo(methodOn(UserController.class).getTruncatedPurchaseInfo(userId, purchase.getId())).withRel(
                         PURCHASE_INFO_REL),
-                linkTo(methodOn(UserController.class).makePurchase(purchase, userId)).withSelfRel()
+                linkTo(methodOn(UserController.class).makePurchase(giftCertificateDto, userId)).withSelfRel()
         );
     }
 

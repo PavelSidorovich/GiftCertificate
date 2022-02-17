@@ -21,6 +21,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
+    /**
+     * Finds user by id
+     *
+     * @param id user id
+     * @return user
+     * @throws EntityNotFoundException if user with id not exists
+     */
     @Override
     public UserDto findById(long id) {
         UserModel user = userRepository.findById(id).orElseThrow(
@@ -32,6 +39,13 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+    /**
+     * Finds user by email
+     *
+     * @param email user email
+     * @return user
+     * @throws EntityNotFoundException if user with such email not exists
+     */
     @Override
     public UserDto findByEmail(String email) {
         UserModel user = userRepository.findByEmail(email).orElseThrow(
@@ -43,6 +57,11 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+    /**
+     * Finds all users
+     * @param limiter query limiter
+     * @return list of users
+     */
     @Override
     public List<UserDto> findAll(Limiter limiter) {
         List<UserDto> users =
@@ -53,6 +72,11 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
+    /**
+     * Checks if user exists with provided email
+     * @param email user email
+     * @return true if exists, otherwise — false
+     */
     @Override
     public boolean existsWithEmail(String email) {
         boolean exists = userRepository.existsWithEmail(email);

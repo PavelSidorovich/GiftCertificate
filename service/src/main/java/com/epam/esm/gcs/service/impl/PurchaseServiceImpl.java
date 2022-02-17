@@ -3,6 +3,7 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.PurchaseDto;
 import com.epam.esm.gcs.dto.TagDto;
+import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
@@ -41,12 +42,20 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final GiftCertificateService certificateService;
     private final ModelMapper modelMapper;
 
+    /**
+     * Creates purchase model
+     *
+     * @param userId         user id
+     * @param certificateDto truncated certificate (contains only name)
+     * @return saved purchase
+     */
     @Override
     @Transactional
-    public PurchaseDto purchase(long userId, PurchaseDto purchaseDto) {
+    public PurchaseDto purchase(long userId, TruncatedGiftCertificateDto certificateDto) {
+        PurchaseDto purchaseDto = new PurchaseDto();
         UserDto user = userService.findById(userId);
         GiftCertificateDto certificate = certificateService.findByName(
-                purchaseDto.getCertificate().getName()
+                certificateDto.getCertificateName()
         );
 
         purchaseDto.setUser(user);
@@ -60,6 +69,13 @@ public class PurchaseServiceImpl implements PurchaseService {
         return modelMapper.map(purchaseModel, PurchaseDto.class);
     }
 
+    /**
+     * Finds user purchases
+     *
+     * @param id      user id
+     * @param limiter query limiter
+     * @return user purchases
+     */
     @Override
     public List<PurchaseDto> findByUserId(long userId, Limiter limiter) {
         userService.findById(userId); // checks if user exists (throws exception if not)
@@ -71,6 +87,13 @@ public class PurchaseServiceImpl implements PurchaseService {
         return purchases;
     }
 
+    /**
+     * Finds truncated purchase by user and purchase ids
+     *
+     * @param userId     user id
+     * @param purchaseId purchase id
+     * @return truncated purchase (contains only id, cost and purchase date)
+     */
     @Override
     public TruncatedPurchaseDto findTruncatedByIds(long userId, long purchaseId) {
         userService.findById(userId); // checks if user exists (throws exception if not)
@@ -81,6 +104,10 @@ public class PurchaseServiceImpl implements PurchaseService {
         return modelMapper.map(certificate, TruncatedPurchaseDto.class);
     }
 
+    /**
+     * Finds the most widely used tag of the most active user
+     * @return the most widely user tag of a user
+     */
     @Override
     public TagDto findMostWidelyTag() {
         Optional<UserModel> user = purchaseRepository.findTheMostActiveUser();

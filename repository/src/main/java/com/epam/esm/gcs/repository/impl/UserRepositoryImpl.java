@@ -20,21 +20,39 @@ public class UserRepositoryImpl
         super(entityManager);
     }
 
+    /**
+     * Unsupported operation
+     */
     @Override
     public UserModel create(UserModel model) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Finds user by email
+     *
+     * @param email user email
+     * @return user if such exists, otherwise — Optional.empty()
+     */
     @Override
     public Optional<UserModel> findByEmail(String email) {
         return singleParamQuery(FIND_BY_EMAIL_QUERY, email);
     }
 
+    /**
+     * Unsupported operation
+     */
     @Override
     public boolean delete(long id) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Checks if user with email exists
+     *
+     * @param email user email
+     * @return true if exists, false if not
+     */
     @Override
     public boolean existsWithEmail(String email) {
         return findByEmail(email).isPresent();
