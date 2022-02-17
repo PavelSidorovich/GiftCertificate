@@ -106,6 +106,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     /**
      * Finds the most widely used tag of the most active user
+     *
      * @return the most widely user tag of a user
      */
     @Override

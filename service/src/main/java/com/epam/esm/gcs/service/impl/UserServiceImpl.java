@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Finds all users
+     *
      * @param limiter query limiter
      * @return list of users
      */
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Checks if user exists with provided email
+     *
      * @param email user email
      * @return true if exists, otherwise — false
      */
