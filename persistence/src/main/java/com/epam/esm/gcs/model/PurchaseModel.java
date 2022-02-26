@@ -42,11 +42,6 @@ public class PurchaseModel {
     @Column(name = "purchase_date", nullable = false)
     private LocalDateTime purchaseDate;
 
-    public PurchaseModel withoutUser() {
-        user = null;
-        return this;
-    }
-
     @PrePersist
     public void onPrePersist() {
         purchaseDate = LocalDateTime.now();
