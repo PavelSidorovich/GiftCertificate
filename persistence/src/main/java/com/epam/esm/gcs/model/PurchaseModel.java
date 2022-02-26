@@ -1,10 +1,8 @@
 package com.epam.esm.gcs.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,11 +16,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
@@ -56,25 +51,6 @@ public class PurchaseModel {
     public void onPrePersist() {
         purchaseDate = LocalDateTime.now();
         cost = certificate.getPrice();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PurchaseModel that = (PurchaseModel) o;
-        return id == that.id && Objects.equals(certificate, that.certificate) &&
-               Objects.equals(user, that.user) && Objects.equals(cost, that.cost) &&
-               Objects.equals(purchaseDate, that.purchaseDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, certificate, user, cost, purchaseDate);
     }
 
 }

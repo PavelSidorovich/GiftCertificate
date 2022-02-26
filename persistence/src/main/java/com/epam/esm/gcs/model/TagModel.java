@@ -1,10 +1,8 @@
 package com.epam.esm.gcs.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +15,7 @@ import javax.persistence.Table;
 import java.util.Locale;
 import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
@@ -43,7 +39,7 @@ public class TagModel {
         name = name.toLowerCase(Locale.ROOT);
     }
 
-    // should contain equalIgnoreCase on name field
+    // should contain equalsIgnoreCase on name field
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,11 +50,6 @@ public class TagModel {
         }
         TagModel tagModel = (TagModel) o;
         return Objects.equals(id, tagModel.id) && name.equalsIgnoreCase(tagModel.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
 }

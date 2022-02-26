@@ -2,10 +2,8 @@ package com.epam.esm.gcs.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.ToString.Exclude;
 
 import javax.persistence.CascadeType;
@@ -23,12 +21,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -77,26 +72,6 @@ public class GiftCertificateModel {
     public void onPreUpdate() {
         name = name.toLowerCase();
         lastUpdateDate = LocalDateTime.now();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        GiftCertificateModel that = (GiftCertificateModel) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
-               Objects.equals(description, that.description) && Objects.equals(price, that.price) &&
-               Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) &&
-               Objects.deepEquals(lastUpdateDate, that.lastUpdateDate) && Objects.deepEquals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, price, duration, createDate, lastUpdateDate, tags);
     }
 
 }
