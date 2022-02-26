@@ -2,7 +2,7 @@ package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
 import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.PurchaseModel;
+import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
@@ -40,9 +40,9 @@ class PurchaseRepositoryImplTest {
     @Test
     void create_shouldCreatePurchase_always() {
         final LocalDateTime time = LocalDateTime.now();
-        final PurchaseModel purchase = getPurchaseModel1(time);
+        final OrderModel purchase = getPurchaseModel1(time);
 
-        PurchaseModel actual = purchaseRepository.create(purchase);
+        OrderModel actual = purchaseRepository.create(purchase);
 
         assertTrue(actual.getId() > 0);
         assertEquals(0, actual.getCost().compareTo(BigDecimal.ONE));
@@ -55,10 +55,10 @@ class PurchaseRepositoryImplTest {
     @Test
     void findByUserId_shouldReturnUserPurchases_always() {
         final LocalDateTime time = LocalDateTime.now();
-        final PurchaseModel purchaseModel = purchaseRepository.create(getPurchaseModel1(time));
-        final UserModel user = purchaseModel.getUser();
+        final OrderModel orderModel = purchaseRepository.create(getPurchaseModel1(time));
+        final UserModel user = orderModel.getUser();
 
-        List<PurchaseModel> actual = purchaseRepository.findByUserId(user.getId(), queryLimiter);
+        List<OrderModel> actual = purchaseRepository.findByUserId(user.getId(), queryLimiter);
 
         assertEquals(1, actual.size());
         assertEquals(user.getId(), actual.get(0).getUser().getId());
@@ -67,14 +67,14 @@ class PurchaseRepositoryImplTest {
     @Test
     void findByIds_shouldReturnPurchase_whenExists() {
         final LocalDateTime time = LocalDateTime.now();
-        final PurchaseModel purchase = getPurchaseModel1(time);
-        final PurchaseModel actual = purchaseRepository.create(purchase);
+        final OrderModel purchase = getPurchaseModel1(time);
+        final OrderModel actual = purchaseRepository.create(purchase);
         final UserModel user = actual.getUser();
 
-        Optional<PurchaseModel> actual1 = purchaseRepository.findByIds(user.getId(), purchase.getId());
-        Optional<PurchaseModel> actual2 = purchaseRepository.findByIds(-1L, purchase.getId());
-        Optional<PurchaseModel> actual3 = purchaseRepository.findByIds(user.getId(), -1L);
-        Optional<PurchaseModel> actual4 = purchaseRepository.findByIds(-1L, -1L);
+        Optional<OrderModel> actual1 = purchaseRepository.findByIds(user.getId(), purchase.getId());
+        Optional<OrderModel> actual2 = purchaseRepository.findByIds(-1L, purchase.getId());
+        Optional<OrderModel> actual3 = purchaseRepository.findByIds(user.getId(), -1L);
+        Optional<OrderModel> actual4 = purchaseRepository.findByIds(-1L, -1L);
 
         assertTrue(actual1.isPresent());
         assertFalse(actual2.isPresent());
@@ -85,11 +85,11 @@ class PurchaseRepositoryImplTest {
     @Test
     void findTheMostActiveUser_shouldReturnUserWithTheHighestExpenses_always() {
         final LocalDateTime time = LocalDateTime.now();
-        final PurchaseModel purchase1 = purchaseRepository.create(getPurchaseModel1(time));
-        final PurchaseModel purchase2 = purchaseRepository.create(getPurchaseModel2(time));
+        final OrderModel purchase1 = purchaseRepository.create(getPurchaseModel1(time));
+        final OrderModel purchase2 = purchaseRepository.create(getPurchaseModel2(time));
         final UserModel user1 = purchase1.getUser();
         final UserModel user2 = purchase2.getUser();
-        PurchaseModel purchase3 = new PurchaseModel();
+        OrderModel purchase3 = new OrderModel();
         purchase3.setUser(user1);
         purchase3.setCertificate(getCertificate3(time));
         purchaseRepository.create(purchase3);
@@ -104,10 +104,10 @@ class PurchaseRepositoryImplTest {
         assertThrows(UnsupportedOperationException.class, () -> purchaseRepository.delete(1L));
     }
 
-    private PurchaseModel getPurchaseModel1(LocalDateTime time) {
+    private OrderModel getPurchaseModel1(LocalDateTime time) {
         final GiftCertificateModel certificate = getCertificate1(time);
         final UserModel user = new UserModel(10L, "fname", "lname", "email", BigDecimal.TEN);
-        final PurchaseModel purchase = new PurchaseModel();
+        final OrderModel purchase = new OrderModel();
 
         purchase.setUser(user);
         purchase.setCertificate(certificate);
@@ -116,10 +116,10 @@ class PurchaseRepositoryImplTest {
         return purchase;
     }
 
-    private PurchaseModel getPurchaseModel2(LocalDateTime time) {
+    private OrderModel getPurchaseModel2(LocalDateTime time) {
         final GiftCertificateModel certificate = getCertificate2(time);
         final UserModel user = new UserModel(20L, "newName", "newSurname", "email@", BigDecimal.TEN);
-        final PurchaseModel purchase = new PurchaseModel();
+        final OrderModel purchase = new OrderModel();
 
         purchase.setUser(user);
         purchase.setCertificate(certificate);

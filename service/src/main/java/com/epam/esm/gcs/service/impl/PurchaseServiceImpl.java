@@ -9,7 +9,7 @@ import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
-import com.epam.esm.gcs.model.PurchaseModel;
+import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.PurchaseRepository;
@@ -62,11 +62,11 @@ public class PurchaseServiceImpl implements PurchaseService {
         purchaseDto.setCertificate(certificate);
         checkBalance(certificate, user);
 
-        PurchaseModel purchaseModel = purchaseRepository.create(
-                modelMapper.map(purchaseDto, PurchaseModel.class)
+        OrderModel orderModel = purchaseRepository.create(
+                modelMapper.map(purchaseDto, OrderModel.class)
         );
         purchaseRepository.flushAndClear();
-        return modelMapper.map(purchaseModel, PurchaseDto.class);
+        return modelMapper.map(orderModel, PurchaseDto.class);
     }
 
     /**
@@ -97,7 +97,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public TruncatedPurchaseDto findTruncatedByIds(long userId, long purchaseId) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        PurchaseModel certificate = purchaseRepository.findByIds(userId, purchaseId).orElseThrow(
+        OrderModel certificate = purchaseRepository.findByIds(userId, purchaseId).orElseThrow(
                 () -> new EntityNotFoundException(PurchaseDto.class, ID.getColumnName(), purchaseId)
         );
         purchaseRepository.clear();

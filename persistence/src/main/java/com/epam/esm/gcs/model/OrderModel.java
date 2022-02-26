@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(force = true)
 @Entity
 @Table(name = "purchase")
-public class PurchaseModel {
+public class OrderModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

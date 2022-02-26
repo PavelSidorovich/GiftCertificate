@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.repository.impl;
 
 import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.PurchaseModel;
+import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.PurchaseRepository;
 import com.epam.esm.gcs.util.Limiter;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 @EntityScan(basePackages = { "com.epam.esm.gcs.model" })
 public class PurchaseRepositoryImpl
-        extends AbstractRepository<PurchaseModel>
+        extends AbstractRepository<OrderModel>
         implements PurchaseRepository {
 
     private static final String FIND_ALL_BY_USER_ID_QUERY = "SELECT p FROM %s p WHERE p.user.id = ?1";
@@ -47,7 +47,7 @@ public class PurchaseRepositoryImpl
      */
     @Override
     @Transactional
-    public PurchaseModel create(PurchaseModel model) {
+    public OrderModel create(OrderModel model) {
         final GiftCertificateModel certificate =
                 getCertificateFromJPAContext(model.getCertificate());
         final UserModel detachedUser = model.getUser();
@@ -68,7 +68,7 @@ public class PurchaseRepositoryImpl
      * @return user purchases
      */
     @Override
-    public List<PurchaseModel> findByUserId(long id, Limiter limiter) {
+    public List<OrderModel> findByUserId(long id, Limiter limiter) {
         return listSingleParamQuery(FIND_ALL_BY_USER_ID_QUERY, id, limiter);
     }
 
@@ -80,7 +80,7 @@ public class PurchaseRepositoryImpl
      * @return purchase or Optional.empty() if not exists
      */
     @Override
-    public Optional<PurchaseModel> findByIds(long userId, long purchaseId) {
+    public Optional<OrderModel> findByIds(long userId, long purchaseId) {
         final String sqlQuery = fillEntityClassInQuery(FIND_BY_IDS_QUERY);
         try {
             return Optional.ofNullable(

@@ -10,7 +10,7 @@ import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.PurchaseModel;
+import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.PurchaseRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
@@ -101,7 +101,7 @@ class PurchaseServiceImplTest {
         final TruncatedGiftCertificateDto giftCertificateDto =
                 new TruncatedGiftCertificateDto("certName");
         final PurchaseDto purchase = getPurchaseDto();
-        final PurchaseModel beforePurchase = mapper.map(purchase, PurchaseModel.class);
+        final OrderModel beforePurchase = mapper.map(purchase, OrderModel.class);
         final PurchaseDto expected = mapper.map(getPurchaseModel(time), PurchaseDto.class);
         final GiftCertificateDto certificate = getCertificate1(time);
         beforePurchase.setUser(mapper.map(user, UserModel.class));
@@ -122,11 +122,11 @@ class PurchaseServiceImplTest {
         final UserDto user = getUser();
         final long userId = user.getId();
         final PurchaseDto purchaseDto = getPurchaseDto();
-        final PurchaseModel purchaseModel = mapper.map(purchaseDto, PurchaseModel.class);
+        final OrderModel orderModel = mapper.map(purchaseDto, OrderModel.class);
         final List<PurchaseDto> expected = List.of(purchaseDto);
 
         when(userService.findById(userId)).thenReturn(user);
-        when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(purchaseModel));
+        when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(orderModel));
 
         List<PurchaseDto> actual = purchaseService.findByUserId(userId, limiter);
 
@@ -139,10 +139,10 @@ class PurchaseServiceImplTest {
         final QueryLimiter limiter = new QueryLimiter(10, 0);
         final long userId = 1L;
         final PurchaseDto purchaseDto = getPurchaseDto();
-        final PurchaseModel purchaseModel = mapper.map(purchaseDto, PurchaseModel.class);
+        final OrderModel orderModel = mapper.map(purchaseDto, OrderModel.class);
 
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
-        when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(purchaseModel));
+        when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(orderModel));
 
         assertThrows(EntityNotFoundException.class,
                      () -> purchaseService.findByUserId(userId, limiter));
@@ -153,12 +153,12 @@ class PurchaseServiceImplTest {
         final UserDto user = getUser();
         final long purchaseId = 1L;
         final long userId = user.getId();
-        final PurchaseModel purchaseModel = getPurchaseModel(LocalDateTime.now());
+        final OrderModel orderModel = getPurchaseModel(LocalDateTime.now());
         final TruncatedPurchaseDto expected =
-                new TruncatedPurchaseDto(purchaseId, purchaseModel.getCost(), purchaseModel.getPurchaseDate());
+                new TruncatedPurchaseDto(purchaseId, orderModel.getCost(), orderModel.getPurchaseDate());
 
         when(userService.findById(userId)).thenReturn(user);
-        when(purchaseRepository.findByIds(userId, purchaseId)).thenReturn(Optional.of(purchaseModel));
+        when(purchaseRepository.findByIds(userId, purchaseId)).thenReturn(Optional.of(orderModel));
 
         TruncatedPurchaseDto truncated = purchaseService.findTruncatedByIds(userId, purchaseId);
 
@@ -170,10 +170,10 @@ class PurchaseServiceImplTest {
     void findTruncatedByIds_shouldThrowEntityNotFoundException_whenUserNotExists() {
         final long userId = 1L;
         final long purchaseId = 1L;
-        final PurchaseModel purchaseModel = getPurchaseModel(LocalDateTime.now());
+        final OrderModel orderModel = getPurchaseModel(LocalDateTime.now());
 
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
-        when(purchaseRepository.findByIds(userId, purchaseId)).thenReturn(Optional.of(purchaseModel));
+        when(purchaseRepository.findByIds(userId, purchaseId)).thenReturn(Optional.of(orderModel));
 
         assertThrows(EntityNotFoundException.class,
                      () -> purchaseService.findTruncatedByIds(userId, purchaseId));
@@ -237,8 +237,8 @@ class PurchaseServiceImplTest {
         return new PurchaseDto(GiftCertificateDto.builder().name("certName").build(), null);
     }
 
-    private PurchaseModel getPurchaseModel(LocalDateTime time) {
-        return new PurchaseModel(
+    private OrderModel getPurchaseModel(LocalDateTime time) {
+        return new OrderModel(
                 1L,
                 mapper.map(getCertificate1(time), GiftCertificateModel.class),
                 mapper.map(getUser(), UserModel.class),
@@ -296,15 +296,15 @@ class PurchaseServiceImplTest {
                 .build();
     }
 
-    private List<PurchaseModel> getUserPurchases(UserModel user) {
+    private List<OrderModel> getUserPurchases(UserModel user) {
         LocalDateTime time = LocalDateTime.now();
         return List.of(
-                new PurchaseModel(1L, mapper.map(getCertificate1(time), GiftCertificateModel.class),
-                                  user, BigDecimal.TEN, time),
-                new PurchaseModel(2L, mapper.map(getCertificate2(time), GiftCertificateModel.class),
-                                  user, BigDecimal.TEN, time),
-                new PurchaseModel(3L, mapper.map(getCertificate3(time), GiftCertificateModel.class),
-                                  user, BigDecimal.TEN, time)
+                new OrderModel(1L, mapper.map(getCertificate1(time), GiftCertificateModel.class),
+                               user, BigDecimal.TEN, time),
+                new OrderModel(2L, mapper.map(getCertificate2(time), GiftCertificateModel.class),
+                               user, BigDecimal.TEN, time),
+                new OrderModel(3L, mapper.map(getCertificate3(time), GiftCertificateModel.class),
+                               user, BigDecimal.TEN, time)
         );
     }
 

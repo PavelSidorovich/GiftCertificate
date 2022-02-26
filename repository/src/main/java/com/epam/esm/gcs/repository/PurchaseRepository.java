@@ -1,17 +1,17 @@
 package com.epam.esm.gcs.repository;
 
-import com.epam.esm.gcs.model.PurchaseModel;
+import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.util.Limiter;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PurchaseRepository extends CrdRepository<PurchaseModel> {
+public interface PurchaseRepository extends CrdRepository<OrderModel> {
 
-    List<PurchaseModel> findByUserId(long id, Limiter limiter);
+    List<OrderModel> findByUserId(long id, Limiter limiter);
 
-    Optional<PurchaseModel> findByIds(long userId, long purchaseId);
+    Optional<OrderModel> findByIds(long userId, long purchaseId);
 
     Optional<UserModel> findTheMostActiveUser();
 
