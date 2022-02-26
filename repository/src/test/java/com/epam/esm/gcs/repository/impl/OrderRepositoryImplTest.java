@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles({ "dev" })
 @EnableAutoConfiguration
 @SpringBootTest(classes = { TestConfig.class })
-class PurchaseRepositoryImplTest {
+class OrderRepositoryImplTest {
 
-    private final PurchaseRepositoryImpl purchaseRepository;
+    private final OrderRepositoryImpl purchaseRepository;
 
     private final QueryLimiter queryLimiter;
 
     @Autowired
-    public PurchaseRepositoryImplTest(PurchaseRepositoryImpl purchaseRepository) {
+    public OrderRepositoryImplTest(OrderRepositoryImpl purchaseRepository) {
         this.purchaseRepository = purchaseRepository;
         this.queryLimiter = new QueryLimiter(10, 0);
     }

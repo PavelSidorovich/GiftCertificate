@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
-@Table(name = "purchase")
+@Table(name = "user_order")
 public class OrderModel {
 
     @Id

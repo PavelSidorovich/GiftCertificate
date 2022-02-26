@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.TagDto;
-import com.epam.esm.gcs.service.PurchaseService;
+import com.epam.esm.gcs.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
@@ -21,11 +21,11 @@ public class StatsController {
     private static final int LIMIT = 10;
     private static final int OFFSET = 0;
 
-    private final PurchaseService purchaseService;
+    private final OrderService orderService;
 
     @GetMapping(value = "/tags")
     public EntityModel<TagDto> findMostUsedTag() {
-        TagDto mostWidelyUsedTag = purchaseService.findMostWidelyTag();
+        TagDto mostWidelyUsedTag = orderService.findMostWidelyTag();
         return EntityModel.of(
                 mostWidelyUsedTag,
                 linkTo(methodOn(StatsController.class).findMostUsedTag()).withSelfRel(),

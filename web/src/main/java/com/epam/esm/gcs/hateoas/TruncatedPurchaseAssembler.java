@@ -18,7 +18,7 @@ public class TruncatedPurchaseAssembler
     public EntityModel<TruncatedOrderDto> toModel(TruncatedOrderDto truncatedPurchase) {
         return EntityModel.of(
                 truncatedPurchase,
-                linkTo(methodOn(UserController.class).getTruncatedPurchaseInfo(USER_ID, truncatedPurchase.getId()))
+                linkTo(methodOn(UserController.class).getTruncatedOrderInfo(USER_ID, truncatedPurchase.getId()))
                         .withSelfRel()
         );
     }

@@ -3,7 +3,7 @@ package com.epam.esm.gcs.repository.impl;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.UserModel;
-import com.epam.esm.gcs.repository.PurchaseRepository;
+import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.util.Limiter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Repository;
@@ -16,9 +16,9 @@ import java.util.Optional;
 
 @Repository
 @EntityScan(basePackages = { "com.epam.esm.gcs.model" })
-public class PurchaseRepositoryImpl
+public class OrderRepositoryImpl
         extends AbstractRepository<OrderModel>
-        implements PurchaseRepository {
+        implements OrderRepository {
 
     private static final String FIND_ALL_BY_USER_ID_QUERY = "SELECT p FROM %s p WHERE p.user.id = ?1";
     private static final String FIND_BY_IDS_QUERY =
@@ -27,23 +27,23 @@ public class PurchaseRepositoryImpl
             "SELECT id, first_name, last_name, email, balance\n" +
             "FROM (\n" +
             "         SELECT t.user_id, SUM(t.total_cost)\n" +
-            "         FROM purchase t\n" +
+            "         FROM user_order t\n" +
             "         group by t.user_id\n" +
             "         order by SUM(t.total_cost) DESC\n" +
             "         LIMIT 1\n" +
             "     ) as m\n" +
             "INNER JOIN user_account u ON u.id = m.user_id";
 
-    public PurchaseRepositoryImpl(EntityManager entityManager) {
+    public OrderRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
     }
 
     /**
-     * Creates purchase model
+     * Creates order model
      *
-     * @param model purchase to create<br>
+     * @param model order to create<br>
      *              <i><b>Note:</b></i> model should contain user and certificate
-     * @return created purchase model
+     * @return created order model
      */
     @Override
     @Transactional
@@ -61,11 +61,11 @@ public class PurchaseRepositoryImpl
     }
 
     /**
-     * Finds user purchases
+     * Finds user orders
      *
      * @param id      user id
      * @param limiter query limiter
-     * @return user purchases
+     * @return user orders
      */
     @Override
     public List<OrderModel> findByUserId(long id, Limiter limiter) {
@@ -73,20 +73,20 @@ public class PurchaseRepositoryImpl
     }
 
     /**
-     * Finds purchase by user and purchase ids
+     * Finds order by user and order ids
      *
-     * @param userId     user id
-     * @param purchaseId purchase id
-     * @return purchase or Optional.empty() if not exists
+     * @param userId  user id
+     * @param orderId order id
+     * @return order or Optional.empty() if not exists
      */
     @Override
-    public Optional<OrderModel> findByIds(long userId, long purchaseId) {
+    public Optional<OrderModel> findByIds(long userId, long orderId) {
         final String sqlQuery = fillEntityClassInQuery(FIND_BY_IDS_QUERY);
         try {
             return Optional.ofNullable(
                     entityManager.createQuery(sqlQuery, entityBeanType)
                                  .setParameter(1, userId)
-                                 .setParameter(2, purchaseId)
+                                 .setParameter(2, orderId)
                                  .getSingleResult()
             );
         } catch (NoResultException ex) {

@@ -22,6 +22,30 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
 
     /**
+     * Unsupported operation
+     */
+    @Override
+    public UserDto create(UserDto model) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Finds all users
+     *
+     * @param limiter query limiter
+     * @return list of users
+     */
+    @Override
+    public List<UserDto> findAll(Limiter limiter) {
+        List<UserDto> users =
+                userRepository.findAll(limiter).stream()
+                              .map(user -> modelMapper.map(user, UserDto.class))
+                              .collect(Collectors.toList());
+        userRepository.clear();
+        return users;
+    }
+
+    /**
      * Finds user by id
      *
      * @param id user id
@@ -58,19 +82,11 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Finds all users
-     *
-     * @param limiter query limiter
-     * @return list of users
+     * Unsupported operation
      */
     @Override
-    public List<UserDto> findAll(Limiter limiter) {
-        List<UserDto> users =
-                userRepository.findAll(limiter).stream()
-                              .map(user -> modelMapper.map(user, UserDto.class))
-                              .collect(Collectors.toList());
-        userRepository.clear();
-        return users;
+    public void delete(long id) {
+        throw new UnsupportedOperationException();
     }
 
     /**

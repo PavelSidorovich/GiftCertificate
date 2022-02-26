@@ -45,9 +45,10 @@ class GiftCertificateServiceImplTest {
     private final EntityFieldService entityFieldService;
     private final LocalDateTime dateTime = LocalDateTime.now();
 
-    public GiftCertificateServiceImplTest(@Mock GiftCertificateRepository certificateRepository,
-                                          @Mock TagService tagService,
-                                          @Mock EntityFieldService entityFieldService) {
+    public GiftCertificateServiceImplTest(
+            @Mock GiftCertificateRepository certificateRepository,
+            @Mock TagService tagService,
+            @Mock EntityFieldService entityFieldService) {
         this.tagService = tagService;
         this.certificateRepository = certificateRepository;
         this.entityFieldService = entityFieldService;
@@ -72,7 +73,9 @@ class GiftCertificateServiceImplTest {
         when(tagService.findByName(tagName1)).thenReturn(new TagDto(1L, tagName1));
         when(tagService.findByName(tagName2)).thenReturn(new TagDto(2L, tagName2));
         certificateDto.setTags(Set.of(new TagDto(1L, tagName1), new TagDto(2L, tagName2)));
-        when(certificateRepository.create(mapCertificateToModel(certificateDto)))
+        GiftCertificateModel certToCreate = mapCertificateToModel(certificateDto);
+        certToCreate.setTags(Set.of(new TagModel(1L, tagName1), new TagModel(2L, tagName2)));
+        when(certificateRepository.create(certToCreate))
                 .thenReturn(certificateModel);
 
         assertEquals(expected, certificateService.create(certificateDto));

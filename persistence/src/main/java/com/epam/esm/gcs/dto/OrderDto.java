@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.dto;
 
-import com.epam.esm.gcs.validator.PurchaseValidationGroup;
+import com.epam.esm.gcs.validator.OrderValidationGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @JsonInclude(Include.NON_NULL)
 public class OrderDto extends TruncatedOrderDto {
 
-    @NotNull(message = "{model.field.null}", groups = PurchaseValidationGroup.class)
+    @NotNull(message = "{model.field.null}", groups = OrderValidationGroup.class)
     private GiftCertificateDto certificate;
 
     @JsonIgnore

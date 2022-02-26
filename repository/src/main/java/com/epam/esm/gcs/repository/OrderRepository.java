@@ -7,11 +7,11 @@ import com.epam.esm.gcs.util.Limiter;
 import java.util.List;
 import java.util.Optional;
 
-public interface PurchaseRepository extends CrdRepository<OrderModel> {
+public interface OrderRepository extends CrdRepository<OrderModel> {
 
     List<OrderModel> findByUserId(long id, Limiter limiter);
 
-    Optional<OrderModel> findByIds(long userId, long purchaseId);
+    Optional<OrderModel> findByIds(long userId, long orderId);
 
     Optional<UserModel> findTheMostActiveUser();
 

@@ -3,7 +3,6 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
-import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
@@ -12,9 +11,9 @@ import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
-import com.epam.esm.gcs.repository.PurchaseRepository;
+import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
-import com.epam.esm.gcs.service.PurchaseService;
+import com.epam.esm.gcs.service.OrderService;
 import com.epam.esm.gcs.service.UserService;
 import com.epam.esm.gcs.util.Limiter;
 import com.epam.esm.gcs.util.impl.QueryLimiter;
@@ -35,74 +34,74 @@ import static com.epam.esm.gcs.repository.column.GiftCertificateColumn.*;
 
 @Service
 @AllArgsConstructor
-public class PurchaseServiceImpl implements PurchaseService {
+public class OrderServiceImpl implements OrderService {
 
     private final UserService userService;
-    private final PurchaseRepository purchaseRepository;
+    private final OrderRepository orderRepository;
     private final GiftCertificateService certificateService;
     private final ModelMapper modelMapper;
 
     /**
-     * Creates purchase model
+     * Creates order model
      *
-     * @param userId         user id
-     * @param certificateDto truncated certificate (contains only name)
-     * @return saved purchase
+     * @param userId        user id
+     * @param certificateId certificate id to buy
+     * @return saved order
      */
     @Override
     @Transactional
-    public OrderDto purchase(long userId, TruncatedGiftCertificateDto certificateDto) {
-        OrderDto purchaseDto = new OrderDto();
+    public OrderDto purchase(long userId, long certificateId) {
+        OrderDto orderDto = new OrderDto();
         UserDto user = userService.findById(userId);
-        GiftCertificateDto certificate = certificateService.findByName(
-                certificateDto.getCertificateName()
-        );
+        GiftCertificateDto certificate = certificateService.findById(certificateId);
 
-        purchaseDto.setUser(user);
-        purchaseDto.setCertificate(certificate);
+        orderDto.setUser(user);
+        orderDto.setCertificate(certificate);
         checkBalance(certificate, user);
 
-        OrderModel orderModel = purchaseRepository.create(
-                modelMapper.map(purchaseDto, OrderModel.class)
+        OrderModel orderModel = orderRepository.create(
+                modelMapper.map(orderDto, OrderModel.class)
         );
-        purchaseRepository.flushAndClear();
+        orderRepository.flushAndClear();
         return modelMapper.map(orderModel, OrderDto.class);
     }
 
     /**
-     * Finds user purchases
+     * Finds user orders
      *
-     * @param id      user id
+     * @param userId  user id
      * @param limiter query limiter
-     * @return user purchases
+     * @return user orders
      */
     @Override
     public List<OrderDto> findByUserId(long userId, Limiter limiter) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        List<OrderDto> purchases =
-                purchaseRepository.findByUserId(userId, limiter).stream()
-                                  .map(purchase -> modelMapper.map(purchase, OrderDto.class))
-                                  .collect(Collectors.toList());
-        purchaseRepository.clear();
-        return purchases;
+        List<OrderDto> orders =
+                orderRepository.findByUserId(userId, limiter).stream()
+                               .map(order -> modelMapper.map(order, OrderDto.class))
+                               .collect(Collectors.toList());
+        orderRepository.clear();
+        return orders;
     }
 
     /**
-     * Finds truncated purchase by user and purchase ids
+     * Finds truncated order by user and order ids
      *
-     * @param userId     user id
-     * @param purchaseId purchase id
-     * @return truncated purchase (contains only id, cost and purchase date)
+     * @param userId  user id
+     * @param orderId order id
+     * @return truncated order (contains only id, cost and purchase date)
      */
     @Override
-    public TruncatedOrderDto findTruncatedByIds(long userId, long purchaseId) {
+    public TruncatedOrderDto findTruncatedByIds(long userId, long orderId) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        OrderModel certificate = purchaseRepository.findByIds(userId, purchaseId).orElseThrow(
-                () -> new EntityNotFoundException(OrderDto.class, ID.getColumnName(), purchaseId)
+        OrderModel certificate = orderRepository.findByIds(userId, orderId).orElseThrow(
+                () -> new EntityNotFoundException(OrderDto.class, ID.getColumnName(), orderId)
         );
-        purchaseRepository.clear();
+        orderRepository.clear();
         return modelMapper.map(certificate, TruncatedOrderDto.class);
     }
+
+    // TODO: 2/27/2022 edit
 
     /**
      * Finds the most widely used tag of the most active user
@@ -111,12 +110,12 @@ public class PurchaseServiceImpl implements PurchaseService {
      */
     @Override
     public TagDto findMostWidelyTag() {
-        Optional<UserModel> user = purchaseRepository.findTheMostActiveUser();
+        Optional<UserModel> user = orderRepository.findTheMostActiveUser();
 
         if (user.isPresent()) {
             Optional<TagModel> tag = findWidelyUsedTag(user.get());
             if (tag.isPresent()) {
-                purchaseRepository.clear();
+                orderRepository.clear();
                 return modelMapper.map(tag.get(), TagDto.class);
             }
         }
@@ -125,16 +124,16 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     private Optional<TagModel> findWidelyUsedTag(UserModel user) {
         Limiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
-        return purchaseRepository.findByUserId(user.getId(), limiter).stream()
-                                 .map(purchaseModel -> purchaseModel.getCertificate()
-                                                                    .getTags())
-                                 .flatMap(Set::stream)
-                                 .collect(Collectors.groupingBy(Function.identity(),
-                                                                Collectors.counting()))
-                                 .entrySet()
-                                 .stream()
-                                 .max(Entry.comparingByValue())
-                                 .map(Entry::getKey);
+        return orderRepository.findByUserId(user.getId(), limiter).stream()
+                              .map(orderModel -> orderModel.getCertificate()
+                                                           .getTags())
+                              .flatMap(Set::stream)
+                              .collect(Collectors.groupingBy(Function.identity(),
+                                                             Collectors.counting()))
+                              .entrySet()
+                              .stream()
+                              .max(Entry.comparingByValue())
+                              .map(Entry::getKey);
     }
 
     private void checkBalance(GiftCertificateDto certificate, UserDto userDto) {

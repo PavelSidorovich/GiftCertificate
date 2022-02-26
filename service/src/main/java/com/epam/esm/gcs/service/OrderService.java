@@ -8,13 +8,13 @@ import com.epam.esm.gcs.util.Limiter;
 
 import java.util.List;
 
-public interface PurchaseService {
+public interface OrderService {
 
-    OrderDto purchase(long userId, TruncatedGiftCertificateDto certificateDto);
+    OrderDto purchase(long userId, long certificateId);
 
     List<OrderDto> findByUserId(long userId, Limiter limiter);
 
-    TruncatedOrderDto findTruncatedByIds(long userId, long certificateId);
+    TruncatedOrderDto findTruncatedByIds(long userId, long orderId);
 
     TagDto findMostWidelyTag();
 

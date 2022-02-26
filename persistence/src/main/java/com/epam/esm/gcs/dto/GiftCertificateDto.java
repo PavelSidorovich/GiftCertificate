@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.dto;
 
 import com.epam.esm.gcs.validator.CreateValidationGroup;
-import com.epam.esm.gcs.validator.PurchaseValidationGroup;
+import com.epam.esm.gcs.validator.OrderValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class GiftCertificateDto {
     private Long id;
 
     @NotBlank(message = "{model.field.null}",
-            groups = { CreateValidationGroup.class, PurchaseValidationGroup.class })
+            groups = { CreateValidationGroup.class, OrderValidationGroup.class })
     @Size(max = 128, message = "{model.field.size.max}",
             groups = { UpdateValidationGroup.class, CreateValidationGroup.class })
     private String name;

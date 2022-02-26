@@ -16,7 +16,7 @@ import java.util.Locale;
 @AllArgsConstructor
 @RestControllerAdvice
 @Order(value = 2)
-public class PurchaseExceptionHandler {
+public class OrderExceptionHandler {
 
     private static final String NOT_ENOUGH_MONEY = "not.enough.money";
 
