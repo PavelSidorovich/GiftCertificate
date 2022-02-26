@@ -1,10 +1,10 @@
 package com.epam.esm.gcs.service.impl;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
-import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
+import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
@@ -51,8 +51,8 @@ public class PurchaseServiceImpl implements PurchaseService {
      */
     @Override
     @Transactional
-    public PurchaseDto purchase(long userId, TruncatedGiftCertificateDto certificateDto) {
-        PurchaseDto purchaseDto = new PurchaseDto();
+    public OrderDto purchase(long userId, TruncatedGiftCertificateDto certificateDto) {
+        OrderDto purchaseDto = new OrderDto();
         UserDto user = userService.findById(userId);
         GiftCertificateDto certificate = certificateService.findByName(
                 certificateDto.getCertificateName()
@@ -66,7 +66,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                 modelMapper.map(purchaseDto, OrderModel.class)
         );
         purchaseRepository.flushAndClear();
-        return modelMapper.map(orderModel, PurchaseDto.class);
+        return modelMapper.map(orderModel, OrderDto.class);
     }
 
     /**
@@ -77,11 +77,11 @@ public class PurchaseServiceImpl implements PurchaseService {
      * @return user purchases
      */
     @Override
-    public List<PurchaseDto> findByUserId(long userId, Limiter limiter) {
+    public List<OrderDto> findByUserId(long userId, Limiter limiter) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        List<PurchaseDto> purchases =
+        List<OrderDto> purchases =
                 purchaseRepository.findByUserId(userId, limiter).stream()
-                                  .map(purchase -> modelMapper.map(purchase, PurchaseDto.class))
+                                  .map(purchase -> modelMapper.map(purchase, OrderDto.class))
                                   .collect(Collectors.toList());
         purchaseRepository.clear();
         return purchases;
@@ -95,13 +95,13 @@ public class PurchaseServiceImpl implements PurchaseService {
      * @return truncated purchase (contains only id, cost and purchase date)
      */
     @Override
-    public TruncatedPurchaseDto findTruncatedByIds(long userId, long purchaseId) {
+    public TruncatedOrderDto findTruncatedByIds(long userId, long purchaseId) {
         userService.findById(userId); // checks if user exists (throws exception if not)
         OrderModel certificate = purchaseRepository.findByIds(userId, purchaseId).orElseThrow(
-                () -> new EntityNotFoundException(PurchaseDto.class, ID.getColumnName(), purchaseId)
+                () -> new EntityNotFoundException(OrderDto.class, ID.getColumnName(), purchaseId)
         );
         purchaseRepository.clear();
-        return modelMapper.map(certificate, TruncatedPurchaseDto.class);
+        return modelMapper.map(certificate, TruncatedOrderDto.class);
     }
 
     /**
@@ -143,7 +143,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         if (userDtoBalance.subtract(certificateCost).compareTo(BigDecimal.ZERO) < 0) {
             throw new NotEnoughMoneyException(
-                    PurchaseDto.class, certificate.getName(),
+                    OrderDto.class, certificate.getName(),
                     certificateCost, userDtoBalance
             );
         }

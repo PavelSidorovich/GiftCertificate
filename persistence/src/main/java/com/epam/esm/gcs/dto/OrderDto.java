@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class PurchaseDto extends TruncatedPurchaseDto {
+public class OrderDto extends TruncatedOrderDto {
 
     @NotNull(message = "{model.field.null}", groups = PurchaseValidationGroup.class)
     private GiftCertificateDto certificate;

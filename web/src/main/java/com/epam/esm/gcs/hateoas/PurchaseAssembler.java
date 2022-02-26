@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.hateoas;
 
 import com.epam.esm.gcs.controller.UserController;
-import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -15,7 +15,7 @@ import java.util.Objects;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
-public class PurchaseAssembler implements RepresentationModelAssembler<PurchaseDto, EntityModel<PurchaseDto>> {
+public class PurchaseAssembler implements RepresentationModelAssembler<OrderDto, EntityModel<OrderDto>> {
 
     private static final int LIMIT = 10;
     private static final int OFFSET = 0;
@@ -23,7 +23,7 @@ public class PurchaseAssembler implements RepresentationModelAssembler<PurchaseD
     private static final String PURCHASE_INFO_REL = "purchaseInfo";
 
     @Override
-    public EntityModel<PurchaseDto> toModel(PurchaseDto purchase) {
+    public EntityModel<OrderDto> toModel(OrderDto purchase) {
         TruncatedGiftCertificateDto giftCertificateDto =
                 new TruncatedGiftCertificateDto(purchase.getCertificate().getName());
         long userId = purchase.getUser().getId();
@@ -38,8 +38,8 @@ public class PurchaseAssembler implements RepresentationModelAssembler<PurchaseD
     }
 
     @Override
-    public CollectionModel<EntityModel<PurchaseDto>> toCollectionModel(Iterable<? extends PurchaseDto> purchases) {
-        List<EntityModel<PurchaseDto>> purchaseDtos = new ArrayList<>();
+    public CollectionModel<EntityModel<OrderDto>> toCollectionModel(Iterable<? extends OrderDto> purchases) {
+        List<EntityModel<OrderDto>> purchaseDtos = new ArrayList<>();
         purchases.forEach(purchase -> purchaseDtos.add(EntityModel.of(
                 purchase,
                 linkTo(methodOn(UserController.class).getTruncatedPurchaseInfo(

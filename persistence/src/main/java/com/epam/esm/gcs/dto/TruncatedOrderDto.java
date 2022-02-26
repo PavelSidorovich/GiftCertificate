@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TruncatedPurchaseDto {
+public class TruncatedOrderDto {
 
     @Null(message = "{model.field.not.null}")
     private long id;

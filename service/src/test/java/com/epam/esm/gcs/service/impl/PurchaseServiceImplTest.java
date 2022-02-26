@@ -1,10 +1,10 @@
 package com.epam.esm.gcs.service.impl;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
-import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
+import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
@@ -100,9 +100,9 @@ class PurchaseServiceImplTest {
         final long userId = user.getId();
         final TruncatedGiftCertificateDto giftCertificateDto =
                 new TruncatedGiftCertificateDto("certName");
-        final PurchaseDto purchase = getPurchaseDto();
+        final OrderDto purchase = getPurchaseDto();
         final OrderModel beforePurchase = mapper.map(purchase, OrderModel.class);
-        final PurchaseDto expected = mapper.map(getPurchaseModel(time), PurchaseDto.class);
+        final OrderDto expected = mapper.map(getPurchaseModel(time), OrderDto.class);
         final GiftCertificateDto certificate = getCertificate1(time);
         beforePurchase.setUser(mapper.map(user, UserModel.class));
         beforePurchase.setCertificate(mapper.map(certificate, GiftCertificateModel.class));
@@ -110,7 +110,7 @@ class PurchaseServiceImplTest {
         when(certificateService.findByName("certName")).thenReturn(certificate);
         when(purchaseRepository.create(beforePurchase)).thenReturn(getPurchaseModel(time));
 
-        PurchaseDto actual = purchaseService.purchase(userId, giftCertificateDto);
+        OrderDto actual = purchaseService.purchase(userId, giftCertificateDto);
 
         assertEquals(expected, actual);
         verify(purchaseRepository).flushAndClear();
@@ -121,14 +121,14 @@ class PurchaseServiceImplTest {
         final QueryLimiter limiter = new QueryLimiter(10, 0);
         final UserDto user = getUser();
         final long userId = user.getId();
-        final PurchaseDto purchaseDto = getPurchaseDto();
+        final OrderDto purchaseDto = getPurchaseDto();
         final OrderModel orderModel = mapper.map(purchaseDto, OrderModel.class);
-        final List<PurchaseDto> expected = List.of(purchaseDto);
+        final List<OrderDto> expected = List.of(purchaseDto);
 
         when(userService.findById(userId)).thenReturn(user);
         when(purchaseRepository.findByUserId(userId, limiter)).thenReturn(List.of(orderModel));
 
-        List<PurchaseDto> actual = purchaseService.findByUserId(userId, limiter);
+        List<OrderDto> actual = purchaseService.findByUserId(userId, limiter);
 
         assertEquals(expected, actual);
         verify(purchaseRepository).clear();
@@ -138,7 +138,7 @@ class PurchaseServiceImplTest {
     void findByUserId_shouldThrowEntityNotFoundException_whenUserNotExists() {
         final QueryLimiter limiter = new QueryLimiter(10, 0);
         final long userId = 1L;
-        final PurchaseDto purchaseDto = getPurchaseDto();
+        final OrderDto purchaseDto = getPurchaseDto();
         final OrderModel orderModel = mapper.map(purchaseDto, OrderModel.class);
 
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
@@ -154,13 +154,13 @@ class PurchaseServiceImplTest {
         final long purchaseId = 1L;
         final long userId = user.getId();
         final OrderModel orderModel = getPurchaseModel(LocalDateTime.now());
-        final TruncatedPurchaseDto expected =
-                new TruncatedPurchaseDto(purchaseId, orderModel.getCost(), orderModel.getPurchaseDate());
+        final TruncatedOrderDto expected =
+                new TruncatedOrderDto(purchaseId, orderModel.getCost(), orderModel.getPurchaseDate());
 
         when(userService.findById(userId)).thenReturn(user);
         when(purchaseRepository.findByIds(userId, purchaseId)).thenReturn(Optional.of(orderModel));
 
-        TruncatedPurchaseDto truncated = purchaseService.findTruncatedByIds(userId, purchaseId);
+        TruncatedOrderDto truncated = purchaseService.findTruncatedByIds(userId, purchaseId);
 
         assertEquals(expected, truncated);
         verify(purchaseRepository).clear();
@@ -233,8 +233,8 @@ class PurchaseServiceImplTest {
         verify(purchaseRepository, times(0)).clear();
     }
 
-    private PurchaseDto getPurchaseDto() {
-        return new PurchaseDto(GiftCertificateDto.builder().name("certName").build(), null);
+    private OrderDto getPurchaseDto() {
+        return new OrderDto(GiftCertificateDto.builder().name("certName").build(), null);
     }
 
     private OrderModel getPurchaseModel(LocalDateTime time) {

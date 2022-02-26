@@ -1,8 +1,8 @@
 package com.epam.esm.gcs.controller;
 
-import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
-import com.epam.esm.gcs.dto.TruncatedPurchaseDto;
+import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.hateoas.PurchaseAssembler;
 import com.epam.esm.gcs.hateoas.TruncatedPurchaseAssembler;
@@ -51,7 +51,7 @@ public class UserController {
 
     @PostMapping("/{userId}/certificates")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<PurchaseDto> makePurchase(
+    public EntityModel<OrderDto> makePurchase(
             @Valid
             @RequestBody TruncatedGiftCertificateDto certificateDto,
             @PathVariable long userId) {
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/certificates")
-    public CollectionModel<EntityModel<PurchaseDto>> findUserPurchases(
+    public CollectionModel<EntityModel<OrderDto>> findUserPurchases(
             @PathVariable long userId,
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false) Integer offset) {
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/certificates/{purchaseId}")
-    public EntityModel<TruncatedPurchaseDto> getTruncatedPurchaseInfo(
+    public EntityModel<TruncatedOrderDto> getTruncatedPurchaseInfo(
             @PathVariable long userId,
             @PathVariable long purchaseId) {
         return truncatedPurchaseAssembler.toModel(purchaseService.findTruncatedByIds(userId, purchaseId));
