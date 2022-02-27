@@ -85,8 +85,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificateModel certificate = certificateRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(GiftCertificateDto.class, ID.getColumnName(), id)
         );
+        GiftCertificateDto mapped = entityMapper.map(certificate, GiftCertificateDto.class);
         certificateRepository.clear();
-        return entityMapper.map(certificate, GiftCertificateDto.class);
+        return mapped;
     }
 
     /**

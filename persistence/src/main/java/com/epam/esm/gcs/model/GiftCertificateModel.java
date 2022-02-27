@@ -43,7 +43,7 @@ public class GiftCertificateModel extends NamedModel {
     private LocalDateTime lastUpdateDate;
 
     @Exclude
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "gift_certificates_by_tags",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
