@@ -118,30 +118,6 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void findByName_shouldReturnCertificateModel_ifExistsWithName() {
-        final String certificateName = "testName";
-        final GiftCertificateDto expected = getCreatedCertificateDto(certificateName);
-        final GiftCertificateModel certificateModel = mapCertificateToModel(expected);
-
-        when(certificateRepository.findByName(certificateName)).thenReturn(Optional.ofNullable(certificateModel));
-
-        assertEquals(expected, certificateService.findByName(certificateName));
-        verify(certificateRepository).findByName(certificateName);
-        verify(certificateRepository).clear();
-    }
-
-    @Test
-    void findByName_shouldThrowEntityNotFoundException_ifNotExistsWithName() {
-        final String certificateName = "testName";
-
-        when(certificateRepository.findByName(certificateName)).thenThrow(EntityNotFoundException.class);
-
-        assertThrows(EntityNotFoundException.class, () -> certificateService.findByName(certificateName));
-        verify(certificateRepository).findByName(certificateName);
-        verify(certificateRepository, times(0)).flushAndClear();
-    }
-
-    @Test
     void findByFilter_shouldReturnListOfCertificates_whenSatisfyFilter() {
         QueryLimiter limiter = new QueryLimiter(10, 0);
         GiftCertificateFilter filter = new GiftCertificateFilter(
@@ -217,7 +193,7 @@ class GiftCertificateServiceImplTest {
         final GiftCertificateDto expected = getUpdatedCertificateDto(certificateName);
         final GiftCertificateModel updatedModel = mapCertificateToModel(expected);
 
-        when(certificateRepository.findByName(certificateName))
+        when(certificateRepository.findById(beforeUpdateDto.getId()))
                 .thenReturn(Optional.of(beforeUpdateModel));
         when(tagService.existsWithName(tagName1)).thenReturn(true);
         when(tagService.existsWithName(tagName2)).thenReturn(true);
@@ -239,7 +215,7 @@ class GiftCertificateServiceImplTest {
         final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
         final GiftCertificateModel certificateModel = mapCertificateToModel(beforeUpdate);
 
-        when(certificateRepository.findByName(certificateName)).thenReturn(Optional.of(certificateModel));
+        when(certificateRepository.findById(beforeUpdate.getId())).thenReturn(Optional.of(certificateModel));
         when(certificateRepository.update(certificateModel)).thenReturn(Optional.empty());
         when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
                 .thenReturn(List.of("price"));
@@ -252,13 +228,14 @@ class GiftCertificateServiceImplTest {
     void update_shouldThrowEntityNotFoundException_whenCertificateWithIdNotFound() {
         final String certificateName = "testName";
         final GiftCertificateDto beforeUpdate = getCreatedCertificateDto(certificateName);
+        final GiftCertificateModel beforeUpdateModel = modelMapper.map(beforeUpdate, GiftCertificateModel.class);
 
-        when(certificateRepository.findByName(certificateName)).thenReturn(Optional.empty());
         when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
                 .thenReturn(List.of("price"));
+        when(certificateRepository.update(beforeUpdateModel)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> certificateService.update(beforeUpdate));
-        verify(certificateRepository, times(0)).flushAndClear();
+        verify(certificateRepository).flushAndClear();
     }
 
     @Test

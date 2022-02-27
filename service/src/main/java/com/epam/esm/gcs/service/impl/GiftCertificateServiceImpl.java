@@ -90,20 +90,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     /**
-     * Finds certificate (including tags) with provided name
-     *
-     * @param name name of certificate to find
-     * @return certificate if found
-     * @throws EntityNotFoundException if certificate with specified name not found
-     */
-    @Override
-    public GiftCertificateDto findByName(String name) {
-        GiftCertificateDto certificate = findByNameWithoutClear(name);
-        certificateRepository.clear();
-        return certificate;
-    }
-
-    /**
      * Finds certificates satisfying filter
      *
      * @param filter  filter to search by
@@ -169,12 +155,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     /**
-     * Updates certificate with specified name
+     * Updates certificate with specified id
      *
      * @param model certificate to update. Should contain name<br>
      *              <b>Note:</b> only not null fields will be updated
      * @return updated certificate
-     * @throws EntityNotFoundException  if certificate with specified name not found
+     * @throws EntityNotFoundException  if certificate with specified id not found
      * @throws FieldUpdateException     if certificate contains more than one field to update (not null)
      * @throws NoFieldToUpdateException if certificate doesn't contain any field to update
      */
@@ -182,20 +168,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(GiftCertificateDto model) {
         countFieldsToEdit(model);
-        model.setId(findByNameWithoutClear(model.getName()).getId());
         model.setTags(prepareTagsToMerge(model.getTags()));
         Optional<GiftCertificateModel> updated = certificateRepository.update(
                 entityMapper.map(model, GiftCertificateModel.class)
         );
         certificateRepository.flushAndClear();
         return entityMapper.map(updated.orElseThrow(() -> new EntityNotFoundException(
-                GiftCertificateDto.class, NAME.getColumnName(), model.getName())
-        ), GiftCertificateDto.class);
-    }
-
-    private GiftCertificateDto findByNameWithoutClear(String name) {
-        return entityMapper.map(certificateRepository.findByName(name).orElseThrow(
-                () -> new EntityNotFoundException(GiftCertificateDto.class, NAME.getColumnName(), name)
+                GiftCertificateDto.class, ID.getColumnName(), model.getId())
         ), GiftCertificateDto.class);
     }
 

@@ -24,13 +24,14 @@ import java.util.Set;
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 public class GiftCertificateDto {
 
-    @Null(message = "{model.field.not.null}", groups = { CreateValidationGroup.class })
+    @Null(message = "{model.field.not.null}",
+            groups = { CreateValidationGroup.class, UpdateValidationGroup.class })
     private Long id;
 
     @NotBlank(message = "{model.field.null}",
             groups = { CreateValidationGroup.class, OrderValidationGroup.class })
-    @Size(max = 128, message = "{model.field.size.max}",
-            groups = { UpdateValidationGroup.class, CreateValidationGroup.class })
+    @Size(max = 128, message = "{model.field.size.max}", groups = { CreateValidationGroup.class })
+    @Null(message = "{model.field.not.null}", groups = { UpdateValidationGroup.class })
     private String name;
 
     @Size(max = 256, message = "{model.field.size.max}",

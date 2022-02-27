@@ -9,8 +9,6 @@ import java.util.List;
 public interface GiftCertificateService
         extends CrudService<GiftCertificateDto> {
 
-    GiftCertificateDto findByName(String name);
-
     List<GiftCertificateDto> findByFilter(GiftCertificateFilter filter, Limiter limiter);
 
     List<GiftCertificateDto> findByTags(List<String> tags, Limiter limiter);

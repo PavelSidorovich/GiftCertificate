@@ -233,9 +233,10 @@ class GiftCertificateRepositoryImplTest {
     void update_shouldUpdateCertificate_whenExistsWithId() {
         final GiftCertificateModel certificate =
                 certificateRepository.create(getTestGiftCertificates().get(0));
+        final Long id = certificate.getId();
         final GiftCertificateModel certificateToUpdate =
                 GiftCertificateModel.builder()
-                                    .id(certificate.getId())
+                                    .id(id)
                                     .name("testName1")
                                     .description("newDescription")
                                     .price(BigDecimal.ONE)
@@ -244,7 +245,7 @@ class GiftCertificateRepositoryImplTest {
                                     .build();
 
         Optional<GiftCertificateModel> actualOptional = certificateRepository.update(certificateToUpdate);
-        Optional<GiftCertificateModel> expectedOptional = certificateRepository.findByName("testName1");
+        Optional<GiftCertificateModel> expectedOptional = certificateRepository.findById(id);
 
         assertFalse(actualOptional.isEmpty());
         assertFalse(expectedOptional.isEmpty());

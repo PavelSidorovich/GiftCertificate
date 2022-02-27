@@ -81,10 +81,12 @@ public class GiftCertificateController {
         return certificateAssembler.toModel(certificateService.findById(id));
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}")
     public EntityModel<GiftCertificateDto> update(
             @Validated({ UpdateValidationGroup.class })
-            @RequestBody GiftCertificateDto certificate) {
+            @RequestBody GiftCertificateDto certificate,
+            @PathVariable long id) {
+        certificate.setId(id);
         return certificateAssembler.toModel(certificateService.update(certificate));
     }
 
