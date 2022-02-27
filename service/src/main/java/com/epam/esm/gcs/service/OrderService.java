@@ -2,7 +2,6 @@ package com.epam.esm.gcs.service;
 
 import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
-import com.epam.esm.gcs.dto.TruncatedGiftCertificateDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.util.Limiter;
 

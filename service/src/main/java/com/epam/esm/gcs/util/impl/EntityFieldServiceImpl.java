@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,16 +21,12 @@ public class EntityFieldServiceImpl implements EntityFieldService {
 
     @Override
     public List<String> getNotNullFields(Object entity) {
-        Method[] methods = entity.getClass().getDeclaredMethods();
-        List<String> fieldNames = new ArrayList<>();
+        final List<Method> methods = getAllHierarchyMethods(entity.getClass());
 
-        for (Method method : methods) {
-            String fieldName = getNotNullFieldName(entity, method);
-            if (fieldName != null) {
-                fieldNames.add(fieldName);
-            }
-        }
-        return fieldNames;
+        return methods.stream()
+                      .map(method -> getNotNullFieldName(entity, method))
+                      .filter(Objects::nonNull)
+                      .collect(Collectors.toList());
     }
 
     /**
@@ -63,6 +61,16 @@ public class EntityFieldServiceImpl implements EntityFieldService {
             log.error("Cannot invoke get method of entity", ex);
         }
         return null;
+    }
+
+    private List<Method> getAllHierarchyMethods(Class<?> clazz) {
+        final Class<?> superclass = clazz.getSuperclass();
+        final List<Method> methods = new ArrayList<>(Arrays.asList(clazz.getDeclaredMethods()));
+
+        if (superclass != null && superclass != Object.class) {
+            methods.addAll(getAllHierarchyMethods(superclass));
+        }
+        return methods;
     }
 
 }

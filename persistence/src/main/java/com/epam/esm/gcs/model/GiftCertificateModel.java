@@ -10,9 +10,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,19 +21,11 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
 @Table(name = "gift_certificate")
-public class GiftCertificateModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String name;
+public class GiftCertificateModel extends NamedModel {
 
     @Column(nullable = false)
     private String description;
@@ -62,6 +51,19 @@ public class GiftCertificateModel {
     )
     private Set<TagModel> tags;
 
+    @Builder
+    public GiftCertificateModel(Long id, String name, String description, BigDecimal price, Integer duration,
+                                LocalDateTime createDate, LocalDateTime lastUpdateDate,
+                                Set<TagModel> tags) {
+        super(id, name);
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.tags = tags;
+    }
+
     @PrePersist
     public void onPrePersist() {
         createDate = LocalDateTime.now();
@@ -70,7 +72,6 @@ public class GiftCertificateModel {
 
     @PreUpdate
     public void onPreUpdate() {
-        name = name.toLowerCase();
         lastUpdateDate = LocalDateTime.now();
     }
 
