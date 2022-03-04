@@ -82,6 +82,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void findAll_shouldReturnListOfUsers_always() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<UserModel> page1 = (Page<UserModel>) mock(Page.class);

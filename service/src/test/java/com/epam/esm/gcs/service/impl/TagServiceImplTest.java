@@ -114,6 +114,7 @@ class TagServiceImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void findAll_shouldReturnListOfTags_always() {
         final List<TagModel> tagModels = List.of(
                 new TagModel(1L, "Car"),
