@@ -1,18 +1,18 @@
 package com.epam.esm.gcs.repository;
 
 import com.epam.esm.gcs.model.OrderModel;
-import com.epam.esm.gcs.model.UserModel;
-import com.epam.esm.gcs.util.Limiter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends CrdRepository<OrderModel> {
+@Repository
+public interface OrderRepository extends JpaRepository<OrderModel, Long> {
 
-    List<OrderModel> findByUserId(long id, Limiter limiter);
+    List<OrderModel> findByUserId(long id, Pageable pageable);
 
-    Optional<OrderModel> findByIds(long userId, long orderId);
-
-    Optional<UserModel> findTheMostActiveUser();
+    Optional<OrderModel> findByUserIdAndId(long userId, long orderId);
 
 }

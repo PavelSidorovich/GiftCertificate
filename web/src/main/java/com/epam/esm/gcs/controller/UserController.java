@@ -8,7 +8,7 @@ import com.epam.esm.gcs.hateoas.TruncatedPurchaseAssembler;
 import com.epam.esm.gcs.hateoas.UserAssembler;
 import com.epam.esm.gcs.service.OrderService;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
+import com.epam.esm.gcs.spec.PageRequestFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -34,12 +34,15 @@ public class UserController {
     private final UserAssembler userAssembler;
     private final OrderAssembler orderAssembler;
     private final TruncatedPurchaseAssembler truncatedOrderAssembler;
+    private final PageRequestFactory pageRequestFactory;
 
     @GetMapping
     public CollectionModel<EntityModel<UserDto>> findAll(
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer offset) {
-        return userAssembler.toCollectionModel(userService.findAll(new QueryLimiter(limit, offset)));
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return userAssembler.toCollectionModel(
+                userService.findAll(pageRequestFactory.pageable(page, size))
+        );
     }
 
     @GetMapping("/{id}")
@@ -59,10 +62,10 @@ public class UserController {
     @GetMapping("/{userId}/orders")
     public CollectionModel<EntityModel<OrderDto>> findUserOrders(
             @PathVariable long userId,
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer offset) {
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize) {
         return orderAssembler.toCollectionModel(
-                orderService.findByUserId(userId, new QueryLimiter(limit, offset))
+                orderService.findByUserId(userId, pageRequestFactory.pageable(page, pageSize))
         );
     }
 

@@ -3,8 +3,7 @@ package com.epam.esm.gcs.controller;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.hateoas.TagAssembler;
 import com.epam.esm.gcs.service.TagService;
-import com.epam.esm.gcs.util.Limiter;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
+import com.epam.esm.gcs.spec.PageRequestFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.hateoas.CollectionModel;
@@ -31,13 +30,15 @@ public class TagController {
 
     private final TagService tagService;
     private final TagAssembler tagAssembler;
+    private final PageRequestFactory pageRequestFactory;
 
     @GetMapping
     public CollectionModel<EntityModel<TagDto>> findAll(
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer offset) {
-        Limiter limiter = new QueryLimiter(limit, offset);
-        return tagAssembler.toCollectionModel(tagService.findAll(limiter));
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return tagAssembler.toCollectionModel(
+                tagService.findAll(pageRequestFactory.pageable(page, size))
+        );
     }
 
     @GetMapping("/{id}")

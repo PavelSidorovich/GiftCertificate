@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString.Exclude;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,26 +25,29 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
-@Table(name = "gift_certificate")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = GiftCertificateModel_.TABLE)
 public class GiftCertificateModel extends NamedModel {
 
-    @Column(nullable = false)
+    @Column(name = GiftCertificateModel_.DESCRIPTION, nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = GiftCertificateModel_.PRICE, nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false)
+    @Column(name = GiftCertificateModel_.DURATION, nullable = false)
     private Integer duration;
 
-    @Column(name = "create_date", nullable = false)
+    @CreatedDate
+    @Column(name = GiftCertificateModel_.CREATE_DATE, nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "last_update_date", nullable = false)
+    @LastModifiedDate
+    @Column(name = GiftCertificateModel_.LAST_UPDATE_DATE, nullable = false)
     private LocalDateTime lastUpdateDate;
 
     @Exclude
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "gift_certificates_by_tags",
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
@@ -52,9 +56,9 @@ public class GiftCertificateModel extends NamedModel {
     private Set<TagModel> tags;
 
     @Builder
-    public GiftCertificateModel(Long id, String name, String description, BigDecimal price, Integer duration,
-                                LocalDateTime createDate, LocalDateTime lastUpdateDate,
-                                Set<TagModel> tags) {
+    public GiftCertificateModel(Long id, String name, String description,
+                                BigDecimal price, Integer duration, LocalDateTime createDate,
+                                LocalDateTime lastUpdateDate, Set<TagModel> tags) {
         super(id, name);
         this.description = description;
         this.price = price;
@@ -62,17 +66,6 @@ public class GiftCertificateModel extends NamedModel {
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
         this.tags = tags;
-    }
-
-    @PrePersist
-    public void onPrePersist() {
-        createDate = LocalDateTime.now();
-        onPreUpdate();
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        lastUpdateDate = LocalDateTime.now();
     }
 
 }

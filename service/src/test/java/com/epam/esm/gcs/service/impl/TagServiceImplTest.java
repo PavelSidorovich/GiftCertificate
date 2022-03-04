@@ -6,12 +6,13 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
-import com.epam.esm.gcs.util.Limiter;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +43,12 @@ class TagServiceImplTest {
         final TagModel tagModelToCreate = new TagModel(tagName);
         final TagModel tagModelToReturn = new TagModel(tagId, tagName);
 
-        when(tagRepository.existsWithName(tagName)).thenReturn(false);
-        when(tagRepository.create(tagModelToCreate)).thenReturn(tagModelToReturn);
+        when(tagRepository.existsByNameIgnoreCase(tagName)).thenReturn(false);
+        when(tagRepository.save(tagModelToCreate)).thenReturn(tagModelToReturn);
 
         assertEquals(tagDtoToReturn, tagService.create(tagDtoToCreate));
-        verify(tagRepository).existsWithName(tagName);
-        verify(tagRepository).create(tagModelToCreate);
-        verify(tagRepository).flushAndClear();
+        verify(tagRepository).existsByNameIgnoreCase(tagName);
+        verify(tagRepository).save(tagModelToCreate);
     }
 
     @Test
@@ -59,12 +59,12 @@ class TagServiceImplTest {
         final TagModel tagModelToCreate = new TagModel(tagName);
         final TagModel tagModelToReturn = new TagModel(tagId, tagName);
 
-        when(tagRepository.existsWithName(tagName)).thenReturn(true);
-        when(tagRepository.create(tagModelToCreate)).thenReturn(tagModelToReturn);
+        when(tagRepository.existsByNameIgnoreCase(tagName)).thenReturn(true);
+        when(tagRepository.save(tagModelToCreate)).thenReturn(tagModelToReturn);
 
         assertThrows(DuplicatePropertyException.class, () -> tagService.create(tagDtoToCreate));
-        verify(tagRepository).existsWithName(tagName);
-        verify(tagRepository, times(0)).create(tagModelToCreate);
+        verify(tagRepository).existsByNameIgnoreCase(tagName);
+        verify(tagRepository, times(0)).save(tagModelToCreate);
     }
 
     @Test
@@ -78,7 +78,6 @@ class TagServiceImplTest {
 
         assertEquals(expected, tagService.findById(tagId));
         verify(tagRepository).findById(tagId);
-        verify(tagRepository).clear();
     }
 
     @Test
@@ -98,21 +97,20 @@ class TagServiceImplTest {
         final TagModel tagModel = new TagModel(tagId, tagName);
         final TagDto expected = new TagDto(tagId, tagName);
 
-        when(tagRepository.findByName(tagName)).thenReturn(Optional.of(tagModel));
+        when(tagRepository.findByNameIgnoreCase(tagName)).thenReturn(Optional.of(tagModel));
 
         assertEquals(expected, tagService.findByName(tagName));
-        verify(tagRepository).findByName(tagName);
-        verify(tagRepository).clear();
+        verify(tagRepository).findByNameIgnoreCase(tagName);
     }
 
     @Test
     void findByName_shouldThrowEntityNotFoundException_ifCanNotFindTagWithName() {
         final String tagName = "testName";
 
-        when(tagRepository.findByName(tagName)).thenReturn(Optional.empty());
+        when(tagRepository.findByNameIgnoreCase(tagName)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> tagService.findByName(tagName));
-        verify(tagRepository).findByName(tagName);
+        verify(tagRepository).findByNameIgnoreCase(tagName);
     }
 
     @Test
@@ -122,10 +120,12 @@ class TagServiceImplTest {
                 new TagModel(2L, "Game"),
                 new TagModel(5L, "Courses")
         );
-        Limiter limiter = new QueryLimiter(10, 0);
-        when(tagRepository.findAll(limiter)).thenReturn(tagModels);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<TagModel> page = (Page<TagModel>) mock(Page.class);
+        when(page.getContent()).thenReturn(tagModels);
+        when(tagRepository.findAll(pageable)).thenReturn(page);
 
-        final List<TagDto> dtoList = tagService.findAll(limiter);
+        final List<TagDto> dtoList = tagService.findAll(pageable);
 
         assertEquals(3, dtoList.size());
         assertTrue(dtoList.containsAll(
@@ -135,34 +135,22 @@ class TagServiceImplTest {
                         new TagDto(5L, "Courses")
                 )
         ));
-        verify(tagRepository).findAll(limiter);
-        verify(tagRepository).clear();
+        verify(tagRepository).findAll(pageable);
     }
 
     @Test
-    void delete_shouldDeleteEntityById_ifWasFoundAndDeleted() {
+    void delete_shouldDeleteEntityById_ifWasFound() {
         final long tagId = 1L;
-        when(tagRepository.delete(tagId)).thenReturn(true);
 
         tagService.delete(tagId);
 
-        verify(tagRepository).delete(tagId);
-        verify(tagRepository).flushAndClear();
-    }
-
-    @Test
-    void delete_shouldThrowEntityNotFoundException_ifEntityNotExists() {
-        final long tagId = 1L;
-        when(tagRepository.delete(tagId)).thenReturn(false);
-
-        assertThrows(EntityNotFoundException.class, () -> tagService.delete(tagId));
-        verify(tagRepository).delete(tagId);
+        verify(tagRepository).deleteById(tagId);
     }
 
     @Test
     void existsWithName_shouldReturnTrue_ifTagExistsWithName() {
         final String testName = "testName";
-        when(tagRepository.existsWithName(testName)).thenReturn(true);
+        when(tagRepository.existsByNameIgnoreCase(testName)).thenReturn(true);
 
         assertTrue(tagService.existsWithName(testName));
     }

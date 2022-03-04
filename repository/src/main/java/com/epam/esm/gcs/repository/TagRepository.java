@@ -1,13 +1,16 @@
 package com.epam.esm.gcs.repository;
 
 import com.epam.esm.gcs.model.TagModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface TagRepository extends CrdRepository<TagModel> {
+@Repository
+public interface TagRepository extends JpaRepository<TagModel, Long> {
 
-    Optional<TagModel> findByName(String name);
+    Optional<TagModel> findByNameIgnoreCase(String name);
 
-    boolean existsWithName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class TruncatedOrderDto {
 
     @Null(message = "{model.field.not.null}")
-    private long id;
+    private Long id;
 
     private BigDecimal cost;
     private LocalDateTime purchaseDate;

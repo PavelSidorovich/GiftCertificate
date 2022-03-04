@@ -8,4 +8,6 @@ public interface UserService extends CrdService<UserDto> {
 
     boolean existsWithEmail(String email);
 
+    UserDto findTheMostActiveUser();
+
 }

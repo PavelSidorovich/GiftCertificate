@@ -4,13 +4,16 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.TagModel;
+import com.epam.esm.gcs.model.TagModel_;
 import com.epam.esm.gcs.repository.TagRepository;
-import com.epam.esm.gcs.repository.column.TagColumn;
 import com.epam.esm.gcs.service.TagService;
-import com.epam.esm.gcs.util.Limiter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +38,12 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagDto create(TagDto model) {
         final String tagName = model.getName();
-        if (tagRepository.existsWithName(tagName)) {
+        if (existsWithName(tagName)) {
             throw new DuplicatePropertyException(
-                    TagDto.class, TagColumn.NAME.getColumnName(), tagName
+                    TagDto.class, TagModel_.NAME, tagName
             );
         }
-        TagModel tag = tagRepository.create(modelMapper.map(model, TagModel.class));
-        tagRepository.flushAndClear();
+        TagModel tag = tagRepository.save(modelMapper.map(model, TagModel.class));
         return modelMapper.map(tag, TagDto.class);
     }
 
@@ -56,10 +58,9 @@ public class TagServiceImpl implements TagService {
     public TagDto findById(long id) {
         TagModel tag = tagRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(
-                        TagDto.class, TagColumn.ID.getColumnName(), id
+                        TagDto.class, TagModel_.ID, id
                 )
         );
-        tagRepository.clear();
         return modelMapper.map(tag, TagDto.class);
     }
 
@@ -72,12 +73,11 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public TagDto findByName(String name) {
-        TagModel tag = tagRepository.findByName(name).orElseThrow(
+        TagModel tag = tagRepository.findByNameIgnoreCase(name).orElseThrow(
                 () -> new EntityNotFoundException(
-                        GiftCertificateDto.class, TagColumn.NAME.getColumnName(), name
+                        GiftCertificateDto.class, TagModel_.NAME, name
                 )
         );
-        tagRepository.clear();
         return modelMapper.map(tag, TagDto.class);
     }
 
@@ -87,12 +87,10 @@ public class TagServiceImpl implements TagService {
      * @return list of tags
      */
     @Override
-    public List<TagDto> findAll(Limiter limiter) {
-        List<TagDto> tags = tagRepository.findAll(limiter).stream()
-                                         .map(model -> modelMapper.map(model, TagDto.class))
-                                         .collect(Collectors.toList());
-        tagRepository.clear();
-        return tags;
+    public List<TagDto> findAll(Pageable pageable) {
+        return tagRepository.findAll(pageable).getContent().stream()
+                            .map(model -> modelMapper.map(model, TagDto.class))
+                            .collect(Collectors.toList());
     }
 
     /**
@@ -104,12 +102,14 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void delete(long id) {
-        if (!tagRepository.delete(id)) {
-            throw new EntityNotFoundException(
-                    TagDto.class, TagColumn.ID.getColumnName(), id
-            );
+        try {
+            tagRepository.deleteById(id);
+            tagRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new WiredEntityDeletionException(TagDto.class, TagModel_.ID, id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new EntityNotFoundException(TagDto.class, TagModel_.ID, id);
         }
-        tagRepository.flushAndClear();
     }
 
     /**
@@ -120,9 +120,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public boolean existsWithName(String name) {
-        boolean exists = tagRepository.existsWithName(name);
-        tagRepository.clear();
-        return exists;
+        return tagRepository.existsByNameIgnoreCase(name);
     }
 
 }

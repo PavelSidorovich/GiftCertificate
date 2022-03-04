@@ -3,9 +3,12 @@ package com.epam.esm.gcs.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,31 +24,33 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
-@Table(name = "user_order")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = OrderModel_.TABLE)
 public class OrderModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @OneToOne
-    @JoinColumn(name = "certificate_id", referencedColumnName = "id")
+    @JoinColumn(name = OrderModel_.CERTIFICATE_ID, referencedColumnName = GiftCertificateModel_.ID)
     private GiftCertificateModel certificate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = OrderModel_.USER_ID, referencedColumnName = UserModel_.ID)
     private UserModel user;
 
-    @Column(name = "total_cost", nullable = false)
+    @Column(name = OrderModel_.TOTAL_COST, nullable = false)
     private BigDecimal cost;
 
-    @Column(name = "purchase_date", nullable = false)
+    @CreatedDate
+    @Column(name = OrderModel_.PURCHASE_DATE, nullable = false)
     private LocalDateTime purchaseDate;
 
     @PrePersist
     public void onPrePersist() {
-        purchaseDate = LocalDateTime.now();
         cost = certificate.getPrice();
+        user.setBalance(user.getBalance().subtract(cost));
     }
 
 }

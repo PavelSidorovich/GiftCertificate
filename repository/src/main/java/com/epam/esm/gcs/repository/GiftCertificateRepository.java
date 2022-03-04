@@ -1,21 +1,30 @@
 package com.epam.esm.gcs.repository;
 
-import com.epam.esm.gcs.filter.GiftCertificateFilter;
 import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.util.Limiter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface GiftCertificateRepository
-        extends CrudRepository<GiftCertificateModel> {
+        extends JpaRepository<GiftCertificateModel, Long>,
+                JpaSpecificationExecutor<GiftCertificateModel> {
 
-    Optional<GiftCertificateModel> findByName(String name);
+    @Query("SELECT DISTINCT c FROM GiftCertificateModel c " +
+           "JOIN c.tags as t " +
+           "WHERE lower(t.name) IN ?1 " +
+           "group by c.id, c.name, c.price, c.duration, " +
+           "c.description, c.createDate, c.lastUpdateDate " +
+           "having count (t.id) = ?2")
+    List<GiftCertificateModel> findByTags(List<String> tags, long size, Pageable pageable);
 
-    List<GiftCertificateModel> findByTags(List<String> tags, Limiter limiter);
+    Optional<GiftCertificateModel> findByNameIgnoreCase(String name);
 
-    List<GiftCertificateModel> findByFilter(GiftCertificateFilter filter, Limiter limiter);
-
-    boolean existsWithName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
 }

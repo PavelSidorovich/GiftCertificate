@@ -6,12 +6,12 @@ plugins {
 group = 'com.epam.esm.gcs'
 version = '1.0-SNAPSHOT'
 
-ext {
-    jacksonVersion = '2.13.1'
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.3'
+//    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.3'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.6.3'
+//    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.3'
+
     implementation project(':persistence')
     implementation project(':service')
 }

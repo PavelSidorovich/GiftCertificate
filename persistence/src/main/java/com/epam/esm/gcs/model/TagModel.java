@@ -10,7 +10,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor(force = true)
 @Entity
-@Table(name = "gift_certificate_tag")
+@Table(name = TagModel_.TABLE)
 public class TagModel extends NamedModel {
 
     public TagModel(Long id, String name) {

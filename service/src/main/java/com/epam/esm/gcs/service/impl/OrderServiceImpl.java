@@ -9,16 +9,16 @@ import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.OrderModel;
+import com.epam.esm.gcs.model.OrderModel_;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.OrderService;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.Limiter;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static com.epam.esm.gcs.repository.column.GiftCertificateColumn.*;
 
 @Service
 @AllArgsConstructor
@@ -59,29 +57,23 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setCertificate(certificate);
         checkBalance(certificate, user);
 
-        OrderModel orderModel = orderRepository.create(
-                modelMapper.map(orderDto, OrderModel.class)
-        );
-        orderRepository.flushAndClear();
+        OrderModel orderModel = orderRepository.save(modelMapper.map(orderDto, OrderModel.class));
         return modelMapper.map(orderModel, OrderDto.class);
     }
 
     /**
      * Finds user orders
      *
-     * @param userId  user id
-     * @param limiter query limiter
+     * @param userId   user id
+     * @param pageable pagination
      * @return user orders
      */
     @Override
-    public List<OrderDto> findByUserId(long userId, Limiter limiter) {
+    public List<OrderDto> findByUserId(long userId, Pageable pageable) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        List<OrderDto> orders =
-                orderRepository.findByUserId(userId, limiter).stream()
-                               .map(order -> modelMapper.map(order, OrderDto.class))
-                               .collect(Collectors.toList());
-        orderRepository.clear();
-        return orders;
+        return orderRepository.findByUserId(userId, pageable).stream()
+                              .map(order -> modelMapper.map(order, OrderDto.class))
+                              .collect(Collectors.toList());
     }
 
     /**
@@ -94,10 +86,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public TruncatedOrderDto findTruncatedByIds(long userId, long orderId) {
         userService.findById(userId); // checks if user exists (throws exception if not)
-        OrderModel certificate = orderRepository.findByIds(userId, orderId).orElseThrow(
-                () -> new EntityNotFoundException(OrderDto.class, ID.getColumnName(), orderId)
+        OrderModel certificate = orderRepository.findByUserIdAndId(userId, orderId).orElseThrow(
+                () -> new EntityNotFoundException(OrderDto.class, OrderModel_.ID, orderId)
         );
-        orderRepository.clear();
         return modelMapper.map(certificate, TruncatedOrderDto.class);
     }
 
@@ -110,21 +101,17 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public TagDto findMostWidelyTag() {
-        Optional<UserModel> user = orderRepository.findTheMostActiveUser();
+        UserDto user = userService.findTheMostActiveUser();
 
-        if (user.isPresent()) {
-            Optional<TagModel> tag = findWidelyUsedTag(user.get());
-            if (tag.isPresent()) {
-                orderRepository.clear();
-                return modelMapper.map(tag.get(), TagDto.class);
-            }
+        Optional<TagModel> tag = findWidelyUsedTag(modelMapper.map(user, UserModel.class));
+        if (tag.isPresent()) {
+            return modelMapper.map(tag.get(), TagDto.class);
         }
         throw new NoWidelyUsedTagException(TagDto.class);
     }
 
     private Optional<TagModel> findWidelyUsedTag(UserModel user) {
-        Limiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
-        return orderRepository.findByUserId(user.getId(), limiter).stream()
+        return orderRepository.findByUserId(user.getId(), Pageable.unpaged()).stream()
                               .map(orderModel -> orderModel.getCertificate()
                                                            .getTags())
                               .flatMap(Set::stream)

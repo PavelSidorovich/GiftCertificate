@@ -1,17 +1,20 @@
 package com.epam.esm.gcs.service.impl;
 
+import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.model.UserModel;
+import com.epam.esm.gcs.model.UserModel_;
 import com.epam.esm.gcs.repository.UserRepository;
-import com.epam.esm.gcs.repository.column.UserColumn;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.Limiter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,23 +29,21 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto create(UserDto model) {
+//        if(userRepository.existsWithEmail(mo))
         throw new UnsupportedOperationException();
     }
 
     /**
      * Finds all users
      *
-     * @param limiter query limiter
+     * @param pageable pagination
      * @return list of users
      */
     @Override
-    public List<UserDto> findAll(Limiter limiter) {
-        List<UserDto> users =
-                userRepository.findAll(limiter).stream()
-                              .map(user -> modelMapper.map(user, UserDto.class))
-                              .collect(Collectors.toList());
-        userRepository.clear();
-        return users;
+    public List<UserDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).getContent().stream()
+                             .map(user -> modelMapper.map(user, UserDto.class))
+                             .collect(Collectors.toList());
     }
 
     /**
@@ -56,10 +57,9 @@ public class UserServiceImpl implements UserService {
     public UserDto findById(long id) {
         UserModel user = userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(
-                        UserDto.class, UserColumn.ID.getColumnName(), id
+                        UserDto.class, UserModel_.ID, id
                 )
         );
-        userRepository.clear();
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -74,10 +74,9 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) {
         UserModel user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(
-                        UserDto.class, UserColumn.EMAIL.getColumnName(), email
+                        UserDto.class, UserModel_.EMAIL, email
                 )
         );
-        userRepository.clear();
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -97,9 +96,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean existsWithEmail(String email) {
-        boolean exists = userRepository.existsWithEmail(email);
-        userRepository.clear();
-        return exists;
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public UserDto findTheMostActiveUser() {
+        Optional<UserModel> theMostActiveUser = userRepository.findTheMostActiveUser();
+        if (theMostActiveUser.isPresent()) {
+            return modelMapper.map(theMostActiveUser.get(), UserDto.class);
+        }
+        throw new NoWidelyUsedTagException(TagDto.class);
     }
 
 }

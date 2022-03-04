@@ -6,16 +6,25 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
 import com.epam.esm.gcs.exception.NoFieldToUpdateException;
-import com.epam.esm.gcs.filter.GiftCertificateFilter;
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.model.GiftCertificateModel_;
+import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.TagService;
+import com.epam.esm.gcs.spec.CertificateSearchCriteria;
+import com.epam.esm.gcs.spec.impl.CertificateCriteriaToSpecificationConverter;
 import com.epam.esm.gcs.util.EntityFieldService;
 import com.epam.esm.gcs.util.EntityMapper;
-import com.epam.esm.gcs.util.Limiter;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +33,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.gcs.repository.column.GiftCertificateColumn.*;
-
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private static final String DATE_NAMING_PART = "date";
-    private static final String NAME_NAMING_PART = "name";
-    private static final String ID_NAMING_PART = "id";
 
     private final GiftCertificateRepository certificateRepository;
     private final TagService tagService;
-    private final EntityFieldService entityFieldService;
     private final EntityMapper entityMapper;
+    private final ModelMapper certificateUpdateMapper;
+    private final EntityFieldService entityFieldService;
+    private final CertificateCriteriaToSpecificationConverter converter;
 
     /**
      * Creates new certificate as well as tags in it
@@ -52,25 +59,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto create(GiftCertificateDto certificate) {
         final String certificateName = certificate.getName();
 
-        if (certificateRepository.existsWithName(certificateName)) {
+        if (certificateRepository.existsByNameIgnoreCase(certificateName)) {
             throw new DuplicatePropertyException(
-                    GiftCertificateDto.class, NAME.getColumnName(), certificateName
+                    GiftCertificateDto.class, GiftCertificateModel_.NAME, certificateName
             );
         }
-        certificate.setTags(prepareTagsToMerge(certificate.getTags()));
-        GiftCertificateModel created = certificateRepository.create(
-                entityMapper.map(certificate, GiftCertificateModel.class)
-        );
-        certificateRepository.flushAndClear();
-        return entityMapper.map(created, GiftCertificateDto.class);
-    }
+        GiftCertificateModel certToCreate = entityMapper.map(certificate, GiftCertificateModel.class);
+        certToCreate.setTags(prepareTagsForCertificate(certificate.getTags()));
 
-    private Set<TagDto> prepareTagsToMerge(Set<TagDto> tags) {
-        return tags == null? null
-                : tags.stream()
-                      .map(tag -> tagService.existsWithName(tag.getName())
-                              ? tagService.findByName(tag.getName()) : tag)
-                      .collect(Collectors.toSet());
+        return entityMapper.map(certificateRepository.save(certToCreate), GiftCertificateDto.class);
     }
 
     /**
@@ -83,83 +80,82 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto findById(long id) {
         GiftCertificateModel certificate = certificateRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(GiftCertificateDto.class, ID.getColumnName(), id)
+                () -> new EntityNotFoundException(GiftCertificateDto.class, GiftCertificateModel_.ID, id)
         );
-        GiftCertificateDto mapped = entityMapper.map(certificate, GiftCertificateDto.class);
-        certificateRepository.clear();
-        return mapped;
+        return entityMapper.map(certificate, GiftCertificateDto.class);
     }
 
     /**
      * Finds certificates satisfying filter
      *
-     * @param filter  filter to search by
-     * @param limiter query limiter
+     * @param searchCriteria filter to search by
      * @return list of certificates which satisfy applied filter
      */
     @Override
-    public List<GiftCertificateDto> findByFilter(GiftCertificateFilter filter, Limiter limiter) {
-        List<GiftCertificateDto> certificates = entityMapper.map(
-                certificateRepository.findByFilter(filter, limiter), GiftCertificateDto.class
+    public List<GiftCertificateDto> findByFilter(CertificateSearchCriteria searchCriteria) {
+        Pair<Specification<GiftCertificateModel>, Pageable> pair =
+                converter.byCriteria(searchCriteria, GiftCertificateModel.class);
+        return entityMapper.map(
+                certificateRepository.findAll(pair.getFirst(), pair.getSecond()).getContent(),
+                GiftCertificateDto.class
         );
-        certificateRepository.clear();
-        return certificates;
     }
 
     /**
      * Finds all certificates (including tags)
      *
+     * @param pageable pagination
      * @return list of certificates
      */
     @Override
-    public List<GiftCertificateDto> findAll(Limiter limiter) {
-        List<GiftCertificateDto> certificates = entityMapper.map(
-                certificateRepository.findAll(limiter), GiftCertificateDto.class
+    public List<GiftCertificateDto> findAll(Pageable pageable) {
+        return entityMapper.map(
+                certificateRepository.findAll(pageable).getContent(),
+                GiftCertificateDto.class
         );
-        certificateRepository.clear();
-        return certificates;
     }
 
     /**
      * Find certificates with provided tags
      *
-     * @param tags    tags in certificate
-     * @param limiter query limiter
+     * @param tags     tags in certificate
+     * @param pageable pagination
      * @return list of certificates with containing tags
      */
     @Override
-    public List<GiftCertificateDto> findByTags(List<String> tags, Limiter limiter) {
+    public List<GiftCertificateDto> findByTags(List<String> tags, Pageable pageable) {
         List<String> tagModels = tags.stream()
                                      .map(String::toLowerCase)
                                      .collect(Collectors.toList());
-        List<GiftCertificateDto> certificates = entityMapper.map(
-                certificateRepository.findByTags(tagModels, limiter),
+        return entityMapper.map(
+                certificateRepository.findByTags(tagModels, tags.size(), pageable),
                 GiftCertificateDto.class
         );
-        certificateRepository.clear();
-        return certificates;
     }
 
     /**
      * Deletes certificate with specified id
      *
      * @param id id of certificate to delete
-     * @throws EntityNotFoundException if certificate with specified id not found
      */
     @Override
     @Transactional
     public void delete(long id) {
-        if (!certificateRepository.delete(id)) {
-            throw new EntityNotFoundException(GiftCertificateDto.class, ID.getColumnName(), id);
+        try {
+            certificateRepository.deleteById(id);
+            certificateRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new WiredEntityDeletionException(GiftCertificateDto.class, GiftCertificateModel_.ID, id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new EntityNotFoundException(GiftCertificateDto.class, GiftCertificateModel_.ID, id);
         }
-        certificateRepository.flushAndClear();
     }
 
     /**
      * Updates certificate with specified id
      *
-     * @param model certificate to update. Should contain name<br>
-     *              <b>Note:</b> only not null fields will be updated
+     * @param certificateDto certificate to update. Should contain name<br>
+     *                       <b>Note:</b> only not null fields will be updated
      * @return updated certificate
      * @throws EntityNotFoundException  if certificate with specified id not found
      * @throws FieldUpdateException     if certificate contains more than one field to update (not null)
@@ -167,21 +163,26 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     @Transactional
-    public GiftCertificateDto update(GiftCertificateDto model) {
-        countFieldsToEdit(model);
-        model.setTags(prepareTagsToMerge(model.getTags()));
-        Optional<GiftCertificateModel> updated = certificateRepository.update(
-                entityMapper.map(model, GiftCertificateModel.class)
+    public GiftCertificateDto update(GiftCertificateDto certificateDto) {
+        countFieldsToEdit(certificateDto);
+        Optional<GiftCertificateModel> optCert = certificateRepository.findById(certificateDto.getId());
+        GiftCertificateModel certToUpdate = optCert.orElseThrow(() -> new EntityNotFoundException(
+                GiftCertificateDto.class, GiftCertificateModel_.ID, certificateDto.getId())
         );
-        certificateRepository.flushAndClear();
-        return entityMapper.map(updated.orElseThrow(() -> new EntityNotFoundException(
-                GiftCertificateDto.class, ID.getColumnName(), model.getId())
-        ), GiftCertificateDto.class);
+        Set<TagModel> preparedTags = prepareTagsForCertificate(certificateDto.getTags());
+        certificateUpdateMapper.map(certificateDto, certToUpdate);
+        if (preparedTags != null) {
+            certToUpdate.setTags(preparedTags);
+        }
+
+        return entityMapper.map(certificateRepository.save(certToUpdate), GiftCertificateDto.class);
     }
 
     private void countFieldsToEdit(GiftCertificateDto model) {
         List<String> fields = entityFieldService.getNotNullFields(
-                model, DATE_NAMING_PART, NAME_NAMING_PART, ID_NAMING_PART
+                model, DATE_NAMING_PART,
+                GiftCertificateModel_.NAME,
+                GiftCertificateModel_.ID
         );
         final int fieldsSize = fields.size();
 
@@ -190,6 +191,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         } else if (fieldsSize < 1) {
             throw new NoFieldToUpdateException(GiftCertificateDto.class);
         }
+    }
+
+    private Set<TagModel> prepareTagsForCertificate(Set<TagDto> tags) {
+        return tags == null? null
+                : tags.stream()
+                      .map(tag -> entityMapper.map(
+                              tagService.existsWithName(tag.getName())
+                                      ? tagService.findByName(tag.getName())
+                                      : tagService.create(tag), TagModel.class)
+                      )
+                      .collect(Collectors.toSet());
     }
 
 }

@@ -14,12 +14,13 @@ import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ class OrderServiceImplTest {
     private final UserService userService;
     private final GiftCertificateService certificateService;
     private final ModelMapper mapper;
+    private final Pageable pageable;
 
     public OrderServiceImplTest(@Mock OrderRepository orderRepository,
                                 @Mock UserService userService,
@@ -52,6 +54,7 @@ class OrderServiceImplTest {
         this.orderService = new OrderServiceImpl(
                 userService, orderRepository,
                 certificateService, mapper);
+        this.pageable = PageRequest.of(0, 10);
     }
 
     @Test
@@ -107,17 +110,15 @@ class OrderServiceImplTest {
         beforePurchase.setCertificate(certificateModel);
         when(userService.findById(userId)).thenReturn(user);
         when(certificateService.findById(certificateId)).thenReturn(certificate);
-        when(orderRepository.create(beforePurchase)).thenReturn(getOrderModel(time));
+        when(orderRepository.save(beforePurchase)).thenReturn(getOrderModel(time));
 
         OrderDto actual = orderService.purchase(userId, certificateId);
 
         assertEquals(expected, actual);
-        verify(orderRepository).flushAndClear();
     }
 
     @Test
     void findByUserId_shouldReturnUserOrders_whenExists() {
-        final QueryLimiter limiter = new QueryLimiter(10, 0);
         final UserDto user = getUser();
         final long userId = user.getId();
         final OrderDto orderDto = getOrderDto();
@@ -125,26 +126,24 @@ class OrderServiceImplTest {
         final List<OrderDto> expected = List.of(orderDto);
 
         when(userService.findById(userId)).thenReturn(user);
-        when(orderRepository.findByUserId(userId, limiter)).thenReturn(List.of(orderModel));
+        when(orderRepository.findByUserId(userId, pageable)).thenReturn(List.of(orderModel));
 
-        List<OrderDto> actual = orderService.findByUserId(userId, limiter);
+        List<OrderDto> actual = orderService.findByUserId(userId, pageable);
 
         assertEquals(expected, actual);
-        verify(orderRepository).clear();
     }
 
     @Test
     void findByUserId_shouldThrowEntityNotFoundException_whenUserNotExists() {
-        final QueryLimiter limiter = new QueryLimiter(10, 0);
         final long userId = 1L;
         final OrderDto orderDto = getOrderDto();
         final OrderModel orderModel = mapper.map(orderDto, OrderModel.class);
 
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
-        when(orderRepository.findByUserId(userId, limiter)).thenReturn(List.of(orderModel));
+        when(orderRepository.findByUserId(userId, pageable)).thenReturn(List.of(orderModel));
 
         assertThrows(EntityNotFoundException.class,
-                     () -> orderService.findByUserId(userId, limiter));
+                     () -> orderService.findByUserId(userId, pageable));
     }
 
     @Test
@@ -157,12 +156,11 @@ class OrderServiceImplTest {
                 new TruncatedOrderDto(orderId, orderModel.getCost(), orderModel.getPurchaseDate());
 
         when(userService.findById(userId)).thenReturn(user);
-        when(orderRepository.findByIds(userId, orderId)).thenReturn(Optional.of(orderModel));
+        when(orderRepository.findByUserIdAndId(userId, orderId)).thenReturn(Optional.of(orderModel));
 
         TruncatedOrderDto truncated = orderService.findTruncatedByIds(userId, orderId);
 
         assertEquals(expected, truncated);
-        verify(orderRepository).clear();
     }
 
     @Test
@@ -172,11 +170,10 @@ class OrderServiceImplTest {
         final OrderModel orderModel = getOrderModel(LocalDateTime.now());
 
         when(userService.findById(userId)).thenThrow(EntityNotFoundException.class);
-        when(orderRepository.findByIds(userId, orderId)).thenReturn(Optional.of(orderModel));
+        when(orderRepository.findByUserIdAndId(userId, orderId)).thenReturn(Optional.of(orderModel));
 
         assertThrows(EntityNotFoundException.class,
                      () -> orderService.findTruncatedByIds(userId, orderId));
-        verify(orderRepository, times(0)).clear();
     }
 
     @Test
@@ -186,51 +183,44 @@ class OrderServiceImplTest {
         final long userId = user.getId();
 
         when(userService.findById(userId)).thenReturn(user);
-        when(orderRepository.findByIds(userId, orderId)).thenReturn(Optional.empty());
+        when(orderRepository.findByUserIdAndId(userId, orderId)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
                      () -> orderService.findTruncatedByIds(userId, orderId));
-        verify(orderRepository, times(0)).clear();
     }
 
-    // TODO: 2/27/2022 edit
-//    @Test
-//    void findMostWidelyTag_shouldReturnTheMoseWidelyUsedTag_whenTheMostActiveUserExists() {
-//        final UserModel user = mapper.map(getUser(), UserModel.class);
-//        final QueryLimiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
-//        final TagDto expected = new TagDto(1L, "tag1");
-//
-//        when(orderRepository.findTheMostActiveUser()).thenReturn(Optional.of(user));
-//        when(orderRepository.findByUserId(user.getId(), limiter)).thenReturn(getUserOrders(user));
-//
-//        TagDto actual = orderService.findMostWidelyTag();
-//
-//        assertEquals(expected, actual);
-//        verify(orderRepository).clear();
-//    }
+    // TODO: 2/27/2022 remove
+    @Test
+    void findMostWidelyTag_shouldReturnTheMoseWidelyUsedTag_whenTheMostActiveUserExists() {
+        final UserDto user = getUser();
+        final TagDto expected = new TagDto(1L, "tag1");
+
+        when(userService.findTheMostActiveUser()).thenReturn(user);
+        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
+
+        TagDto actual = orderService.findMostWidelyTag();
+
+        assertEquals(expected, actual);
+    }
 
     @Test
     void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenTheMostActiveUserNotExists() {
-        final UserModel user = mapper.map(getUser(), UserModel.class);
-        final QueryLimiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
+        final UserDto user = getUser();
 
-        when(orderRepository.findTheMostActiveUser()).thenReturn(Optional.empty());
-        when(orderRepository.findByUserId(user.getId(), limiter)).thenReturn(getUserOrders(user));
+        when(userService.findTheMostActiveUser()).thenThrow(NoWidelyUsedTagException.class);
+        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
 
         assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-        verify(orderRepository, times(0)).clear();
     }
 
     @Test
     void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenThereIsNoWidelyTag() {
-        final UserModel user = mapper.map(getUser(), UserModel.class);
-        final QueryLimiter limiter = new QueryLimiter(Integer.MAX_VALUE, 0);
+        final UserDto user = getUser();
 
-        when(orderRepository.findTheMostActiveUser()).thenReturn(Optional.of(user));
-        when(orderRepository.findByUserId(user.getId(), limiter)).thenReturn(Collections.emptyList());
+        when(userService.findTheMostActiveUser()).thenReturn(user);
+        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(Collections.emptyList());
 
         assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-        verify(orderRepository, times(0)).clear();
     }
 
     private OrderDto getOrderDto() {
@@ -249,7 +239,7 @@ class OrderServiceImplTest {
 
     private UserDto getUser() {
         return new UserDto(
-                20L, "newName", "newSurname",
+                20L, "pass", "newName", "newSurname",
                 "email@", BigDecimal.TEN
         );
     }
@@ -296,8 +286,9 @@ class OrderServiceImplTest {
                 .build();
     }
 
-    private List<OrderModel> getUserOrders(UserModel user) {
-        LocalDateTime time = LocalDateTime.now();
+    private List<OrderModel> getUserOrders(UserDto userDto) {
+        final UserModel user = mapper.map(userDto, UserModel.class);
+        final LocalDateTime time = LocalDateTime.now();
         return List.of(
                 new OrderModel(1L, mapper.map(getCertificate1(time), GiftCertificateModel.class),
                                user, BigDecimal.TEN, time),

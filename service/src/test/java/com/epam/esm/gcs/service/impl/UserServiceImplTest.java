@@ -4,14 +4,17 @@ import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.UserRepository;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,14 +38,15 @@ class UserServiceImplTest {
     @Test
     void findById_shouldFindUserById_ifExists() {
         final long userId = 1L;
-        UserModel user = new UserModel(userId, "fName", "lName", "email", BigDecimal.TEN);
+        UserModel user = new UserModel(
+                userId, "pass", "fName", "lName",
+                "email", BigDecimal.TEN, Collections.emptyList());
         UserDto expected = modelMapper.map(user, UserDto.class);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         UserDto actual = userService.findById(1L);
 
         assertEquals(expected, actual);
-        verify(userRepository).clear();
     }
 
     @Test
@@ -52,20 +56,20 @@ class UserServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.findById(userId));
-        verify(userRepository, times(0)).clear();
     }
 
     @Test
     void findByEmail_shouldFindUserByEmail_ifExists() {
         final String email = "email";
-        UserModel user = new UserModel(1L, "fName", "lName", email, BigDecimal.TEN);
+        UserModel user = new UserModel(
+                1L, "pass", "fName",
+                "lName", email, BigDecimal.TEN, Collections.emptyList());
         UserDto expected = modelMapper.map(user, UserDto.class);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         UserDto actual = userService.findByEmail(email);
 
         assertEquals(expected, actual);
-        verify(userRepository).clear();
     }
 
     @Test
@@ -75,47 +79,49 @@ class UserServiceImplTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.findByEmail(email));
-        verify(userRepository, times(0)).clear();
     }
 
     @Test
     void findAll_shouldReturnListOfUsers_always() {
-        QueryLimiter limiter = new QueryLimiter(10, 0);
-        UserModel user1 = new UserModel(1L, "fName", "lName", "email", BigDecimal.TEN);
-        UserModel user2 = new UserModel(2L, "fName", "lName", "com", BigDecimal.ONE);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserModel> page1 = (Page<UserModel>) mock(Page.class);
+        UserModel user1 = new UserModel(
+                1L, "pass", "fName", "lName",
+                "email", BigDecimal.TEN, Collections.emptyList());
+        UserModel user2 = new UserModel(
+                2L, "pass", "fName", "lName",
+                "com", BigDecimal.ONE, Collections.emptyList());
         List<UserDto> expected = List.of(modelMapper.map(user1, UserDto.class),
                                          modelMapper.map(user2, UserDto.class));
-        when(userRepository.findAll(limiter)).thenReturn(List.of(user1, user2));
+        when(page1.getContent()).thenReturn(List.of(user1, user2));
+        when(userRepository.findAll(pageable)).thenReturn(page1);
 
-        List<UserDto> actual = userService.findAll(limiter);
+        List<UserDto> actual = userService.findAll(pageable);
 
         assertEquals(2, actual.size());
         assertEquals(expected, actual);
-        verify(userRepository).clear();
     }
 
     @Test
     void existsWithEmail_shouldReturnTrue_ifExistsWithEmail() {
         final String email = "email";
         final boolean expected = true;
-        when(userRepository.existsWithEmail(email)).thenReturn(expected);
+        when(userRepository.existsByEmail(email)).thenReturn(expected);
 
         boolean actual = userService.existsWithEmail(email);
 
         assertEquals(expected, actual);
-        verify(userRepository).clear();
     }
 
     @Test
     void existsWithEmail_shouldReturnFalse_ifNotExistsWithEmail() {
         final String email = "email";
         final boolean expected = false;
-        when(userRepository.existsWithEmail(email)).thenReturn(expected);
+        when(userRepository.existsByEmail(email)).thenReturn(expected);
 
         boolean actual = userService.existsWithEmail(email);
 
         assertEquals(expected, actual);
-        verify(userRepository).clear();
     }
 
 }
