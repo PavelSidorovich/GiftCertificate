@@ -8,10 +8,10 @@ import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
+import com.epam.esm.gcs.model.AccountModel;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.OrderModel_;
 import com.epam.esm.gcs.model.TagModel;
-import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.service.OrderService;
@@ -99,18 +99,18 @@ public class OrderServiceImpl implements OrderService {
      *
      * @return the most widely user tag of a user
      */
-    @Override
-    public TagDto findMostWidelyTag() {
-        UserDto user = userService.findTheMostActiveUser();
+//    @Override
+//    public TagDto findMostWidelyTag() {
+//        UserDto user = userService.findTheMostActiveUser();
+//
+//        Optional<TagModel> tag = findWidelyUsedTag(modelMapper.map(user, AccountModel.class));
+//        if (tag.isPresent()) {
+//            return modelMapper.map(tag.get(), TagDto.class);
+//        }
+//        throw new NoWidelyUsedTagException(TagDto.class);
+//    }
 
-        Optional<TagModel> tag = findWidelyUsedTag(modelMapper.map(user, UserModel.class));
-        if (tag.isPresent()) {
-            return modelMapper.map(tag.get(), TagDto.class);
-        }
-        throw new NoWidelyUsedTagException(TagDto.class);
-    }
-
-    private Optional<TagModel> findWidelyUsedTag(UserModel user) {
+    private Optional<TagModel> findWidelyUsedTag(AccountModel user) {
         return orderRepository.findByUserId(user.getId(), Pageable.unpaged()).stream()
                               .map(orderModel -> orderModel.getCertificate()
                                                            .getTags())

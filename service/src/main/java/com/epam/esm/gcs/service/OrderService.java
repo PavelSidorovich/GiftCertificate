@@ -15,6 +15,6 @@ public interface OrderService {
 
     TruncatedOrderDto findTruncatedByIds(long userId, long orderId);
 
-    TagDto findMostWidelyTag();
+//    TagDto findMostWidelyTag();
 
 }

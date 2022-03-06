@@ -12,7 +12,7 @@ public abstract class OrderModel_ {
 
     public static volatile SingularAttribute<OrderModel, Long> id;
     public static volatile SingularAttribute<OrderModel, GiftCertificateModel> certificate;
-    public static volatile SingularAttribute<OrderModel, UserModel> user;
+    public static volatile SingularAttribute<OrderModel, AccountModel> user;
     public static volatile SingularAttribute<OrderModel, BigDecimal> cost;
     public static volatile SingularAttribute<OrderModel, LocalDateTime> purchaseDate;
 

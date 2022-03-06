@@ -49,8 +49,8 @@ public class GiftCertificateModel extends NamedModel {
     @Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "gift_certificates_by_tags",
-            joinColumns = @JoinColumn(name = "gift_certificate_id"),
+            name = "certificates_by_tags",
+            joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<TagModel> tags;

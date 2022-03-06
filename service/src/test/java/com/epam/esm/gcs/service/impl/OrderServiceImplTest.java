@@ -190,38 +190,38 @@ class OrderServiceImplTest {
     }
 
     // TODO: 2/27/2022 remove
-    @Test
-    void findMostWidelyTag_shouldReturnTheMoseWidelyUsedTag_whenTheMostActiveUserExists() {
-        final UserDto user = getUser();
-        final TagDto expected = new TagDto(1L, "tag1");
+//    @Test
+//    void findMostWidelyTag_shouldReturnTheMoseWidelyUsedTag_whenTheMostActiveUserExists() {
+//        final UserDto user = getUser();
+//        final TagDto expected = new TagDto(1L, "tag1");
+//
+//        when(userService.findTheMostActiveUser()).thenReturn(user);
+//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
+//
+//        TagDto actual = orderService.findMostWidelyTag();
+//
+//        assertEquals(expected, actual);
+//    }
 
-        when(userService.findTheMostActiveUser()).thenReturn(user);
-        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
+//    @Test
+//    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenTheMostActiveUserNotExists() {
+//        final UserDto user = getUser();
+//
+//        when(userService.findTheMostActiveUser()).thenThrow(NoWidelyUsedTagException.class);
+//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
+//
+//        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
+//    }
 
-        TagDto actual = orderService.findMostWidelyTag();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenTheMostActiveUserNotExists() {
-        final UserDto user = getUser();
-
-        when(userService.findTheMostActiveUser()).thenThrow(NoWidelyUsedTagException.class);
-        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
-
-        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-    }
-
-    @Test
-    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenThereIsNoWidelyTag() {
-        final UserDto user = getUser();
-
-        when(userService.findTheMostActiveUser()).thenReturn(user);
-        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(Collections.emptyList());
-
-        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-    }
+//    @Test
+//    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenThereIsNoWidelyTag() {
+//        final UserDto user = getUser();
+//
+//        when(userService.findTheMostActiveUser()).thenReturn(user);
+//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(Collections.emptyList());
+//
+//        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
+//    }
 
     private OrderDto getOrderDto() {
         return new OrderDto(GiftCertificateDto.builder().name("certName").build(), null);
@@ -238,10 +238,14 @@ class OrderServiceImplTest {
     }
 
     private UserDto getUser() {
-        return new UserDto(
-                20L, "pass", "newName", "newSurname",
-                "email@", BigDecimal.TEN
-        );
+        return UserDto.userDtoBuilder()
+                      .id(20L)
+                      .email("email@")
+                      .password("pass")
+                      .firstName("newName")
+                      .lastName("newSurname")
+                      .balance(BigDecimal.TEN)
+                      .build();
     }
 
     private GiftCertificateDto getCertificate1(LocalDateTime time) {

@@ -23,15 +23,17 @@ public class StatsController {
 
     private final OrderService orderService;
 
+    // FIXME: 3/6/2022
     @GetMapping(value = "/tags")
     public EntityModel<TagDto> findMostUsedTag() {
-        TagDto mostWidelyUsedTag = orderService.findMostWidelyTag();
-        return EntityModel.of(
-                mostWidelyUsedTag,
-                linkTo(methodOn(StatsController.class).findMostUsedTag()).withSelfRel(),
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
-                linkTo(methodOn(TagController.class).findById(mostWidelyUsedTag.getId())).withRel(TAG_REL)
-        );
+//        TagDto mostWidelyUsedTag = orderService.findMostWidelyTag();
+//        return EntityModel.of(
+//                mostWidelyUsedTag,
+//                linkTo(methodOn(StatsController.class).findMostUsedTag()).withSelfRel(),
+//                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
+//                linkTo(methodOn(TagController.class).findById(mostWidelyUsedTag.getId())).withRel(TAG_REL)
+//        );
+        return null;
     }
 
 }

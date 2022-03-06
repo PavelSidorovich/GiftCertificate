@@ -18,7 +18,7 @@ public abstract class GiftCertificateModel_ extends NamedModel_ {
     public static volatile SingularAttribute<GiftCertificateModel, LocalDateTime> lastUpdateDate;
     public static volatile SetAttribute<GiftCertificateModel, TagModel> tags;
 
-    public static final String TABLE = "gift_certificate";
+    public static final String TABLE = "certificate";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "price";
     public static final String DURATION = "duration";

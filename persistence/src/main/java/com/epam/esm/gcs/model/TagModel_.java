@@ -7,6 +7,6 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(TagModel.class)
 public abstract class TagModel_ extends NamedModel_ {
 
-    public static final String TABLE = "gift_certificate_tag";
+    public static final String TABLE = "certificate_tag";
 
 }
