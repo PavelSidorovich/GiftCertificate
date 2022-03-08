@@ -1,5 +1,6 @@
 package com.epam.esm.gcs.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,8 @@ public class UserModel extends AccountModel {
     @Column(name = UserModel_.BALANCE, nullable = false, columnDefinition = "numeric(8,2) default 0")
     private BigDecimal balance;
 
-    // FIXME: 3/6/2022 make builder
-    public UserModel(Long id, String email, String password, Boolean enabled,
+    @Builder
+    private UserModel(Long id, String email, String password, Boolean enabled,
                      String firstName, String lastName, BigDecimal balance,
                      Set<AccountRoleModel> roles) {
         super(id, email, password, enabled, roles);

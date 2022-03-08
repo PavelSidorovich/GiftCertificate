@@ -33,8 +33,7 @@ public class AccountModel {
     @Column(name = AccountModel_.EMAIL, unique = true, nullable = false)
     private String email;
 
-    // FIXME: 2/28/2022 make not nullable
-    @Column(name = AccountModel_.ACCOUNT_PASSWORD)
+    @Column(name = AccountModel_.ACCOUNT_PASSWORD, nullable = false)
     private String password;
 
     @Column(name = AccountModel_.ENABLED, nullable = false)

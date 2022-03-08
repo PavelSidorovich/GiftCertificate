@@ -179,19 +179,27 @@ class OrderRepositoryImplTest {
     }
 
     private UserModel getUser1() {
-        return new UserModel(
-                null, "email@gmail.com", "pass",
-                true, "newName", "newSurname",
-                BigDecimal.TEN, Collections.emptySet()
-        );
+        return UserModel.builder()
+                        .email("email@gmail.com")
+                        .password("pass")
+                        .enabled(true)
+                        .firstName("newName")
+                        .lastName("newSurname")
+                        .balance(BigDecimal.TEN)
+                        .roles(Collections.emptySet())
+                        .build();
     }
 
     private UserModel getUser2() {
-        return new UserModel(
-                null, "email@mail.ru", "password",
-                true, "testName", "testSurname",
-                BigDecimal.TEN, Collections.emptySet()
-        );
+        return UserModel.builder()
+                        .email("email@mail.ru")
+                        .password("password")
+                        .enabled(true)
+                        .firstName("testName")
+                        .lastName("testSurname")
+                        .balance(BigDecimal.TEN)
+                        .roles(Collections.emptySet())
+                        .build();
     }
 
 }

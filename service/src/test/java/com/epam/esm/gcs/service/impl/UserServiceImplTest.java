@@ -70,14 +70,23 @@ class UserServiceImplTest {
         final String firstName = "fName";
         final String lastName = "lName";
         final SignUpUserDto signUpDto = new SignUpUserDto(email, password, password, firstName, lastName);
-        final UserModel toSave = new UserModel(
-                null, email, encodedPassword, null, firstName,
-                lastName, null, Set.of(roleModel)
-        );
-        final UserModel saved = new UserModel(
-                1L, email, encodedPassword, true, firstName,
-                lastName, BigDecimal.ZERO, Set.of(roleModel)
-        );
+        final UserModel toSave = UserModel.builder()
+                                          .email(email)
+                                          .password(encodedPassword)
+                                          .firstName(firstName)
+                                          .lastName(lastName)
+                                          .roles(Set.of(roleModel))
+                                          .build();
+        final UserModel saved = UserModel.builder()
+                                         .id(1L)
+                                         .email(email)
+                                         .password(encodedPassword)
+                                         .enabled(true)
+                                         .firstName(firstName)
+                                         .lastName(lastName)
+                                         .balance(BigDecimal.ZERO)
+                                         .roles(Set.of(roleModel))
+                                         .build();
         when(userRepository.existsByEmail(email)).thenReturn(false);
         when(accountRoleService.findByName(RoleName.ROLE_USER.name())).thenReturn(roleDto);
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
@@ -115,10 +124,17 @@ class UserServiceImplTest {
     @Test
     void findById_shouldFindUserById_ifExists() {
         final long userId = 1L;
-        UserModel user = new UserModel(
-                userId, "email", "pass", true,
-                "fName", "lName", BigDecimal.TEN, Collections.emptySet());
-        UserDto expected = modelMapper.map(user, UserDto.class);
+        final UserModel user = UserModel.builder()
+                                        .id(userId)
+                                        .email("email")
+                                        .password("pass")
+                                        .enabled(true)
+                                        .firstName("fName")
+                                        .lastName("lName")
+                                        .balance(BigDecimal.TEN)
+                                        .roles(Collections.emptySet())
+                                        .build();
+        final UserDto expected = modelMapper.map(user, UserDto.class);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         UserDto actual = userService.findById(1L);
@@ -172,12 +188,26 @@ class UserServiceImplTest {
     void findAll_shouldReturnListOfUsers_always() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<UserModel> page1 = (Page<UserModel>) mock(Page.class);
-        UserModel user1 = new UserModel(
-                1L, "email", "pass", true, "fName", "lName",
-                BigDecimal.TEN, Collections.emptySet());
-        UserModel user2 = new UserModel(
-                2L, "com", "pass", true, "fName", "lName",
-                BigDecimal.ONE, Collections.emptySet());
+        UserModel user1 = UserModel.builder()
+                                   .id(1L)
+                                   .email("email")
+                                   .password("pass")
+                                   .enabled(true)
+                                   .firstName("fName")
+                                   .lastName("lName")
+                                   .balance(BigDecimal.TEN)
+                                   .roles(Collections.emptySet())
+                                   .build();
+        UserModel user2 = UserModel.builder()
+                                   .id(2L)
+                                   .email("com")
+                                   .password("pass")
+                                   .enabled(true)
+                                   .firstName("fName")
+                                   .lastName("lName")
+                                   .balance(BigDecimal.ONE)
+                                   .roles(Collections.emptySet())
+                                   .build();
         List<UserDto> expected = List.of(modelMapper.map(user1, UserDto.class),
                                          modelMapper.map(user2, UserDto.class));
         when(page1.getContent()).thenReturn(List.of(user1, user2));
