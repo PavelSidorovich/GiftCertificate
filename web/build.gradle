@@ -10,4 +10,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.3'
     implementation project(':persistence')
     implementation project(':service')
+    implementation project(':repository')
 }

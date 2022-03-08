@@ -4,6 +4,7 @@ import com.epam.esm.gcs.config.ModelMapperConfig;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
@@ -175,6 +176,25 @@ class TagServiceImplTest {
         when(tagRepository.existsByNameIgnoreCase(testName)).thenReturn(true);
 
         assertTrue(tagService.existsWithName(testName));
+    }
+
+    @Test
+    void findTheMostUsedTag_shouldReturnTheMostUsedTagOfTheBestUser_whenUserOrdersExist() {
+        final TagModel expected = new TagModel(1L, "widelyUsed");
+
+        when(tagRepository.findTheMostUsedTag()).thenReturn(Optional.of(expected));
+
+        TagDto actual = tagService.findTheMostUsedTag();
+
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+    }
+
+    @Test
+    void findTheMostUsedTag_shouldThrowNoWidelyUsedTagException_whenNoUserOrders() {
+        when(tagRepository.findTheMostUsedTag()).thenReturn(Optional.empty());
+
+        assertThrows(NoWidelyUsedTagException.class, tagService::findTheMostUsedTag);
     }
 
 }

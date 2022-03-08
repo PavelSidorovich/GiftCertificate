@@ -280,9 +280,9 @@ class CertificateServiceImplTest {
                              .price(new BigDecimal("10.00"))
                              .duration(10)
                              .tags(Set.of(
-                                         new TagDto(null, "tag1"),
-                                         new TagDto(null, "tag2")
-                                 ))
+                                     new TagDto(null, "tag1"),
+                                     new TagDto(null, "tag2")
+                             ))
                              .build();
     }
 
@@ -296,9 +296,9 @@ class CertificateServiceImplTest {
                                .createDate(dateTime)
                                .lastUpdateDate(dateTime)
                                .tags(Set.of(
-                                           new TagModel(1L, "tag1"),
-                                           new TagModel(2L, "tag2")
-                                   ))
+                                       new TagModel(1L, "tag1"),
+                                       new TagModel(2L, "tag2")
+                               ))
                                .build();
     }
 
@@ -312,9 +312,9 @@ class CertificateServiceImplTest {
                              .createDate(dateTime)
                              .lastUpdateDate(dateTime)
                              .tags(Set.of(
-                                         new TagDto(1L, "tag1"),
-                                         new TagDto(2L, "tag2")
-                                 ))
+                                     new TagDto(1L, "tag1"),
+                                     new TagDto(2L, "tag2")
+                             ))
                              .build();
     }
 
@@ -328,9 +328,9 @@ class CertificateServiceImplTest {
                              .createDate(dateTime)
                              .lastUpdateDate(dateTime)
                              .tags(Set.of(
-                                         new TagDto(1L, "tag1"),
-                                         new TagDto(2L, "tag2")
-                                 ))
+                                     new TagDto(1L, "tag1"),
+                                     new TagDto(2L, "tag2")
+                             ))
                              .build();
     }
 

@@ -4,6 +4,7 @@ import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.TagModel_;
@@ -119,6 +120,14 @@ public class TagServiceImpl implements TagService {
     @Override
     public boolean existsWithName(String name) {
         return tagRepository.existsByNameIgnoreCase(name);
+    }
+
+    @Override
+    public TagDto findTheMostUsedTag() {
+        TagModel tag = tagRepository.findTheMostUsedTag().orElseThrow(
+                () -> new NoWidelyUsedTagException(CertificateDto.class)
+        );
+        return modelMapper.map(tag, TagDto.class);
     }
 
 }

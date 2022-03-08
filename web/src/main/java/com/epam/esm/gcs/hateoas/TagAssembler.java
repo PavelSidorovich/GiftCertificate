@@ -27,7 +27,7 @@ public class TagAssembler implements RepresentationModelAssembler<TagDto, Entity
                 tag,
                 linkTo(methodOn(TagController.class).findById(tag.getId())).withSelfRel(),
                 linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
-                linkTo(methodOn(StatsController.class).findMostUsedTag()).withRel(MOST_USED_TAG_REL)
+                linkTo(methodOn(StatsController.class).findTheMostUsedTag()).withRel(MOST_USED_TAG_REL)
         );
     }
 
@@ -40,7 +40,7 @@ public class TagAssembler implements RepresentationModelAssembler<TagDto, Entity
         ));
         return CollectionModel.of(
                 tagDtos,
-                linkTo(methodOn(StatsController.class).findMostUsedTag()).withRel(MOST_USED_TAG_REL),
+                linkTo(methodOn(StatsController.class).findTheMostUsedTag()).withRel(MOST_USED_TAG_REL),
                 linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withSelfRel()
         );
     }

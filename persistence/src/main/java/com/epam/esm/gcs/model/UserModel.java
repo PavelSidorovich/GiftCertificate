@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true)
-@Entity(name = UserModel_.TABLE)
+@Entity
+@Table(name = UserModel_.TABLE)
 public class UserModel extends AccountModel {
 
     @Column(name = UserModel_.FIRST_NAME, nullable = false)
@@ -28,8 +30,8 @@ public class UserModel extends AccountModel {
 
     @Builder
     private UserModel(Long id, String email, String password, Boolean enabled,
-                     String firstName, String lastName, BigDecimal balance,
-                     Set<AccountRoleModel> roles) {
+                      String firstName, String lastName, BigDecimal balance,
+                      Set<AccountRoleModel> roles) {
         super(id, email, password, enabled, roles);
         this.firstName = firstName;
         this.lastName = lastName;

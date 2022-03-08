@@ -82,7 +82,7 @@ class OrderServiceImplTest {
         final UserDto user = getUser();
         final long userId = user.getId();
         final long certificateId = 1L;
-        final CertificateDto certificate = getCertificate1(LocalDateTime.now());
+        final CertificateDto certificate = getCertificate(LocalDateTime.now());
         user.setBalance(BigDecimal.ZERO);
 
         when(userService.findById(userId)).thenReturn(user);
@@ -101,7 +101,7 @@ class OrderServiceImplTest {
         final OrderDto orderDto = getOrderDto();
         final OrderModel beforePurchase = mapper.map(orderDto, OrderModel.class);
         final OrderDto expected = mapper.map(getOrderModel(time), OrderDto.class);
-        final CertificateDto certificate = getCertificate1(time);
+        final CertificateDto certificate = getCertificate(time);
         certificate.setTags(new HashSet<>());
         final CertificateModel certificateModel = mapper.map(certificate, CertificateModel.class);
         beforePurchase.setUser(mapper.map(user, UserModel.class));
@@ -187,40 +187,6 @@ class OrderServiceImplTest {
                      () -> orderService.findTruncatedByIds(userId, orderId));
     }
 
-    // TODO: 2/27/2022 remove
-//    @Test
-//    void findMostWidelyTag_shouldReturnTheMoseWidelyUsedTag_whenTheMostActiveUserExists() {
-//        final UserDto user = getUser();
-//        final TagDto expected = new TagDto(1L, "tag1");
-//
-//        when(userService.findTheMostActiveUser()).thenReturn(user);
-//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
-//
-//        TagDto actual = orderService.findMostWidelyTag();
-//
-//        assertEquals(expected, actual);
-//    }
-
-//    @Test
-//    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenTheMostActiveUserNotExists() {
-//        final UserDto user = getUser();
-//
-//        when(userService.findTheMostActiveUser()).thenThrow(NoWidelyUsedTagException.class);
-//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(getUserOrders(user));
-//
-//        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-//    }
-
-//    @Test
-//    void findMostWidelyTag_shouldThrowNoWidelyUsedTagException_whenThereIsNoWidelyTag() {
-//        final UserDto user = getUser();
-//
-//        when(userService.findTheMostActiveUser()).thenReturn(user);
-//        when(orderRepository.findByUserId(user.getId(), Pageable.unpaged())).thenReturn(Collections.emptyList());
-//
-//        assertThrows(NoWidelyUsedTagException.class, orderService::findMostWidelyTag);
-//    }
-
     private OrderDto getOrderDto() {
         return new OrderDto(CertificateDto.builder().name("certName").build(), null);
     }
@@ -228,7 +194,7 @@ class OrderServiceImplTest {
     private OrderModel getOrderModel(LocalDateTime time) {
         return new OrderModel(
                 1L,
-                mapper.map(getCertificate1(time), CertificateModel.class),
+                mapper.map(getCertificate(time), CertificateModel.class),
                 mapper.map(getUser(), UserModel.class),
                 BigDecimal.ONE,
                 time
@@ -246,7 +212,7 @@ class OrderServiceImplTest {
                       .build();
     }
 
-    private CertificateDto getCertificate1(LocalDateTime time) {
+    private CertificateDto getCertificate(LocalDateTime time) {
         return CertificateDto
                 .builder()
                 .id(1L)
@@ -258,47 +224,6 @@ class OrderServiceImplTest {
                 .lastUpdateDate(time)
                 .tags(Set.of(new TagDto(1L, "tag1"), new TagDto(2L, "tag2")))
                 .build();
-    }
-
-    private CertificateDto getCertificate2(LocalDateTime time) {
-        return CertificateDto
-                .builder()
-                .id(2L)
-                .name("certName")
-                .description("desc")
-                .price(BigDecimal.ONE)
-                .duration(10)
-                .createDate(time)
-                .lastUpdateDate(time)
-                .tags(Set.of(new TagDto(1L, "tag1"), new TagDto(2L, "tag3")))
-                .build();
-    }
-
-    private CertificateDto getCertificate3(LocalDateTime time) {
-        return CertificateDto
-                .builder()
-                .id(3L)
-                .name("certName")
-                .description("desc")
-                .price(BigDecimal.ONE)
-                .duration(10)
-                .createDate(time)
-                .lastUpdateDate(time)
-                .tags(Set.of(new TagDto(1L, "tag1"), new TagDto(2L, "tag4")))
-                .build();
-    }
-
-    private List<OrderModel> getUserOrders(UserDto userDto) {
-        final UserModel user = mapper.map(userDto, UserModel.class);
-        final LocalDateTime time = LocalDateTime.now();
-        return List.of(
-                new OrderModel(1L, mapper.map(getCertificate1(time), CertificateModel.class),
-                               user, BigDecimal.TEN, time),
-                new OrderModel(2L, mapper.map(getCertificate2(time), CertificateModel.class),
-                               user, BigDecimal.TEN, time),
-                new OrderModel(3L, mapper.map(getCertificate3(time), CertificateModel.class),
-                               user, BigDecimal.TEN, time)
-        );
     }
 
 }

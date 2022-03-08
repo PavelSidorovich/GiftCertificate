@@ -113,15 +113,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-//    @Override
-//    public UserDto findTheMostActiveUser() {
-//        Optional<UserModel> theMostActiveUser = userRepository.findTheMostActiveUser();
-//        if (theMostActiveUser.isPresent()) {
-//            return modelMapper.map(theMostActiveUser.get(), UserDto.class);
-//        }
-//        throw new NoWidelyUsedTagException(TagDto.class);
-//    }
-
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<AccountRoleModel> roles) {
         return roles.stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
