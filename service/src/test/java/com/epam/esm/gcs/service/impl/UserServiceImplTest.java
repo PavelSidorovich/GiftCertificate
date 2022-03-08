@@ -1,7 +1,15 @@
 package com.epam.esm.gcs.service.impl;
 
+import com.epam.esm.gcs.dto.AccountRoleDto;
+import com.epam.esm.gcs.dto.SignUpUserDto;
 import com.epam.esm.gcs.dto.UserDto;
+import com.epam.esm.gcs.exception.BadCredentialsException;
+import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.PasswordsAreNotEqualException;
+import com.epam.esm.gcs.model.AccountModel;
+import com.epam.esm.gcs.model.AccountRoleModel;
+import com.epam.esm.gcs.model.RoleName;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.AccountRepository;
 import com.epam.esm.gcs.repository.UserRepository;
@@ -14,17 +22,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-// FIXME: 3/6/2022 edit tests
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
@@ -51,6 +61,58 @@ class UserServiceImplTest {
     }
 
     @Test
+    void signUp_shouldReturnCreatedUser_whenAllCredentialsAreValid() {
+        final String email = "email@mail.ru";
+        final AccountRoleDto roleDto = new AccountRoleDto(1L, "ROLE_USER");
+        final AccountRoleModel roleModel = new AccountRoleModel(1L, "ROLE_USER");
+        final String password = "pass";
+        final String encodedPassword = "$2encoded";
+        final String firstName = "fName";
+        final String lastName = "lName";
+        final SignUpUserDto signUpDto = new SignUpUserDto(email, password, password, firstName, lastName);
+        final UserModel toSave = new UserModel(
+                null, email, encodedPassword, null, firstName,
+                lastName, null, Set.of(roleModel)
+        );
+        final UserModel saved = new UserModel(
+                1L, email, encodedPassword, true, firstName,
+                lastName, BigDecimal.ZERO, Set.of(roleModel)
+        );
+        when(userRepository.existsByEmail(email)).thenReturn(false);
+        when(accountRoleService.findByName(RoleName.ROLE_USER.name())).thenReturn(roleDto);
+        when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
+        when(userRepository.save(toSave)).thenReturn(saved);
+
+        final UserDto actual = userService.signUp(signUpDto);
+
+        assertEquals(1L, actual.getId());
+        assertEquals(email, actual.getEmail());
+        assertEquals(encodedPassword, actual.getPassword());
+        assertEquals(firstName, actual.getFirstName());
+        assertEquals(lastName, actual.getLastName());
+        assertEquals(BigDecimal.ZERO, actual.getBalance());
+        assertTrue(actual.getEnabled());
+    }
+
+    @Test
+    void signUp_shouldThrowDuplicatePropertyException_whenUserWithSuchEmailAlreadyExists() {
+        final String email = "email@mail.ru";
+        final SignUpUserDto signUpDto = new SignUpUserDto(email, "pass", "pass", "fName", "lName");
+        when(userRepository.existsByEmail(email)).thenReturn(true);
+
+        assertThrows(DuplicatePropertyException.class, () -> userService.signUp(signUpDto));
+    }
+
+    @Test
+    void signUp_shouldThrowPasswordsAreNotEqualException_whenPasswordAreNotEqual() {
+        final String email = "email@mail.ru";
+        final SignUpUserDto signUpDto = new SignUpUserDto(email, "pass", "pass1", "fName", "lName");
+        when(userRepository.existsByEmail(email)).thenReturn(false);
+
+        assertThrows(PasswordsAreNotEqualException.class, () -> userService.signUp(signUpDto));
+    }
+
+    @Test
     void findById_shouldFindUserById_ifExists() {
         final long userId = 1L;
         UserModel user = new UserModel(
@@ -73,29 +135,37 @@ class UserServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> userService.findById(userId));
     }
 
-//    @Test
-//    void findByEmail_shouldFindUserByEmail_ifExists() {
-//        final String email = "email";
-//        AccountModel user = new AccountModel(
-//                1L, "pass", "fName",
-//                "lName", email, BigDecimal.TEN, true, Collections.emptySet());
-//        UserDto expected = modelMapper.map(user, UserDto.class);
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-//
-//        UserDetails actual = userService.loadUserByUsername(email);
-//
-//        assertEquals(expected.getEmail(), actual.getUsername());
-//        assertEquals(expected.g, actual.);
-//    }
+    @Test
+    void loadUserByUsername_shouldReturnUserDetails_whenExistsByEmail() {
+        final String email = "email";
+        final Set<AccountRoleModel> roles = Set.of(
+                new AccountRoleModel(1L, RoleName.ROLE_USER.name()),
+                new AccountRoleModel(2L, RoleName.ROLE_ADMIN.name())
+        );
+        final AccountModel user = new AccountModel(1L, email, "pass", true, roles);
+        final UserDto expected = modelMapper.map(user, UserDto.class);
+        when(accountRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-//    @Test
-//    void findByEmail_shouldThrowEntityNotFoundException_ifUserNotExists() {
-//        final String email = "email";
-//
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-//
-//        assertThrows(EntityNotFoundException.class, () -> userService.findByEmail(email));
-//    }
+        UserDetails actual = userService.loadUserByUsername(email);
+
+        assertEquals(expected.getEmail(), actual.getUsername());
+        assertEquals(2, actual.getAuthorities().size());
+        assertTrue(actual.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_USER.name())));
+        assertTrue(actual.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name())));
+        assertTrue(actual.isEnabled());
+        assertTrue(actual.isAccountNonExpired());
+        assertTrue(actual.isCredentialsNonExpired());
+        assertTrue(actual.isAccountNonLocked());
+    }
+
+    @Test
+    void loadUserByUsername_shouldThrowBadCredentialsException_whenUserNotExistsByEmail() {
+        final String email = "email";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThrows(BadCredentialsException.class, () -> userService.loadUserByUsername(email));
+    }
 
     @Test
     @SuppressWarnings("unchecked")

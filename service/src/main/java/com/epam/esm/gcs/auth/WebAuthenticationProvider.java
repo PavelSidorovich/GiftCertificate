@@ -1,13 +1,13 @@
-package com.epam.esm.gcs.config;
+package com.epam.esm.gcs.auth;
 
 import com.epam.esm.gcs.exception.BadCredentialsException;
-import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +37,7 @@ public class WebAuthenticationProvider implements AuthenticationManager {
                 result.setDetails(authentication.getDetails());
                 return result;
             }
-        } catch (EntityNotFoundException ignored) {
+        } catch (UsernameNotFoundException ignored) {
         }
         throw new BadCredentialsException();
     }

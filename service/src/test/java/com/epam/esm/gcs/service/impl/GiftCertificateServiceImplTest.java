@@ -7,6 +7,7 @@ import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
 import com.epam.esm.gcs.exception.NoFieldToUpdateException;
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.GiftCertificateRepository;
@@ -22,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -82,14 +85,13 @@ class GiftCertificateServiceImplTest {
 
         when(certificateRepository.existsByNameIgnoreCase(certificateName)).thenReturn(false);
         when(tagService.existsWithName(tagName1)).thenReturn(true);
-        when(tagService.existsWithName(tagName2)).thenReturn(true);
+        when(tagService.existsWithName(tagName2)).thenReturn(false);
         when(tagService.findByName(tagName1)).thenReturn(new TagDto(1L, tagName1));
-        when(tagService.findByName(tagName2)).thenReturn(new TagDto(2L, tagName2));
-        certificateDto.setTags(Set.of(new TagDto(1L, tagName1), new TagDto(2L, tagName2)));
+        when(tagService.create(new TagDto(null, tagName2))).thenReturn(new TagDto(2L, tagName2));
+        certificateDto.setTags(Set.of(new TagDto(1L, tagName1), new TagDto(null, tagName2)));
         GiftCertificateModel certToCreate = mapCertificateToModel(certificateDto);
         certToCreate.setTags(Set.of(new TagModel(1L, tagName1), new TagModel(2L, tagName2)));
-        when(certificateRepository.save(certToCreate))
-                .thenReturn(certificateModel);
+        when(certificateRepository.save(certToCreate)).thenReturn(certificateModel);
 
         assertEquals(expected, certificateService.create(certificateDto));
     }
@@ -185,6 +187,24 @@ class GiftCertificateServiceImplTest {
         certificateService.delete(certificateId);
 
         verify(certificateRepository).deleteById(certificateId);
+    }
+
+    @Test
+    void delete_shouldThrowWiredEntityDeletionException_whenCertificateWasPurchased() {
+        final long certificateId = 1L;
+
+        doThrow(DataIntegrityViolationException.class).when(certificateRepository).deleteById(certificateId);
+
+        assertThrows(WiredEntityDeletionException.class, () -> certificateService.delete(certificateId));
+    }
+
+    @Test
+    void delete_shouldThrowEntityNotFoundException_whenCertificateNotExists() {
+        final long certificateId = 1L;
+
+        doThrow(EmptyResultDataAccessException.class).when(certificateRepository).deleteById(certificateId);
+
+        assertThrows(EntityNotFoundException.class, () -> certificateService.delete(certificateId));
     }
 
     @Test

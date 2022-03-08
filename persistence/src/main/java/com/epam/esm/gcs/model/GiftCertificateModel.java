@@ -1,8 +1,8 @@
 package com.epam.esm.gcs.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString.Exclude;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -56,9 +56,9 @@ public class GiftCertificateModel extends NamedModel {
     private Set<TagModel> tags;
 
     @Builder
-    public GiftCertificateModel(Long id, String name, String description,
-                                BigDecimal price, Integer duration, LocalDateTime createDate,
-                                LocalDateTime lastUpdateDate, Set<TagModel> tags) {
+    private GiftCertificateModel(Long id, String name, String description,
+                                 BigDecimal price, Integer duration, LocalDateTime createDate,
+                                 LocalDateTime lastUpdateDate, Set<TagModel> tags) {
         super(id, name);
         this.description = description;
         this.price = price;

@@ -3,7 +3,7 @@ package com.epam.esm.gcs.controller;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.hateoas.TagAssembler;
 import com.epam.esm.gcs.service.TagService;
-import com.epam.esm.gcs.spec.PageRequestFactory;
+import com.epam.esm.gcs.util.PageRequestFactoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.hateoas.CollectionModel;
@@ -30,7 +30,7 @@ public class TagController {
 
     private final TagService tagService;
     private final TagAssembler tagAssembler;
-    private final PageRequestFactory pageRequestFactory;
+    private final PageRequestFactoryService pageRequestFactory;
 
     @GetMapping
     public CollectionModel<EntityModel<TagDto>> findAll(

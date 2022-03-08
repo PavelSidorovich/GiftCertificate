@@ -8,8 +8,7 @@ import lombok.Getter;
 public enum QueryOperator {
 
     EQUALS("="),
-    LIKE("LIKE"),
-    ORDER("ORDER");
+    LIKE("LIKE");
 
     private final String operation;
 

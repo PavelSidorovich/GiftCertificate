@@ -139,11 +139,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @param id id of certificate to delete
      */
     @Override
-    @Transactional
     public void delete(long id) {
         try {
             certificateRepository.deleteById(id);
-            certificateRepository.flush();
         } catch (DataIntegrityViolationException ex) {
             throw new WiredEntityDeletionException(GiftCertificateDto.class, GiftCertificateModel_.ID, id);
         } catch (EmptyResultDataAccessException exception) {

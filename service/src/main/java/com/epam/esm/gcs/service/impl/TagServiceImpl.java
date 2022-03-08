@@ -100,11 +100,9 @@ public class TagServiceImpl implements TagService {
      * @throws EntityNotFoundException if tag with provided id not found
      */
     @Override
-    @Transactional
     public void delete(long id) {
         try {
             tagRepository.deleteById(id);
-            tagRepository.flush();
         } catch (DataIntegrityViolationException ex) {
             throw new WiredEntityDeletionException(TagDto.class, TagModel_.ID, id);
         } catch (EmptyResultDataAccessException exception) {

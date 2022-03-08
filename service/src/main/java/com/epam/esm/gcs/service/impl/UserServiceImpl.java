@@ -52,12 +52,12 @@ public class UserServiceImpl implements UserService {
         if (!signUpDto.getPassword().equals(signUpDto.getPasswordRepeat())) {
             throw new PasswordsAreNotEqualException();
         }
-        UserModel accountModel = modelMapper.map(signUpDto, UserModel.class);
+        UserModel userModel = modelMapper.map(signUpDto, UserModel.class);
         AccountRoleDto role = accountRoleService.findByName(RoleName.ROLE_USER.name());
-        accountModel.setPassword(passwordEncoder.encode(accountModel.getPassword()));
-        accountModel.setRoles(Set.of(modelMapper.map(role, AccountRoleModel.class)));
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        userModel.setRoles(Set.of(modelMapper.map(role, AccountRoleModel.class)));
 
-        return modelMapper.map(userRepository.save(accountModel), UserDto.class);
+        return modelMapper.map(userRepository.save(userModel), UserDto.class);
     }
 
     /**
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
                                                      .orElseThrow(BadCredentialsException::new);
         return new User(
                 accountModel.getEmail(), accountModel.getPassword(),
-                accountModel.getEnabled(), false, false, false,
+                accountModel.getEnabled(), true, true, true,
                 mapRolesToAuthorities(accountModel.getRoles())
         );
     }

@@ -270,4 +270,5 @@ class GiftCertificateRepositoryTest {
                                     .build();
         return List.of(certificate1, certificate2, certificate3);
     }
+
 }

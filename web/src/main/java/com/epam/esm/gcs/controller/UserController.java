@@ -8,7 +8,7 @@ import com.epam.esm.gcs.hateoas.TruncatedPurchaseAssembler;
 import com.epam.esm.gcs.hateoas.UserAssembler;
 import com.epam.esm.gcs.service.OrderService;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.spec.PageRequestFactory;
+import com.epam.esm.gcs.util.PageRequestFactoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -34,7 +34,7 @@ public class UserController {
     private final UserAssembler userAssembler;
     private final OrderAssembler orderAssembler;
     private final TruncatedPurchaseAssembler truncatedOrderAssembler;
-    private final PageRequestFactory pageRequestFactory;
+    private final PageRequestFactoryService pageRequestFactory;
 
     @GetMapping
     public CollectionModel<EntityModel<UserDto>> findAll(

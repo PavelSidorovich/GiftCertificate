@@ -4,7 +4,7 @@ import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
 import com.epam.esm.gcs.service.GiftCertificateService;
 import com.epam.esm.gcs.spec.CertificateSearchCriteria;
-import com.epam.esm.gcs.spec.PageRequestFactory;
+import com.epam.esm.gcs.util.PageRequestFactoryService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ public class GiftCertificateController {
 
     private final GiftCertificateService certificateService;
     private final GiftCertificateAssembler certificateAssembler;
-    private final PageRequestFactory paginationFactory;
+    private final PageRequestFactoryService paginationFactory;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

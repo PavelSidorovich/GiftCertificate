@@ -29,7 +29,7 @@ public class UserModel extends AccountModel {
     public UserModel(Long id, String email, String password, Boolean enabled,
                      String firstName, String lastName, BigDecimal balance,
                      Set<AccountRoleModel> roles) {
-        super(id, password, email, enabled, roles);
+        super(id, email, password, enabled, roles);
         this.firstName = firstName;
         this.lastName = lastName;
         this.balance = balance;

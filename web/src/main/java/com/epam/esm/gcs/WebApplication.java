@@ -5,13 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-
 
 @SpringBootApplication
-//@EnableAuthorizationServer
 @EnableJpaRepositories("com.epam.esm.gcs")
 @EnableJpaAuditing
 @EntityScan("com.epam.esm.gcs")

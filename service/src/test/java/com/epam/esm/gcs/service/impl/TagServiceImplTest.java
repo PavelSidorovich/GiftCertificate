@@ -4,12 +4,15 @@ import com.epam.esm.gcs.config.ModelMapperConfig;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
+import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -146,6 +149,24 @@ class TagServiceImplTest {
         tagService.delete(tagId);
 
         verify(tagRepository).deleteById(tagId);
+    }
+
+    @Test
+    void delete_shouldThrowWiredEntityDeletionException_whenTagIsInUse() {
+        final long tagId = 1L;
+
+        doThrow(DataIntegrityViolationException.class).when(tagRepository).deleteById(tagId);
+
+        assertThrows(WiredEntityDeletionException.class, () -> tagService.delete(tagId));
+    }
+
+    @Test
+    void delete_shouldThrowEntityNotFoundException_whenTagNotExists() {
+        final long tagId = 1L;
+
+        doThrow(EmptyResultDataAccessException.class).when(tagRepository).deleteById(tagId);
+
+        assertThrows(EntityNotFoundException.class, () -> tagService.delete(tagId));
     }
 
     @Test
