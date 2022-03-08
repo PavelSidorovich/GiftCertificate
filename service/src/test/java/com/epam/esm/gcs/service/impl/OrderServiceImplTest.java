@@ -6,7 +6,6 @@ import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.GiftCertificateModel;
 import com.epam.esm.gcs.model.OrderModel;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;

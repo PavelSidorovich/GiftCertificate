@@ -3,6 +3,7 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.model.UserModel;
+import com.epam.esm.gcs.repository.AccountRepository;
 import com.epam.esm.gcs.repository.UserRepository;
 import com.epam.esm.gcs.service.AccountRoleService;
 import org.junit.jupiter.api.Test;
@@ -30,20 +31,23 @@ class UserServiceImplTest {
     private final UserServiceImpl userService;
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final AccountRoleService accountRoleService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     public UserServiceImplTest(@Mock UserRepository userRepository,
+                               @Mock AccountRepository accountRepository,
                                @Mock AccountRoleService accountRoleService,
                                @Mock PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
         this.accountRoleService = accountRoleService;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = new ModelMapper();
         this.userService = new UserServiceImpl(
-                userRepository, accountRoleService,
-                passwordEncoder, modelMapper);
+                userRepository, accountRepository,
+                accountRoleService, passwordEncoder, modelMapper);
     }
 
     @Test

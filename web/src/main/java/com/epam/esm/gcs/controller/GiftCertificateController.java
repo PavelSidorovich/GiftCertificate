@@ -54,7 +54,6 @@ public class GiftCertificateController {
             @RequestParam(required = false) String sortByName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
-//        log.error(AccountRoleModel_.id.getName());
         CertificateSearchCriteria searchCriteria = new CertificateSearchCriteria(
                 paginationFactory.pageable(page, size), certName,
                 tagName, description, sortByCreateDate, sortByName

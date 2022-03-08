@@ -32,6 +32,8 @@ public class CommonExceptionHandler {
     private static final String TYPE_MISMATCH = "type.mismatch";
     private static final String MESSAGE_NOT_READABLE = "message.not.readable";
     private static final String WIRED_ENTITY_DELETION = "model.wired.deletion";
+    private static final String BAD_CREDENTIALS = "user.bad.credentials";
+    private static final String PASSWORD_ARE_NOT_EQUAL = "user.signup.passwords";
 
     private final MessageSource clientErrorMsgSource;
     private final MessageSource serverErrorMsgSource;
@@ -84,6 +86,26 @@ public class CommonExceptionHandler {
         return new ResponseModel(HttpStatus.BAD_REQUEST, Objects.requireNonNull(
                 bindingResult.getTarget()).getClass(), message
         );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseModel handleBadCredentials(BadCredentialsException ex, Locale locale) {
+        final String message = clientErrorMsgSource.getMessage(
+                BAD_CREDENTIALS, null, locale
+        );
+        log.error(message, ex);
+        return new ResponseModel(HttpStatus.UNAUTHORIZED, message);
+    }
+
+    @ExceptionHandler(PasswordsAreNotEqualException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseModel handlePasswordsAreNotEqual(PasswordsAreNotEqualException ex, Locale locale) {
+        final String message = clientErrorMsgSource.getMessage(
+                PASSWORD_ARE_NOT_EQUAL, null, locale
+        );
+        log.error(message, ex);
+        return new ResponseModel(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

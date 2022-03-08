@@ -2,7 +2,6 @@ package com.epam.esm.gcs.repository;
 
 import com.epam.esm.gcs.model.UserModel;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,10 +1,10 @@
 package com.epam.esm.gcs.config;
 
+import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @Component
 @AllArgsConstructor
-public class WebAuthenticationProvider implements AuthenticationProvider {
+public class WebAuthenticationProvider implements AuthenticationManager {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -27,6 +27,7 @@ public class WebAuthenticationProvider implements AuthenticationProvider {
             final String email = (String) authentication.getPrincipal();
             final String password = (String) upAuth.getCredentials();
             final String storedPassword = userService.loadUserByUsername(email).getPassword();
+
             if (passwordEncoder.matches(password, storedPassword)) {
                 final Object principal = authentication.getPrincipal();
                 final UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(
@@ -38,12 +39,7 @@ public class WebAuthenticationProvider implements AuthenticationProvider {
             }
         } catch (EntityNotFoundException ignored) {
         }
-        throw new BadCredentialsException("invalid email or password");
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return true;
+        throw new BadCredentialsException();
     }
 
 }

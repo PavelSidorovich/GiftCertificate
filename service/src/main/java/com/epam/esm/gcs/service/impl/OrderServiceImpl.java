@@ -2,11 +2,9 @@ package com.epam.esm.gcs.service.impl;
 
 import com.epam.esm.gcs.dto.GiftCertificateDto;
 import com.epam.esm.gcs.dto.OrderDto;
-import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.exception.NoWidelyUsedTagException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.AccountModel;
 import com.epam.esm.gcs.model.OrderModel;
@@ -109,7 +107,6 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //        throw new NoWidelyUsedTagException(TagDto.class);
 //    }
-
     private Optional<TagModel> findWidelyUsedTag(AccountModel user) {
         return orderRepository.findByUserId(user.getId(), Pageable.unpaged()).stream()
                               .map(orderModel -> orderModel.getCertificate()

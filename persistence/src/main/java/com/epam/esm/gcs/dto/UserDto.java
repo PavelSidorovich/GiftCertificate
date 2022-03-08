@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-@JsonInclude(Include.NON_NULL)
 public class UserDto extends SignUpUserDto {
 
     @Null(message = "{model.field.not.null}")
