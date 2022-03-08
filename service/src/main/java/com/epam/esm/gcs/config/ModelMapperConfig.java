@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.config;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.dto.CertificateDto;
+import com.epam.esm.gcs.model.CertificateModel;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.config.Configuration.AccessLevel;
@@ -31,7 +31,7 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    private PropertyMap<GiftCertificateDto, GiftCertificateModel> skipModifiedFieldsMap() {
+    private PropertyMap<CertificateDto, CertificateModel> skipModifiedFieldsMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 skip().setTags(null);

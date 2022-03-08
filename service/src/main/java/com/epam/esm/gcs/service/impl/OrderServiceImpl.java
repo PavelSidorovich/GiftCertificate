@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.service.impl;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
@@ -11,7 +11,7 @@ import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.OrderModel_;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.repository.OrderRepository;
-import com.epam.esm.gcs.service.GiftCertificateService;
+import com.epam.esm.gcs.service.CertificateService;
 import com.epam.esm.gcs.service.OrderService;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserService userService;
     private final OrderRepository orderRepository;
-    private final GiftCertificateService certificateService;
+    private final CertificateService certificateService;
     private final ModelMapper modelMapper;
 
     /**
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto purchase(long userId, long certificateId) {
         OrderDto orderDto = new OrderDto();
         UserDto user = userService.findById(userId);
-        GiftCertificateDto certificate = certificateService.findById(certificateId);
+        CertificateDto certificate = certificateService.findById(certificateId);
 
         orderDto.setUser(user);
         orderDto.setCertificate(certificate);
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
                               .map(Entry::getKey);
     }
 
-    private void checkBalance(GiftCertificateDto certificate, UserDto userDto) {
+    private void checkBalance(CertificateDto certificate, UserDto userDto) {
         final BigDecimal userDtoBalance = userDto.getBalance();
         final BigDecimal certificateCost = certificate.getPrice();
 

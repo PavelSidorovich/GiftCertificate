@@ -1,8 +1,8 @@
 package com.epam.esm.gcs.spec.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
-import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.GiftCertificateModel_;
+import com.epam.esm.gcs.model.CertificateModel;
+import com.epam.esm.gcs.model.CertificateModel_;
 import com.epam.esm.gcs.model.TagModel_;
 import com.epam.esm.gcs.spec.CertificateSearchCriteria;
 import com.epam.esm.gcs.spec.JoinColumnProps;
@@ -53,31 +53,31 @@ class CertificateCriteriaToSpecificationConverterTest {
                 "desc", "ASC", "DESC"
         );
         final SearchQuery searchQuery = getSearchQuery();
-        final Specification<GiftCertificateModel> specification =
-                (Specification<GiftCertificateModel>) mock(Specification.class);
-        when(specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class))
+        final Specification<CertificateModel> specification =
+                (Specification<CertificateModel>) mock(Specification.class);
+        when(specificationUtil.bySearchQuery(searchQuery, CertificateModel.class))
                 .thenReturn(specification);
         when(pageRequestFactory.pageable(searchQuery))
                 .thenReturn(PageRequest.of(0, 10));
 
-        converter.byCriteria(searchCriteria, GiftCertificateModel.class);
+        converter.byCriteria(searchCriteria, CertificateModel.class);
 
-        verify(specificationUtil).bySearchQuery(searchQuery, GiftCertificateModel.class);
+        verify(specificationUtil).bySearchQuery(searchQuery, CertificateModel.class);
         verify(pageRequestFactory).pageable(searchQuery);
     }
 
     private SearchQuery getSearchQuery() {
         SearchFilter filter1 = new SearchFilter(
-                GiftCertificateModel_.name.getName(), QueryOperator.LIKE, "certName");
+                CertificateModel_.name.getName(), QueryOperator.LIKE, "certName");
         SearchFilter filter2 = new SearchFilter(
-                GiftCertificateModel_.description.getName(), QueryOperator.LIKE, "desc");
+                CertificateModel_.description.getName(), QueryOperator.LIKE, "desc");
         SearchFilter filter3 = new SearchFilter(
                 TagModel_.name.getName(), QueryOperator.EQUALS, "tagName");
         List<SearchFilter> filters = List.of(filter1, filter2);
         List<JoinColumnProps> joinColumnProps = List.of(
-                new JoinColumnProps(GiftCertificateModel_.tags.getName(), filter3));
+                new JoinColumnProps(CertificateModel_.tags.getName(), filter3));
         SortOrder sortOrder = new SortOrder(List.of(
-                GiftCertificateModel_.createDate.getName()), List.of(GiftCertificateModel_.name.getName())
+                CertificateModel_.createDate.getName()), List.of(CertificateModel_.name.getName())
         );
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }

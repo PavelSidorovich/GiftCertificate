@@ -1,11 +1,11 @@
 package com.epam.esm.gcs.spec.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
-import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.GiftCertificateModel_;
+import com.epam.esm.gcs.model.CertificateModel;
+import com.epam.esm.gcs.model.CertificateModel_;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.TagModel_;
-import com.epam.esm.gcs.repository.GiftCertificateRepository;
+import com.epam.esm.gcs.repository.CertificateRepository;
 import com.epam.esm.gcs.repository.TagRepository;
 import com.epam.esm.gcs.spec.JoinColumnProps;
 import com.epam.esm.gcs.spec.QueryOperator;
@@ -37,12 +37,12 @@ class SpecificationUtilImplTest {
 
     private final SpecificationUtilImpl specificationUtil;
 
-    private final GiftCertificateRepository certificateRepository;
+    private final CertificateRepository certificateRepository;
     private final TagRepository tagRepository;
 
     @Autowired
     public SpecificationUtilImplTest(SpecificationUtilImpl specificationUtil,
-                                     GiftCertificateRepository certificateRepository,
+                                     CertificateRepository certificateRepository,
                                      TagRepository tagRepository) {
         this.specificationUtil = specificationUtil;
         this.certificateRepository = certificateRepository;
@@ -55,7 +55,7 @@ class SpecificationUtilImplTest {
         TagModel tagModel2 = tagRepository.save(new TagModel("gift"));
         TagModel tagModel3 = tagRepository.save(new TagModel("device"));
         TagModel tagModel4 = tagRepository.save(new TagModel("app"));
-        GiftCertificateModel cert1 = GiftCertificateModel
+        CertificateModel cert1 = CertificateModel
                 .builder()
                 .name("De facto discount")
                 .description("10% discount")
@@ -63,7 +63,7 @@ class SpecificationUtilImplTest {
                 .tags(Set.of(tagModel1, tagModel2))
                 .duration(10)
                 .build();
-        GiftCertificateModel cert2 = GiftCertificateModel
+        CertificateModel cert2 = CertificateModel
                 .builder()
                 .name("Repair device")
                 .description("15% discount")
@@ -71,7 +71,7 @@ class SpecificationUtilImplTest {
                 .tags(Set.of(tagModel2, tagModel3, tagModel4))
                 .duration(20)
                 .build();
-        GiftCertificateModel cert3 = GiftCertificateModel
+        CertificateModel cert3 = CertificateModel
                 .builder()
                 .name("LC Vaikuki")
                 .description("free cloth")
@@ -79,7 +79,7 @@ class SpecificationUtilImplTest {
                 .tags(Set.of(tagModel1))
                 .duration(2)
                 .build();
-        GiftCertificateModel cert4 = GiftCertificateModel
+        CertificateModel cert4 = CertificateModel
                 .builder()
                 .name("Smile media discount certificate")
                 .description("7% discount")
@@ -96,10 +96,10 @@ class SpecificationUtilImplTest {
     @Test
     void bySearchQuery_shouldReturnCertificatesMatchingTheFilter1_always() {
         final SearchQuery searchQuery = getSearchQuery1();
-        Specification<GiftCertificateModel> specification =
-                specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class);
+        Specification<CertificateModel> specification =
+                specificationUtil.bySearchQuery(searchQuery, CertificateModel.class);
 
-        List<GiftCertificateModel> actual = certificateRepository.findAll(
+        List<CertificateModel> actual = certificateRepository.findAll(
                 specification, PageRequest.of(0, 10)
         ).getContent();
 
@@ -110,10 +110,10 @@ class SpecificationUtilImplTest {
     @Test
     void bySearchQuery_shouldReturnCertificatesMatchingTheFilter2_always() {
         final SearchQuery searchQuery = getSearchQuery2();
-        Specification<GiftCertificateModel> specification =
-                specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class);
+        Specification<CertificateModel> specification =
+                specificationUtil.bySearchQuery(searchQuery, CertificateModel.class);
 
-        List<GiftCertificateModel> actual = certificateRepository.findAll(
+        List<CertificateModel> actual = certificateRepository.findAll(
                 specification, PageRequest.of(0, 10)
         ).getContent();
 
@@ -126,10 +126,10 @@ class SpecificationUtilImplTest {
     @Test
     void bySearchQuery_shouldReturnCertificatesMatchingTheFilter3_always() {
         final SearchQuery searchQuery = getSearchQuery3();
-        Specification<GiftCertificateModel> specification =
-                specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class);
+        Specification<CertificateModel> specification =
+                specificationUtil.bySearchQuery(searchQuery, CertificateModel.class);
 
-        List<GiftCertificateModel> actual = certificateRepository.findAll(
+        List<CertificateModel> actual = certificateRepository.findAll(
                 specification, PageRequest.of(0, 10)
         ).getContent();
 
@@ -141,10 +141,10 @@ class SpecificationUtilImplTest {
     @Test
     void bySearchQuery_shouldReturnCertificatesMatchingTheFilter4_always() {
         final SearchQuery searchQuery = getSearchQuery4();
-        Specification<GiftCertificateModel> specification =
-                specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class);
+        Specification<CertificateModel> specification =
+                specificationUtil.bySearchQuery(searchQuery, CertificateModel.class);
 
-        List<GiftCertificateModel> actual = certificateRepository.findAll(
+        List<CertificateModel> actual = certificateRepository.findAll(
                 specification, PageRequest.of(0, 10)
         ).getContent();
 
@@ -155,10 +155,10 @@ class SpecificationUtilImplTest {
     @Test
     void bySearchQuery_shouldReturnCertificatesMatchingTheFilter5_always() {
         final SearchQuery searchQuery = getSearchQuery5();
-        Specification<GiftCertificateModel> specification =
-                specificationUtil.bySearchQuery(searchQuery, GiftCertificateModel.class);
+        Specification<CertificateModel> specification =
+                specificationUtil.bySearchQuery(searchQuery, CertificateModel.class);
 
-        List<GiftCertificateModel> actual = certificateRepository.findAll(
+        List<CertificateModel> actual = certificateRepository.findAll(
                 specification, PageRequest.of(0, 10)
         ).getContent();
 
@@ -167,23 +167,23 @@ class SpecificationUtilImplTest {
 
     private SearchQuery getSearchQuery1() {
         SearchFilter filter1 = new SearchFilter(
-                GiftCertificateModel_.name.getName(), QueryOperator.EQUALS, "repair device");
+                CertificateModel_.name.getName(), QueryOperator.EQUALS, "repair device");
         SearchFilter filter2 = new SearchFilter(
-                GiftCertificateModel_.description.getName(), QueryOperator.LIKE, "15");
+                CertificateModel_.description.getName(), QueryOperator.LIKE, "15");
         SearchFilter filter3 = new SearchFilter(
                 TagModel_.name.getName(), QueryOperator.LIKE, "dev");
         List<SearchFilter> filters = List.of(filter1, filter2);
         List<JoinColumnProps> joinColumnProps = List.of(
-                new JoinColumnProps(GiftCertificateModel_.tags.getName(), filter3));
+                new JoinColumnProps(CertificateModel_.tags.getName(), filter3));
         SortOrder sortOrder = new SortOrder(List.of(
-                GiftCertificateModel_.createDate.getName()), List.of(GiftCertificateModel_.name.getName())
+                CertificateModel_.createDate.getName()), List.of(CertificateModel_.name.getName())
         );
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }
 
     private SearchQuery getSearchQuery2() {
         SearchFilter filter1 = new SearchFilter(
-                GiftCertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
+                CertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
         List<SearchFilter> filters = List.of(filter1);
         List<JoinColumnProps> joinColumnProps = Collections.emptyList();
         SortOrder sortOrder = new SortOrder(Collections.emptyList(), Collections.emptyList());
@@ -192,26 +192,26 @@ class SpecificationUtilImplTest {
 
     private SearchQuery getSearchQuery3() {
         SearchFilter filter1 = new SearchFilter(
-                GiftCertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
+                CertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
         SearchFilter filter2 = new SearchFilter(
                 TagModel_.name.getName(), QueryOperator.LIKE, "app");
         List<SearchFilter> filters = List.of(filter1);
         List<JoinColumnProps> joinColumnProps = List.of(
-                new JoinColumnProps(GiftCertificateModel_.tags.getName(), filter2));
+                new JoinColumnProps(CertificateModel_.tags.getName(), filter2));
         SortOrder sortOrder = new SortOrder(List.of(
-                GiftCertificateModel_.createDate.getName()), List.of(GiftCertificateModel_.name.getName())
+                CertificateModel_.createDate.getName()), List.of(CertificateModel_.name.getName())
         );
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }
 
     private SearchQuery getSearchQuery4() {
         SearchFilter filter1 = new SearchFilter(
-                GiftCertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
+                CertificateModel_.description.getName(), QueryOperator.LIKE, "discount");
         SearchFilter filter2 = new SearchFilter(
                 TagModel_.name.getName(), QueryOperator.LIKE, "clothes");
         List<SearchFilter> filters = List.of(filter1);
         List<JoinColumnProps> joinColumnProps = List.of(
-                new JoinColumnProps(GiftCertificateModel_.tags.getName(), filter2));
+                new JoinColumnProps(CertificateModel_.tags.getName(), filter2));
         SortOrder sortOrder = new SortOrder(Collections.emptyList(), Collections.emptyList());
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }

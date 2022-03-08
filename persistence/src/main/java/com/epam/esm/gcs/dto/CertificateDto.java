@@ -22,7 +22,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
-public class GiftCertificateDto {
+public class CertificateDto {
 
     @Null(message = "{model.field.not.null}",
             groups = { CreateValidationGroup.class, UpdateValidationGroup.class })

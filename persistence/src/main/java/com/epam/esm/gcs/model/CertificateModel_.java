@@ -8,15 +8,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
-@StaticMetamodel(GiftCertificateModel.class)
-public abstract class GiftCertificateModel_ extends NamedModel_ {
+@StaticMetamodel(CertificateModel.class)
+public abstract class CertificateModel_ extends NamedModel_ {
 
-    public static volatile SingularAttribute<GiftCertificateModel, String> description;
-    public static volatile SingularAttribute<GiftCertificateModel, BigDecimal> price;
-    public static volatile SingularAttribute<GiftCertificateModel, Integer> duration;
-    public static volatile SingularAttribute<GiftCertificateModel, LocalDateTime> createDate;
-    public static volatile SingularAttribute<GiftCertificateModel, LocalDateTime> lastUpdateDate;
-    public static volatile SetAttribute<GiftCertificateModel, TagModel> tags;
+    public static volatile SingularAttribute<CertificateModel, String> description;
+    public static volatile SingularAttribute<CertificateModel, BigDecimal> price;
+    public static volatile SingularAttribute<CertificateModel, Integer> duration;
+    public static volatile SingularAttribute<CertificateModel, LocalDateTime> createDate;
+    public static volatile SingularAttribute<CertificateModel, LocalDateTime> lastUpdateDate;
+    public static volatile SetAttribute<CertificateModel, TagModel> tags;
 
     public static final String TABLE = "certificate";
     public static final String DESCRIPTION = "description";

@@ -33,8 +33,8 @@ public class OrderModel {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = OrderModel_.CERTIFICATE_ID, referencedColumnName = GiftCertificateModel_.ID)
-    private GiftCertificateModel certificate;
+    @JoinColumn(name = OrderModel_.CERTIFICATE_ID, referencedColumnName = CertificateModel_.ID)
+    private CertificateModel certificate;
 
     @ManyToOne
     @JoinColumn(name = OrderModel_.USER_ID, referencedColumnName = UserModel_.ID)

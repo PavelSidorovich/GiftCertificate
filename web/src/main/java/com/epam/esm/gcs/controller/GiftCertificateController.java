@@ -1,8 +1,8 @@
 package com.epam.esm.gcs.controller;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
-import com.epam.esm.gcs.service.GiftCertificateService;
+import com.epam.esm.gcs.service.CertificateService;
 import com.epam.esm.gcs.spec.CertificateSearchCriteria;
 import com.epam.esm.gcs.util.PageRequestFactoryService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
@@ -33,20 +33,20 @@ import java.util.List;
 @AllArgsConstructor
 public class GiftCertificateController {
 
-    private final GiftCertificateService certificateService;
+    private final CertificateService certificateService;
     private final GiftCertificateAssembler certificateAssembler;
     private final PageRequestFactoryService paginationFactory;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<GiftCertificateDto> create(
+    public EntityModel<CertificateDto> create(
             @Validated({ CreateValidationGroup.class })
-            @RequestBody GiftCertificateDto certificate) {
+            @RequestBody CertificateDto certificate) {
         return certificateAssembler.toModel(certificateService.create(certificate));
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<GiftCertificateDto>> findByFilter(
+    public CollectionModel<EntityModel<CertificateDto>> findByFilter(
             @RequestParam(required = false) String tagName,
             @RequestParam(required = false) String certName,
             @RequestParam(required = false) String description,
@@ -64,7 +64,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping(params = "tag")
-    public CollectionModel<EntityModel<GiftCertificateDto>> findByTags(
+    public CollectionModel<EntityModel<CertificateDto>> findByTags(
             @RequestParam List<String> tag,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
@@ -74,14 +74,14 @@ public class GiftCertificateController {
     }
 
     @GetMapping(value = "/{id}")
-    public EntityModel<GiftCertificateDto> findById(@PathVariable long id) {
+    public EntityModel<CertificateDto> findById(@PathVariable long id) {
         return certificateAssembler.toModel(certificateService.findById(id));
     }
 
     @PatchMapping("/{id}")
-    public EntityModel<GiftCertificateDto> update(
+    public EntityModel<CertificateDto> update(
             @Validated({ UpdateValidationGroup.class })
-            @RequestBody GiftCertificateDto certificate,
+            @RequestBody CertificateDto certificate,
             @PathVariable long id) {
         certificate.setId(id);
         return certificateAssembler.toModel(certificateService.update(certificate));

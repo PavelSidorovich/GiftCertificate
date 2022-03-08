@@ -1,10 +1,10 @@
 package com.epam.esm.gcs.spec.impl;
 
 import com.epam.esm.gcs.config.TestConfig;
-import com.epam.esm.gcs.model.GiftCertificateModel;
-import com.epam.esm.gcs.model.GiftCertificateModel_;
+import com.epam.esm.gcs.model.CertificateModel;
+import com.epam.esm.gcs.model.CertificateModel_;
 import com.epam.esm.gcs.model.TagModel;
-import com.epam.esm.gcs.repository.GiftCertificateRepository;
+import com.epam.esm.gcs.repository.CertificateRepository;
 import com.epam.esm.gcs.repository.TagRepository;
 import com.epam.esm.gcs.spec.JoinColumnProps;
 import com.epam.esm.gcs.spec.SearchFilter;
@@ -40,12 +40,12 @@ class PageRequestFactoryImplTest {
 
     private final PageRequestFactoryImpl pageRequestFactory;
 
-    private final GiftCertificateRepository certificateRepository;
+    private final CertificateRepository certificateRepository;
     private final TagRepository tagRepository;
 
     @Autowired
     public PageRequestFactoryImplTest(PageRequestFactoryImpl pageRequestFactory,
-                                      GiftCertificateRepository certificateRepository,
+                                      CertificateRepository certificateRepository,
                                       TagRepository tagRepository) {
         this.pageRequestFactory = pageRequestFactory;
         this.certificateRepository = certificateRepository;
@@ -58,7 +58,7 @@ class PageRequestFactoryImplTest {
         TagModel tagModel2 = tagRepository.save(new TagModel("gift"));
         TagModel tagModel3 = tagRepository.save(new TagModel("device"));
         TagModel tagModel4 = tagRepository.save(new TagModel("app"));
-        GiftCertificateModel cert1 = GiftCertificateModel
+        CertificateModel cert1 = CertificateModel
                 .builder()
                 .name("De facto discount")
                 .description("10% discount")
@@ -66,7 +66,7 @@ class PageRequestFactoryImplTest {
                 .tags(Set.of(tagModel1, tagModel2))
                 .duration(10)
                 .build();
-        GiftCertificateModel cert2 = GiftCertificateModel
+        CertificateModel cert2 = CertificateModel
                 .builder()
                 .name("Repair device")
                 .description("15% discount")
@@ -74,7 +74,7 @@ class PageRequestFactoryImplTest {
                 .tags(Set.of(tagModel2, tagModel3, tagModel4))
                 .duration(20)
                 .build();
-        GiftCertificateModel cert3 = GiftCertificateModel
+        CertificateModel cert3 = CertificateModel
                 .builder()
                 .name("LC buber")
                 .description("free cloth")
@@ -82,7 +82,7 @@ class PageRequestFactoryImplTest {
                 .tags(Set.of(tagModel1))
                 .duration(2)
                 .build();
-        GiftCertificateModel cert4 = GiftCertificateModel
+        CertificateModel cert4 = CertificateModel
                 .builder()
                 .name("Smile media discount certificate")
                 .description("7% discount")
@@ -120,7 +120,7 @@ class PageRequestFactoryImplTest {
     void pageable_shouldReturnPageWithOrderedCertificates_whenOrderProvided(
             SearchQuery searchQuery, List<String> expectedNames) {
         final Pageable actualPage = pageRequestFactory.pageable(searchQuery);
-        final List<GiftCertificateModel> actualCertificates =
+        final List<CertificateModel> actualCertificates =
                 certificateRepository.findAll(actualPage).getContent();
 
         assertEquals(0, actualPage.getPageNumber());
@@ -152,7 +152,7 @@ class PageRequestFactoryImplTest {
         List<SearchFilter> filters = Collections.emptyList();
         List<JoinColumnProps> joinColumnProps = Collections.emptyList();
         SortOrder sortOrder = new SortOrder(
-                Collections.emptyList(), List.of(GiftCertificateModel_.createDate.getName())
+                Collections.emptyList(), List.of(CertificateModel_.createDate.getName())
         );
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }
@@ -161,7 +161,7 @@ class PageRequestFactoryImplTest {
         List<SearchFilter> filters = Collections.emptyList();
         List<JoinColumnProps> joinColumnProps = Collections.emptyList();
         SortOrder sortOrder = new SortOrder(
-                List.of(GiftCertificateModel_.name.getName()), Collections.emptyList()
+                List.of(CertificateModel_.name.getName()), Collections.emptyList()
         );
         return new SearchQuery(filters, joinColumnProps, sortOrder, 0, 10);
     }

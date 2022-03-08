@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.spec.impl;
 
-import com.epam.esm.gcs.model.GiftCertificateModel_;
+import com.epam.esm.gcs.model.CertificateModel_;
 import com.epam.esm.gcs.model.TagModel_;
 import com.epam.esm.gcs.spec.CertificateSearchCriteria;
 import com.epam.esm.gcs.spec.CriteriaToSpecificationConverter;
@@ -56,17 +56,17 @@ public class CertificateCriteriaToSpecificationConverter
         final List<String> ascOrder = new ArrayList<>();
         final List<String> descOrder = new ArrayList<>();
 
-        addSortOrder(ascOrder, descOrder, searchCriteria.getSortNameType(), GiftCertificateModel_.name.getName());
+        addSortOrder(ascOrder, descOrder, searchCriteria.getSortNameType(), CertificateModel_.name.getName());
         addSortOrder(ascOrder, descOrder, searchCriteria.getSortCreateDateType(),
-                     GiftCertificateModel_.createDate.getName());
+                     CertificateModel_.createDate.getName());
 
         return new SortOrder(ascOrder, descOrder);
     }
 
     private List<SearchFilter> getFilters(CertificateSearchCriteria searchCriteria) {
         final List<SearchFilter> filters = new ArrayList<>();
-        addFilter(filters, GiftCertificateModel_.name.getName(), searchCriteria.getCertificateName());
-        addFilter(filters, GiftCertificateModel_.description.getName(), searchCriteria.getDescription());
+        addFilter(filters, CertificateModel_.name.getName(), searchCriteria.getCertificateName());
+        addFilter(filters, CertificateModel_.description.getName(), searchCriteria.getDescription());
         return filters;
     }
 
@@ -75,7 +75,7 @@ public class CertificateCriteriaToSpecificationConverter
             final SearchFilter joinTableFilter =
                     new SearchFilter(TagModel_.name.getName(), EQUALS, searchCriteria.getTagName());
             final JoinColumnProps joinColumnProp =
-                    new JoinColumnProps(GiftCertificateModel_.tags.getName(), joinTableFilter);
+                    new JoinColumnProps(CertificateModel_.tags.getName(), joinTableFilter);
             return List.of(joinColumnProp);
         }
         return Collections.emptyList();

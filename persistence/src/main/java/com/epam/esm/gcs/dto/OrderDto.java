@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 public class OrderDto extends TruncatedOrderDto {
 
     @NotNull(message = "{model.field.null}", groups = OrderValidationGroup.class)
-    private GiftCertificateDto certificate;
+    private CertificateDto certificate;
 
     @JsonIgnore
     private UserDto user;

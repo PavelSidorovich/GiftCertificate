@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.service.impl;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
@@ -75,7 +75,7 @@ public class TagServiceImpl implements TagService {
     public TagDto findByName(String name) {
         TagModel tag = tagRepository.findByNameIgnoreCase(name).orElseThrow(
                 () -> new EntityNotFoundException(
-                        GiftCertificateDto.class, TagModel_.NAME, name
+                        CertificateDto.class, TagModel_.NAME, name
                 )
         );
         return modelMapper.map(tag, TagDto.class);

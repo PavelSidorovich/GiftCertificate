@@ -26,24 +26,24 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = GiftCertificateModel_.TABLE)
-public class GiftCertificateModel extends NamedModel {
+@Table(name = CertificateModel_.TABLE)
+public class CertificateModel extends NamedModel {
 
-    @Column(name = GiftCertificateModel_.DESCRIPTION, nullable = false)
+    @Column(name = CertificateModel_.DESCRIPTION, nullable = false)
     private String description;
 
-    @Column(name = GiftCertificateModel_.PRICE, nullable = false)
+    @Column(name = CertificateModel_.PRICE, nullable = false)
     private BigDecimal price;
 
-    @Column(name = GiftCertificateModel_.DURATION, nullable = false)
+    @Column(name = CertificateModel_.DURATION, nullable = false)
     private Integer duration;
 
     @CreatedDate
-    @Column(name = GiftCertificateModel_.CREATE_DATE, nullable = false)
+    @Column(name = CertificateModel_.CREATE_DATE, nullable = false)
     private LocalDateTime createDate;
 
     @LastModifiedDate
-    @Column(name = GiftCertificateModel_.LAST_UPDATE_DATE, nullable = false)
+    @Column(name = CertificateModel_.LAST_UPDATE_DATE, nullable = false)
     private LocalDateTime lastUpdateDate;
 
     @Exclude
@@ -56,9 +56,9 @@ public class GiftCertificateModel extends NamedModel {
     private Set<TagModel> tags;
 
     @Builder
-    private GiftCertificateModel(Long id, String name, String description,
-                                 BigDecimal price, Integer duration, LocalDateTime createDate,
-                                 LocalDateTime lastUpdateDate, Set<TagModel> tags) {
+    private CertificateModel(Long id, String name, String description,
+                             BigDecimal price, Integer duration, LocalDateTime createDate,
+                             LocalDateTime lastUpdateDate, Set<TagModel> tags) {
         super(id, name);
         this.description = description;
         this.price = price;

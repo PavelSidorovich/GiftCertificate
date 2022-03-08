@@ -1,17 +1,17 @@
 package com.epam.esm.gcs.service.impl;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.NotEnoughMoneyException;
-import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.model.CertificateModel;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.OrderRepository;
-import com.epam.esm.gcs.service.GiftCertificateService;
+import com.epam.esm.gcs.service.CertificateService;
 import com.epam.esm.gcs.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,13 +38,13 @@ class OrderServiceImplTest {
 
     private final OrderRepository orderRepository;
     private final UserService userService;
-    private final GiftCertificateService certificateService;
+    private final CertificateService certificateService;
     private final ModelMapper mapper;
     private final Pageable pageable;
 
     public OrderServiceImplTest(@Mock OrderRepository orderRepository,
                                 @Mock UserService userService,
-                                @Mock GiftCertificateService certificateService) {
+                                @Mock CertificateService certificateService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.certificateService = certificateService;
@@ -82,7 +82,7 @@ class OrderServiceImplTest {
         final UserDto user = getUser();
         final long userId = user.getId();
         final long certificateId = 1L;
-        final GiftCertificateDto certificate = getCertificate1(LocalDateTime.now());
+        final CertificateDto certificate = getCertificate1(LocalDateTime.now());
         user.setBalance(BigDecimal.ZERO);
 
         when(userService.findById(userId)).thenReturn(user);
@@ -101,9 +101,9 @@ class OrderServiceImplTest {
         final OrderDto orderDto = getOrderDto();
         final OrderModel beforePurchase = mapper.map(orderDto, OrderModel.class);
         final OrderDto expected = mapper.map(getOrderModel(time), OrderDto.class);
-        final GiftCertificateDto certificate = getCertificate1(time);
+        final CertificateDto certificate = getCertificate1(time);
         certificate.setTags(new HashSet<>());
-        final GiftCertificateModel certificateModel = mapper.map(certificate, GiftCertificateModel.class);
+        final CertificateModel certificateModel = mapper.map(certificate, CertificateModel.class);
         beforePurchase.setUser(mapper.map(user, UserModel.class));
         beforePurchase.setCertificate(certificateModel);
         when(userService.findById(userId)).thenReturn(user);
@@ -222,13 +222,13 @@ class OrderServiceImplTest {
 //    }
 
     private OrderDto getOrderDto() {
-        return new OrderDto(GiftCertificateDto.builder().name("certName").build(), null);
+        return new OrderDto(CertificateDto.builder().name("certName").build(), null);
     }
 
     private OrderModel getOrderModel(LocalDateTime time) {
         return new OrderModel(
                 1L,
-                mapper.map(getCertificate1(time), GiftCertificateModel.class),
+                mapper.map(getCertificate1(time), CertificateModel.class),
                 mapper.map(getUser(), UserModel.class),
                 BigDecimal.ONE,
                 time
@@ -246,8 +246,8 @@ class OrderServiceImplTest {
                       .build();
     }
 
-    private GiftCertificateDto getCertificate1(LocalDateTime time) {
-        return GiftCertificateDto
+    private CertificateDto getCertificate1(LocalDateTime time) {
+        return CertificateDto
                 .builder()
                 .id(1L)
                 .name("certName")
@@ -260,8 +260,8 @@ class OrderServiceImplTest {
                 .build();
     }
 
-    private GiftCertificateDto getCertificate2(LocalDateTime time) {
-        return GiftCertificateDto
+    private CertificateDto getCertificate2(LocalDateTime time) {
+        return CertificateDto
                 .builder()
                 .id(2L)
                 .name("certName")
@@ -274,8 +274,8 @@ class OrderServiceImplTest {
                 .build();
     }
 
-    private GiftCertificateDto getCertificate3(LocalDateTime time) {
-        return GiftCertificateDto
+    private CertificateDto getCertificate3(LocalDateTime time) {
+        return CertificateDto
                 .builder()
                 .id(3L)
                 .name("certName")
@@ -292,11 +292,11 @@ class OrderServiceImplTest {
         final UserModel user = mapper.map(userDto, UserModel.class);
         final LocalDateTime time = LocalDateTime.now();
         return List.of(
-                new OrderModel(1L, mapper.map(getCertificate1(time), GiftCertificateModel.class),
+                new OrderModel(1L, mapper.map(getCertificate1(time), CertificateModel.class),
                                user, BigDecimal.TEN, time),
-                new OrderModel(2L, mapper.map(getCertificate2(time), GiftCertificateModel.class),
+                new OrderModel(2L, mapper.map(getCertificate2(time), CertificateModel.class),
                                user, BigDecimal.TEN, time),
-                new OrderModel(3L, mapper.map(getCertificate3(time), GiftCertificateModel.class),
+                new OrderModel(3L, mapper.map(getCertificate3(time), CertificateModel.class),
                                user, BigDecimal.TEN, time)
         );
     }

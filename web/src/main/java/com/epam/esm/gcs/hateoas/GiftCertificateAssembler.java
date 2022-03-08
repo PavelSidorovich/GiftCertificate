@@ -2,7 +2,7 @@ package com.epam.esm.gcs.hateoas;
 
 import com.epam.esm.gcs.controller.GiftCertificateController;
 import com.epam.esm.gcs.controller.TagController;
-import com.epam.esm.gcs.dto.GiftCertificateDto;
+import com.epam.esm.gcs.dto.CertificateDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -15,7 +15,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
 public class GiftCertificateAssembler
-        implements RepresentationModelAssembler<GiftCertificateDto, EntityModel<GiftCertificateDto>> {
+        implements RepresentationModelAssembler<CertificateDto, EntityModel<CertificateDto>> {
 
     private static final String CERTIFICATES_WITH_TAGS_REL = "certificatesWithTags";
     private static final String CERTIFICATES_REL = "certificates";
@@ -31,7 +31,7 @@ public class GiftCertificateAssembler
     private static final int OFFSET = 0;
 
     @Override
-    public EntityModel<GiftCertificateDto> toModel(GiftCertificateDto certificate) {
+    public EntityModel<CertificateDto> toModel(CertificateDto certificate) {
         return EntityModel.of(
                 certificate,
                 linkTo(methodOn(GiftCertificateController.class).findById(certificate.getId())).withSelfRel(),
@@ -44,9 +44,9 @@ public class GiftCertificateAssembler
     }
 
     @Override
-    public CollectionModel<EntityModel<GiftCertificateDto>> toCollectionModel(
-            Iterable<? extends GiftCertificateDto> certificates) {
-        List<EntityModel<GiftCertificateDto>> certificateDtos = new ArrayList<>();
+    public CollectionModel<EntityModel<CertificateDto>> toCollectionModel(
+            Iterable<? extends CertificateDto> certificates) {
+        List<EntityModel<CertificateDto>> certificateDtos = new ArrayList<>();
         certificates.forEach(cert -> certificateDtos.add(EntityModel.of(
                 cert,
                 linkTo(methodOn(TagController.class).findById(cert.getId())).withRel(TAG_REL))

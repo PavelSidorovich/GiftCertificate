@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.repository;
 
 import com.epam.esm.gcs.config.TestConfig;
-import com.epam.esm.gcs.model.GiftCertificateModel;
+import com.epam.esm.gcs.model.CertificateModel;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
@@ -30,18 +30,18 @@ class OrderRepositoryImplTest {
 
     private final OrderRepository orderRepository;
 
-    private final GiftCertificateRepository giftCertificateRepository;
+    private final CertificateRepository certificateRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final Pageable pageable;
 
     @Autowired
     public OrderRepositoryImplTest(OrderRepository orderRepository,
-                                   GiftCertificateRepository giftCertificateRepository,
+                                   CertificateRepository certificateRepository,
                                    TagRepository tagRepository,
                                    UserRepository userRepository) {
         this.orderRepository = orderRepository;
-        this.giftCertificateRepository = giftCertificateRepository;
+        this.certificateRepository = certificateRepository;
         this.tagRepository = tagRepository;
         this.userRepository = userRepository;
         this.pageable = PageRequest.of(0, 10);
@@ -53,7 +53,7 @@ class OrderRepositoryImplTest {
         final TagModel tag2 = tagRepository.save(new TagModel("tag2"));
         final Set<TagModel> tags = Set.of(tag1, tag2);
         final UserModel user = userRepository.save(getUser1());
-        final GiftCertificateModel certificate = giftCertificateRepository.save(getCertificate1(tags));
+        final CertificateModel certificate = certificateRepository.save(getCertificate1(tags));
         final OrderModel purchase = getPurchaseModel(user, certificate);
         user.setBalance(BigDecimal.TEN);
 
@@ -76,8 +76,8 @@ class OrderRepositoryImplTest {
         final Set<TagModel> tags1 = Set.of(tag1, tag2);
         final Set<TagModel> tags2 = Set.of(tag3, tag4);
         final UserModel user = userRepository.save(getUser1());
-        final GiftCertificateModel certificate1 = giftCertificateRepository.save(getCertificate1(tags1));
-        final GiftCertificateModel certificate2 = giftCertificateRepository.save(getCertificate2(tags2));
+        final CertificateModel certificate1 = certificateRepository.save(getCertificate1(tags1));
+        final CertificateModel certificate2 = certificateRepository.save(getCertificate2(tags2));
         orderRepository.save(getPurchaseModel(user, certificate1));
         orderRepository.save(getPurchaseModel(user, certificate2));
 
@@ -94,7 +94,7 @@ class OrderRepositoryImplTest {
         final TagModel tag2 = tagRepository.save(new TagModel("tag2"));
         final Set<TagModel> tags = Set.of(tag1, tag2);
         final UserModel user = userRepository.save(getUser1());
-        final GiftCertificateModel certificate = giftCertificateRepository.save(getCertificate1(tags));
+        final CertificateModel certificate = certificateRepository.save(getCertificate1(tags));
         final OrderModel purchase = getPurchaseModel(user, certificate);
         OrderModel expected = orderRepository.save(purchase);
 
@@ -123,9 +123,9 @@ class OrderRepositoryImplTest {
 //        final Set<TagModel> tags3 = Set.of(tag5);
 //        final UserModel user1 = userRepository.save(getUser1());
 //        final UserModel user2 = userRepository.save(getUser2());
-//        final GiftCertificateModel certificate1 = giftCertificateRepository.save(getCertificate1(tags1));
-//        final GiftCertificateModel certificate2 = giftCertificateRepository.save(getCertificate2(tags2));
-//        final GiftCertificateModel certificate3 = giftCertificateRepository.save(getCertificate3(tags3));
+//        final CertificateModel certificate1 = giftCertificateRepository.save(getCertificate1(tags1));
+//        final CertificateModel certificate2 = giftCertificateRepository.save(getCertificate2(tags2));
+//        final CertificateModel certificate3 = giftCertificateRepository.save(getCertificate3(tags3));
 //        orderRepository.save(getPurchaseModel(user1, certificate1));
 //        orderRepository.save(getPurchaseModel(user1, certificate2));
 //        orderRepository.save(getPurchaseModel(user2, certificate3));
@@ -136,7 +136,7 @@ class OrderRepositoryImplTest {
 //        assertEquals(user1.getId(), actual.get().getId());
 //    }
 
-    private OrderModel getPurchaseModel(UserModel user, GiftCertificateModel certificateModel) {
+    private OrderModel getPurchaseModel(UserModel user, CertificateModel certificateModel) {
         final OrderModel purchase = new OrderModel();
 
         purchase.setUser(user);
@@ -145,8 +145,8 @@ class OrderRepositoryImplTest {
         return purchase;
     }
 
-    private GiftCertificateModel getCertificate1(Set<TagModel> tags) {
-        return GiftCertificateModel
+    private CertificateModel getCertificate1(Set<TagModel> tags) {
+        return CertificateModel
                 .builder()
                 .name("certName")
                 .description("desc")
@@ -156,8 +156,8 @@ class OrderRepositoryImplTest {
                 .build();
     }
 
-    private GiftCertificateModel getCertificate2(Set<TagModel> tags) {
-        return GiftCertificateModel
+    private CertificateModel getCertificate2(Set<TagModel> tags) {
+        return CertificateModel
                 .builder()
                 .name("certName1")
                 .description("desc")
@@ -167,8 +167,8 @@ class OrderRepositoryImplTest {
                 .build();
     }
 
-    private GiftCertificateModel getCertificate3(Set<TagModel> tags) {
-        return GiftCertificateModel
+    private CertificateModel getCertificate3(Set<TagModel> tags) {
+        return CertificateModel
                 .builder()
                 .name("certName3")
                 .description("desc")
