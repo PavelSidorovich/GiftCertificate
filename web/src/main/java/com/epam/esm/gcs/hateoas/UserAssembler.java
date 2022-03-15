@@ -27,9 +27,9 @@ public class UserAssembler implements RepresentationModelAssembler<UserDto, Enti
                 user,
                 linkTo(methodOn(UserController.class).findById(user.getId())).withSelfRel(),
                 linkTo(methodOn(UserController.class).findAll(LIMIT, OFFSET)).withRel(USERS_REL),
-                linkTo(methodOn(UserController.class).findUserPurchases(user.getId(), LIMIT, OFFSET))
+                linkTo(methodOn(UserController.class).findUserOrders(user.getId(), LIMIT, OFFSET))
                         .withRel(USERS_REL),
-                linkTo(methodOn(UserController.class).getTruncatedPurchaseInfo(user.getId(), PURCHASE_ID))
+                linkTo(methodOn(UserController.class).getTruncatedOrderInfo(user.getId(), PURCHASE_ID))
                         .withRel(USERS_REL)
         );
     }

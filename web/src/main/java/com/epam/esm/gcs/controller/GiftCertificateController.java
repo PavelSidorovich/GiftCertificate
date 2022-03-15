@@ -1,13 +1,14 @@
 package com.epam.esm.gcs.controller;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.filter.GiftCertificateFilter;
+import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
-import com.epam.esm.gcs.service.GiftCertificateService;
-import com.epam.esm.gcs.util.impl.QueryLimiter;
+import com.epam.esm.gcs.service.CertificateService;
+import com.epam.esm.gcs.spec.CertificateSearchCriteria;
+import com.epam.esm.gcs.util.PageRequestFactoryService;
 import com.epam.esm.gcs.validator.CreateValidationGroup;
 import com.epam.esm.gcs.validator.UpdateValidationGroup;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -26,65 +27,63 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GiftCertificateController {
 
-    private final GiftCertificateService certificateService;
+    private final CertificateService certificateService;
     private final GiftCertificateAssembler certificateAssembler;
+    private final PageRequestFactoryService paginationFactory;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<GiftCertificateDto> create(
+    public EntityModel<CertificateDto> create(
             @Validated({ CreateValidationGroup.class })
-            @RequestBody GiftCertificateDto certificate) {
+            @RequestBody CertificateDto certificate) {
         return certificateAssembler.toModel(certificateService.create(certificate));
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<GiftCertificateDto>> findByFilter(
+    public CollectionModel<EntityModel<CertificateDto>> findByFilter(
             @RequestParam(required = false) String tagName,
             @RequestParam(required = false) String certName,
             @RequestParam(required = false) String description,
-            @RequestParam(required = false) String sortByCreatedDate,
+            @RequestParam(required = false) String sortByCreateDate,
             @RequestParam(required = false) String sortByName,
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer offset) {
-        if (tagName == null && certName == null && description == null
-            && sortByCreatedDate == null && sortByName == null) {
-            return certificateAssembler.toCollectionModel(
-                    certificateService.findAll(new QueryLimiter(limit, offset))
-            );
-        } else {
-            GiftCertificateFilter filter = new GiftCertificateFilter(
-                    certName, tagName, description, sortByCreatedDate, sortByName
-            );
-            return certificateAssembler.toCollectionModel(
-                    certificateService.findByFilter(filter, new QueryLimiter(limit, offset))
-            );
-        }
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        CertificateSearchCriteria searchCriteria = new CertificateSearchCriteria(
+                paginationFactory.pageable(page, size), certName,
+                tagName, description, sortByCreateDate, sortByName
+        );
+        return certificateAssembler.toCollectionModel(
+                certificateService.findByFilter(searchCriteria)
+        );
     }
 
     @GetMapping(params = "tag")
-    public CollectionModel<EntityModel<GiftCertificateDto>> findByTags(
+    public CollectionModel<EntityModel<CertificateDto>> findByTags(
             @RequestParam List<String> tag,
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer offset) {
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
         return certificateAssembler.toCollectionModel(
-                certificateService.findByTags(tag, new QueryLimiter(limit, offset))
+                certificateService.findByTags(tag, paginationFactory.pageable(page, size))
         );
     }
 
     @GetMapping(value = "/{id}")
-    public EntityModel<GiftCertificateDto> findById(@PathVariable long id) {
+    public EntityModel<CertificateDto> findById(@PathVariable long id) {
         return certificateAssembler.toModel(certificateService.findById(id));
     }
 
-    @PatchMapping
-    public EntityModel<GiftCertificateDto> update(
+    @PatchMapping("/{id}")
+    public EntityModel<CertificateDto> update(
             @Validated({ UpdateValidationGroup.class })
-            @RequestBody GiftCertificateDto certificate) {
+            @RequestBody CertificateDto certificate,
+            @PathVariable long id) {
+        certificate.setId(id);
         return certificateAssembler.toModel(certificateService.update(certificate));
     }
 

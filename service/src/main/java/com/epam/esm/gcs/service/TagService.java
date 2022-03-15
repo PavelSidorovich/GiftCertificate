@@ -8,4 +8,6 @@ public interface TagService extends CrdService<TagDto> {
 
     boolean existsWithName(String name);
 
+    TagDto findTheMostUsedTag();
+
 }

@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.response;
 
-import com.epam.esm.gcs.dto.GiftCertificateDto;
-import com.epam.esm.gcs.dto.PurchaseDto;
+import com.epam.esm.gcs.dto.CertificateDto;
+import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.dto.UserDto;
 import lombok.AllArgsConstructor;
@@ -14,9 +14,9 @@ import java.util.Arrays;
 public enum ResponseCode {
 
     TAG("01", TagDto.class),
-    CERTIFICATE("02", GiftCertificateDto.class),
+    CERTIFICATE("02", CertificateDto.class),
     USER("03", UserDto.class),
-    PURCHASE("04", PurchaseDto.class),
+    PURCHASE("04", OrderDto.class),
     DEFAULT("00", Object.class);
 
     private final String postfixCode;

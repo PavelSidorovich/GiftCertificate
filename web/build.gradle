@@ -1,16 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'com.epam.esm.gcs'
 version = '1.0-SNAPSHOT'
 
-ext {
-    jacksonVersion = '2.13.1'
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.3'
     implementation project(':persistence')
     implementation project(':service')
+    implementation project(':repository')
 }
