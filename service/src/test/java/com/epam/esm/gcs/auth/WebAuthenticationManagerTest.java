@@ -1,5 +1,6 @@
 package com.epam.esm.gcs.auth;
 
+import com.epam.esm.gcs.auth.impl.WebAuthenticationProvider;
 import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.service.UserService;
 import org.junit.jupiter.api.Test;

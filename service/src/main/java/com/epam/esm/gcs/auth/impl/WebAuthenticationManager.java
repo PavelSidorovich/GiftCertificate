@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.auth;
+package com.epam.esm.gcs.auth.impl;
 
 import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.service.UserService;

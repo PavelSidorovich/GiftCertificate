@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.util;
+package com.epam.esm.gcs.auth;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

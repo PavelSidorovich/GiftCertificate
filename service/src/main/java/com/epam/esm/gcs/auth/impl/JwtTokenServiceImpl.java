@@ -1,6 +1,6 @@
-package com.epam.esm.gcs.util.impl;
+package com.epam.esm.gcs.auth.impl;
 
-import com.epam.esm.gcs.util.JwtTokenUtil;
+import com.epam.esm.gcs.auth.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

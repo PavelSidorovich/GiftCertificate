@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.util.impl;
+package com.epam.esm.gcs.auth.impl;
 
 import com.epam.esm.gcs.util.EntityFieldService;
 import lombok.extern.slf4j.Slf4j;

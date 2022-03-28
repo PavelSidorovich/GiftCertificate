@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.util.impl;
+package com.epam.esm.gcs.auth.impl;
 
 import com.epam.esm.gcs.spec.PageRequestFactory;
 import com.epam.esm.gcs.spec.SearchQuery;
