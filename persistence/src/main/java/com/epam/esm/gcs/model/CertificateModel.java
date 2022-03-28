@@ -47,7 +47,7 @@ public class CertificateModel extends NamedModel {
     private LocalDateTime lastUpdateDate;
 
     @Exclude
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
             name = "certificates_by_tags",
             joinColumns = @JoinColumn(name = "certificate_id"),
