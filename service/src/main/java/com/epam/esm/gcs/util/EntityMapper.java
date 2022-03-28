@@ -9,6 +9,4 @@ public interface EntityMapper {
 
     <T, F> List<F> map(List<T> list, Class<F> clazz);
 
-    <T, F> Set<F> map(Set<T> list, Class<F> clazz);
-
 }

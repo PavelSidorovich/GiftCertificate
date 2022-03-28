@@ -27,11 +27,6 @@ public class EntityMapperImpl implements EntityMapper {
         return retrieveStream(list, clazz).collect(Collectors.toList());
     }
 
-    @Override
-    public <T, F> Set<F> map(Set<T> set, Class<F> clazz) {
-        return retrieveStream(set, clazz).collect(Collectors.toSet());
-    }
-
     private <T, F> Stream<F> retrieveStream(Collection<T> collection, Class<F> clazz) {
         return collection.stream()
                          .map(t -> modelMapper.map(t, clazz));
