@@ -182,7 +182,7 @@ class TagServiceImplTest {
     void findTheMostUsedTag_shouldReturnTheMostUsedTagOfTheBestUser_whenUserOrdersExist() {
         final TagModel expected = new TagModel(1L, "widelyUsed");
 
-        when(tagRepository.findTheMostUsedTag()).thenReturn(Optional.of(expected));
+        when(tagRepository.findMostUsedTag()).thenReturn(Optional.of(expected));
 
         TagDto actual = tagService.findTheMostUsedTag();
 
@@ -192,7 +192,7 @@ class TagServiceImplTest {
 
     @Test
     void findTheMostUsedTag_shouldThrowNoWidelyUsedTagException_whenNoUserOrders() {
-        when(tagRepository.findTheMostUsedTag()).thenReturn(Optional.empty());
+        when(tagRepository.findMostUsedTag()).thenReturn(Optional.empty());
 
         assertThrows(NoWidelyUsedTagException.class, tagService::findTheMostUsedTag);
     }
