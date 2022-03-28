@@ -1,7 +1,8 @@
 package com.epam.esm.gcs.filter;
 
+import com.epam.esm.gcs.model.CustomUserDetails;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.JwtTokenUtil;
+import com.epam.esm.gcs.auth.JwtTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final UserService userService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenService jwtTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -41,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (tokenHeader != null && tokenHeader.startsWith(BEARER_PREFIX)) {
             token = tokenHeader.substring(7);
             try {
-                email = jwtTokenUtil.retrievePrincipal(token);
+                email = jwtTokenService.retrievePrincipal(token);
             } catch (IllegalArgumentException ex) {
                 log.error("Unable to get JWT token");
             } catch (ExpiredJwtException ex) {
@@ -56,14 +57,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private void authenticateIfNeeded(HttpServletRequest request, String token, String email) {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.loadUserByUsername(email);
-            if (jwtTokenUtil.validateToken(token, userDetails)) {
+            final CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(email);
+            if (jwtTokenService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
                         );
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

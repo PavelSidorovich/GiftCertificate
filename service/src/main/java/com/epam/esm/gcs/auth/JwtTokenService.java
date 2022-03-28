@@ -2,7 +2,7 @@ package com.epam.esm.gcs.auth;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-public interface JwtTokenUtil {
+public interface JwtTokenService {
 
     String generateToken(UserDetails userDetails);
 

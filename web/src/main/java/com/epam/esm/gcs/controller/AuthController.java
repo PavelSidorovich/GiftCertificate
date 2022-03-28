@@ -4,7 +4,7 @@ import com.epam.esm.gcs.dto.LoginUserDto;
 import com.epam.esm.gcs.dto.SignUpUserDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.service.UserService;
-import com.epam.esm.gcs.util.JwtTokenUtil;
+import com.epam.esm.gcs.auth.JwtTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,14 +24,14 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authManager;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenService jwtTokenService;
 
     @PostMapping("/login")
     public String authenticateUser(@Valid @RequestBody LoginUserDto loginDto) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()));
         UserDetails userDetails = userService.loadUserByUsername(loginDto.getEmail());
-        return jwtTokenUtil.generateToken(userDetails);
+        return jwtTokenService.generateToken(userDetails);
     }
 
     @PostMapping("/signup")
