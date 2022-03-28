@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -28,14 +30,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .authorizeRequests().antMatchers("/auth/**").permitAll()
+            .authorizeRequests()
+            .antMatchers("/auth/**").permitAll()
             .antMatchers(HttpMethod.POST, "/certificates").hasAuthority(RoleName.ROLE_ADMIN.name())
             .antMatchers(HttpMethod.DELETE, "/certificates/**").hasAuthority(RoleName.ROLE_ADMIN.name())
             .antMatchers(HttpMethod.PATCH, "/certificates/**").hasAuthority(RoleName.ROLE_ADMIN.name())
             .antMatchers("/stats/**").hasAuthority(RoleName.ROLE_ADMIN.name())
             .antMatchers(HttpMethod.DELETE, "/tags/**").hasAuthority(RoleName.ROLE_ADMIN.name())
             .antMatchers(HttpMethod.POST, "/tags/**").hasAuthority(RoleName.ROLE_ADMIN.name())
-            .antMatchers(HttpMethod.POST, "/users/**").hasAuthority(RoleName.ROLE_USER.name())
+            .antMatchers(HttpMethod.POST, "/users/**/orders/**").hasAnyAuthority(
+                    RoleName.ROLE_USER.name(), RoleName.ROLE_ADMIN.name())
             .antMatchers(HttpMethod.GET, "/certificates/**").permitAll()
             .anyRequest().authenticated()
             .and().logout().permitAll()

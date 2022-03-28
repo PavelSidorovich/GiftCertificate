@@ -10,6 +10,8 @@ import com.epam.esm.gcs.exception.PasswordsAreNotEqualException;
 import com.epam.esm.gcs.model.AccountModel;
 import com.epam.esm.gcs.model.AccountModel_;
 import com.epam.esm.gcs.model.AccountRoleModel;
+import com.epam.esm.gcs.model.CustomUserDetails;
+import com.epam.esm.gcs.model.CustomUserDetailsImpl;
 import com.epam.esm.gcs.model.RoleName;
 import com.epam.esm.gcs.model.UserModel;
 import com.epam.esm.gcs.repository.AccountRepository;
@@ -19,16 +21,12 @@ import com.epam.esm.gcs.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -92,14 +90,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AccountModel accountModel = accountRepository.findByEmail(username)
-                                                     .orElseThrow(BadCredentialsException::new);
-        return new User(
-                accountModel.getEmail(), accountModel.getPassword(),
-                accountModel.getEnabled(), true, true, true,
-                mapRolesToAuthorities(accountModel.getRoles())
-        );
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+        final AccountModel accountModel = accountRepository.findByEmail(username)
+                                                           .orElseThrow(BadCredentialsException::new);
+        return new CustomUserDetailsImpl(accountModel);
     }
 
     /**
@@ -111,12 +106,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsWithEmail(String email) {
         return userRepository.existsByEmail(email);
-    }
-
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<AccountRoleModel> roles) {
-        return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getName()))
-                    .collect(Collectors.toList());
     }
 
 }

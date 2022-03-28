@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,7 @@ public class CommonExceptionHandler {
     private static final String WIRED_ENTITY_DELETION = "model.wired.deletion";
     private static final String BAD_CREDENTIALS = "user.bad.credentials";
     private static final String PASSWORD_ARE_NOT_EQUAL = "user.signup.passwords";
+    private static final String ACCESS_DENIED = "access.denied";
 
     private final MessageSource clientErrorMsgSource;
     private final MessageSource serverErrorMsgSource;
@@ -141,6 +143,16 @@ public class CommonExceptionHandler {
         );
         log.error(message, ex);
         return new ResponseModel(HttpStatus.BAD_REQUEST, message);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseModel handleAccessDenied(AccessDeniedException ex, Locale locale) {
+        final String message = clientErrorMsgSource.getMessage(
+                ACCESS_DENIED, null, locale
+        );
+        log.error(message, ex);
+        return new ResponseModel(HttpStatus.FORBIDDEN, message);
     }
 
     @ExceptionHandler(Exception.class)
