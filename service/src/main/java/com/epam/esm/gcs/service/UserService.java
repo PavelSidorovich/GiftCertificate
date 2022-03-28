@@ -17,6 +17,4 @@ public interface UserService extends UserDetailsService {
 
     boolean existsWithEmail(String email);
 
-//    UserDto findTheMostActiveUser();
-
 }
