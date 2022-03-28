@@ -128,7 +128,7 @@ public class CertificateServiceImpl implements CertificateService {
                                      .map(String::toLowerCase)
                                      .collect(Collectors.toList());
         return entityMapper.map(
-                certificateRepository.findByTags(tagModels, tags.size(), pageable),
+                certificateRepository.findByTags(tagModels, pageable),
                 CertificateDto.class
         );
     }

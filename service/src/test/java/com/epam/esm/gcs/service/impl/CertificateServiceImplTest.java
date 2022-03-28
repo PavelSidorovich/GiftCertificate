@@ -159,7 +159,7 @@ class CertificateServiceImplTest {
         final List<String> tags = List.of("tag1", "tag2");
         final Pageable pageable = PageRequest.of(0, 10);
 
-        when(certificateRepository.findByTags(tags, tags.size(), pageable))
+        when(certificateRepository.findByTags(tags, pageable))
                 .thenReturn(certificateModels);
 
         assertEquals(expected, certificateService.findByTags(tags, pageable));
