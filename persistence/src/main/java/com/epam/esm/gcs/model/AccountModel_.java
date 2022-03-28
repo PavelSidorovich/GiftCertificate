@@ -10,15 +10,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class AccountModel_ {
 
     public static volatile SingularAttribute<AccountModel, Long> id;
-    public static volatile SingularAttribute<AccountModel, String> password;
     public static volatile SingularAttribute<AccountModel, String> email;
+    public static volatile SingularAttribute<AccountModel, String> password;
     public static volatile SetAttribute<AccountModel, AccountRoleModel> roles;
     public static volatile SingularAttribute<AccountModel, Boolean> enabled;
 
     public static final String TABLE = "account";
     public static final String ID = "id";
-    public static final String ACCOUNT_PASSWORD = "account_password";
     public static final String EMAIL = "email";
+    public static final String ACCOUNT_PASSWORD = "account_password";
     public static final String ENABLED = "is_enabled";
 
 }
