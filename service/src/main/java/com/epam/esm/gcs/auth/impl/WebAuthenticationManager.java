@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @Component
 @AllArgsConstructor
-public class WebAuthenticationProvider implements AuthenticationManager {
+public class WebAuthenticationManager implements AuthenticationManager {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -29,9 +29,8 @@ public class WebAuthenticationProvider implements AuthenticationManager {
             final String storedPassword = userService.loadUserByUsername(email).getPassword();
 
             if (passwordEncoder.matches(password, storedPassword)) {
-                final Object principal = authentication.getPrincipal();
                 final UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(
-                        principal, authentication.getCredentials(),
+                        email, authentication.getCredentials(),
                         Collections.emptyList()
                 );
                 result.setDetails(authentication.getDetails());
