@@ -1,4 +1,4 @@
-package com.epam.esm.gcs.auth.impl;
+package com.epam.esm.gcs.util.impl;
 
 import com.epam.esm.gcs.util.EntityMapper;
 import lombok.AllArgsConstructor;
