@@ -20,14 +20,13 @@ public interface TagRepository extends JpaRepository<TagModel, Long> {
                    "         inner join certificates_by_tags cbt on c.id = cbt.certificate_id\n" +
                    "         inner join certificate_tag ct on cbt.tag_id = ct.id\n" +
                    "where user_id = (SELECT user_id\n" +
-                   "                 FROM (SELECT user_id\n" +
-                   "                       FROM user_order u\n" +
-                   "                       group by user_id\n" +
-                   "                       order by sum(total_cost) desc\n" +
-                   "                       limit 1) as s)\n" +
+                   "                 FROM user_order u\n" +
+                   "                 group by user_id\n" +
+                   "                 order by sum(total_cost) desc\n" +
+                   "                 limit 1)\n" +
                    "group by tag_id, ct.name\n" +
                    "order by count(tag_id) desc\n" +
-                   "limit 1\n", nativeQuery = true)
-    Optional<TagModel> findTheMostUsedTag();
+                   "limit 1", nativeQuery = true)
+    Optional<TagModel> findMostUsedTag();
 
 }
