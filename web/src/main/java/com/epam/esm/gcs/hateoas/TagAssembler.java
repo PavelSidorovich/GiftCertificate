@@ -18,15 +18,15 @@ public class TagAssembler implements RepresentationModelAssembler<TagDto, Entity
 
     private static final String TAGS_REL = "tags";
     private static final String MOST_USED_TAG_REL = "mostUsedTag";
-    private static final int LIMIT = 10;
-    private static final int OFFSET = 0;
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE = 0;
 
     @Override
     public EntityModel<TagDto> toModel(TagDto tag) {
         return EntityModel.of(
                 tag,
                 linkTo(methodOn(TagController.class).findById(tag.getId())).withSelfRel(),
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
+                linkTo(methodOn(TagController.class).findAll(PAGE, PAGE_SIZE)).withRel(TAGS_REL),
                 linkTo(methodOn(StatsController.class).findTheMostUsedTag()).withRel(MOST_USED_TAG_REL)
         );
     }
@@ -41,7 +41,7 @@ public class TagAssembler implements RepresentationModelAssembler<TagDto, Entity
         return CollectionModel.of(
                 tagDtos,
                 linkTo(methodOn(StatsController.class).findTheMostUsedTag()).withRel(MOST_USED_TAG_REL),
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withSelfRel()
+                linkTo(methodOn(TagController.class).findAll(PAGE, PAGE_SIZE)).withSelfRel()
         );
     }
 

@@ -27,8 +27,8 @@ public class GiftCertificateAssembler
     private static final String SORT_BY_CREATED_DATE = "DESC";
     private static final String SORT_BY_NAME = "ASC";
     private static final String TAG_NAME_2 = "self-development";
-    private static final int LIMIT = 10;
-    private static final int OFFSET = 0;
+    private static final int PAGE = 0;
+    private static final int PAGE_SIZE = 10;
 
     @Override
     public EntityModel<CertificateDto> toModel(CertificateDto certificate) {
@@ -36,9 +36,9 @@ public class GiftCertificateAssembler
                 certificate,
                 linkTo(methodOn(GiftCertificateController.class).findById(certificate.getId())).withSelfRel(),
                 linkTo(methodOn(GiftCertificateController.class).findByTags(
-                        List.of(TAG_NAME_1, TAG_NAME_2), LIMIT, OFFSET)).withRel(CERTIFICATES_WITH_TAGS_REL),
+                        List.of(TAG_NAME_1, TAG_NAME_2), PAGE, PAGE_SIZE)).withRel(CERTIFICATES_WITH_TAGS_REL),
                 linkTo(methodOn(GiftCertificateController.class).findByFilter(
-                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, LIMIT, OFFSET
+                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, PAGE, PAGE_SIZE
                 )).withRel(CERTIFICATES_REL)
         );
     }
@@ -53,11 +53,11 @@ public class GiftCertificateAssembler
         ));
         return CollectionModel.of(
                 certificateDtos,
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withRel(TAGS_REL),
+                linkTo(methodOn(TagController.class).findAll(PAGE, PAGE_SIZE)).withRel(TAGS_REL),
                 linkTo(methodOn(GiftCertificateController.class).findByTags(
-                        List.of(TAG_NAME_1, TAG_NAME_2), LIMIT, OFFSET)).withRel(CERTIFICATES_WITH_TAGS_REL),
+                        List.of(TAG_NAME_1, TAG_NAME_2), PAGE, PAGE_SIZE)).withRel(CERTIFICATES_WITH_TAGS_REL),
                 linkTo(methodOn(GiftCertificateController.class).findByFilter(
-                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, LIMIT, OFFSET
+                        TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, PAGE, PAGE_SIZE
                 )).withRel(CERTIFICATES_REL)
         );
     }
