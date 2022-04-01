@@ -5,7 +5,7 @@ import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
-import com.epam.esm.gcs.exception.NoFieldToUpdateException;
+import com.epam.esm.gcs.exception.NoFieldsToUpdateException;
 import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.CertificateModel;
 import com.epam.esm.gcs.model.CertificateModel_;
@@ -157,7 +157,7 @@ public class CertificateServiceImpl implements CertificateService {
      * @return updated certificate
      * @throws EntityNotFoundException  if certificate with specified id not found
      * @throws FieldUpdateException     if certificate contains more than one field to update (not null)
-     * @throws NoFieldToUpdateException if certificate doesn't contain any field to update
+     * @throws NoFieldsToUpdateException if certificate doesn't contain any field to update
      */
     @Override
     @Transactional
@@ -184,10 +184,8 @@ public class CertificateServiceImpl implements CertificateService {
         );
         final int fieldsSize = fields.size();
 
-        if (fieldsSize > 1) {
-            throw new FieldUpdateException(CertificateDto.class, fields);
-        } else if (fieldsSize < 1) {
-            throw new NoFieldToUpdateException(CertificateDto.class);
+        if (fieldsSize < 1) {
+            throw new NoFieldsToUpdateException(CertificateDto.class);
         }
     }
 

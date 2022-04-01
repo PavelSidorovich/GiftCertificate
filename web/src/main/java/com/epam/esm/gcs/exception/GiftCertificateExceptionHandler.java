@@ -35,9 +35,9 @@ public class GiftCertificateExceptionHandler {
         return new ResponseModel(HttpStatus.BAD_REQUEST, ex.getClazz(), message);
     }
 
-    @ExceptionHandler(NoFieldToUpdateException.class)
+    @ExceptionHandler(NoFieldsToUpdateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseModel handleNoFieldToUpdate(NoFieldToUpdateException ex, Locale locale) {
+    public ResponseModel handleNoFieldToUpdate(NoFieldsToUpdateException ex, Locale locale) {
         final String message = clientErrorMsgSource.getMessage(
                 NO_FIELD_TO_UPDATE, null, locale
         );

@@ -6,7 +6,7 @@ import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.FieldUpdateException;
-import com.epam.esm.gcs.exception.NoFieldToUpdateException;
+import com.epam.esm.gcs.exception.NoFieldsToUpdateException;
 import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.CertificateModel;
 import com.epam.esm.gcs.model.TagModel;
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -43,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@EnableAutoConfiguration
 class CertificateServiceImplTest {
 
     private final CertificateServiceImpl certificateService;
@@ -244,23 +242,13 @@ class CertificateServiceImplTest {
     }
 
     @Test
-    void update_shouldThrowFieldUpdateException_whenCertificateContainsMoreThanOneFieldToUpdate() {
-        final CertificateDto beforeUpdate = getCreatedCertificateDto();
-
-        when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
-                .thenReturn(List.of("description", "price", "duration"));
-
-        assertThrows(FieldUpdateException.class, () -> certificateService.update(beforeUpdate));
-    }
-
-    @Test
     void update_shouldThrowNoFieldToUpdateException_whenCertificateHasNoFieldToUpdate() {
         final CertificateDto beforeUpdate = getCreatedCertificateDto();
 
         when(entityFieldService.getNotNullFields(beforeUpdate, "date", "name", "id"))
                 .thenReturn(Collections.emptyList());
 
-        assertThrows(NoFieldToUpdateException.class, () -> certificateService.update(beforeUpdate));
+        assertThrows(NoFieldsToUpdateException.class, () -> certificateService.update(beforeUpdate));
     }
 
     private List<CertificateModel> mapCertificatesToModels(List<CertificateDto> certificates) {
