@@ -1,12 +1,12 @@
 package com.epam.esm.gcs.auth;
 
 import com.epam.esm.gcs.auth.impl.WebAuthenticationManager;
-import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;

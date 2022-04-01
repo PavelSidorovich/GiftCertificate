@@ -1,9 +1,9 @@
 package com.epam.esm.gcs.auth.impl;
 
-import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -38,7 +38,7 @@ public class WebAuthenticationManager implements AuthenticationManager {
             }
         } catch (UsernameNotFoundException ignored) {
         }
-        throw new BadCredentialsException();
+        throw new BadCredentialsException("credentials are invalid");
     }
 
 }

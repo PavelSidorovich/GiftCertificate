@@ -3,7 +3,6 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.AccountRoleDto;
 import com.epam.esm.gcs.dto.SignUpUserDto;
 import com.epam.esm.gcs.dto.UserDto;
-import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.PasswordsAreNotEqualException;
@@ -22,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -107,7 +107,7 @@ class UserServiceImplTest {
     void signUp_shouldThrowDuplicatePropertyException_whenUserWithSuchEmailAlreadyExists() {
         final String email = "email@mail.ru";
         final SignUpUserDto signUpDto = new SignUpUserDto(email, "pass", "pass", "fName", "lName");
-        when(userRepository.existsByEmail(email)).thenReturn(true);
+        when(accountRepository.existsByEmail(email)).thenReturn(true);
 
         assertThrows(DuplicatePropertyException.class, () -> userService.signUp(signUpDto));
     }

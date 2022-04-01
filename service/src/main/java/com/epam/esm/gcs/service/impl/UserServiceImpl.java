@@ -3,14 +3,12 @@ package com.epam.esm.gcs.service.impl;
 import com.epam.esm.gcs.dto.AccountRoleDto;
 import com.epam.esm.gcs.dto.SignUpUserDto;
 import com.epam.esm.gcs.dto.UserDto;
-import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
 import com.epam.esm.gcs.exception.PasswordsAreNotEqualException;
 import com.epam.esm.gcs.model.AccountModel;
 import com.epam.esm.gcs.model.AccountModel_;
 import com.epam.esm.gcs.model.AccountRoleModel;
-import com.epam.esm.gcs.model.CustomUserDetails;
 import com.epam.esm.gcs.model.CustomUserDetailsImpl;
 import com.epam.esm.gcs.model.RoleName;
 import com.epam.esm.gcs.model.UserModel;
@@ -21,6 +19,7 @@ import com.epam.esm.gcs.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto signUp(SignUpUserDto signUpDto) {
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
+        if (accountRepository.existsByEmail(signUpDto.getEmail())) {
             throw new DuplicatePropertyException(UserDto.class, AccountModel_.EMAIL, signUpDto.getEmail());
         }
         if (!signUpDto.getPassword().equals(signUpDto.getPasswordRepeat())) {
@@ -92,8 +91,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        final AccountModel accountModel = accountRepository.findByEmail(username)
-                                                           .orElseThrow(BadCredentialsException::new);
+        final AccountModel accountModel = accountRepository
+                .findByEmail(username)
+                .orElseThrow(() -> new BadCredentialsException("invalid credentials"));
         return new CustomUserDetailsImpl(accountModel);
     }
 
