@@ -5,7 +5,6 @@ import com.epam.esm.gcs.dto.CertificateDto;
 import com.epam.esm.gcs.dto.TagDto;
 import com.epam.esm.gcs.exception.DuplicatePropertyException;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.exception.FieldUpdateException;
 import com.epam.esm.gcs.exception.NoFieldsToUpdateException;
 import com.epam.esm.gcs.exception.WiredEntityDeletionException;
 import com.epam.esm.gcs.model.CertificateModel;

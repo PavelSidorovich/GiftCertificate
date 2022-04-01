@@ -155,8 +155,8 @@ public class CertificateServiceImpl implements CertificateService {
      * @param certificateDto certificate to update. Should contain name<br>
      *                       <b>Note:</b> only not null fields will be updated
      * @return updated certificate
-     * @throws EntityNotFoundException  if certificate with specified id not found
-     * @throws FieldUpdateException     if certificate contains more than one field to update (not null)
+     * @throws EntityNotFoundException   if certificate with specified id not found
+     * @throws FieldUpdateException      if certificate contains more than one field to update (not null)
      * @throws NoFieldsToUpdateException if certificate doesn't contain any field to update
      */
     @Override

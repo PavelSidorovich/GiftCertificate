@@ -5,7 +5,6 @@ import com.epam.esm.gcs.hateoas.TagAssembler;
 import com.epam.esm.gcs.service.TagService;
 import com.epam.esm.gcs.util.PageRequestFactoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
