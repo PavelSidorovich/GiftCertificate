@@ -25,7 +25,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
-@Order(value = 1)
 public class TagController {
 
     private final TagService tagService;
