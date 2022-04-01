@@ -46,14 +46,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("authentication.principal.id == #id or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.id == #id")
     public EntityModel<UserDto> findById(@PathVariable long id) {
         return userAssembler.toModel(userService.findById(id));
     }
 
     @PostMapping("/{userId}/certificates/{certificateId}")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("authentication.principal.id == #userId or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.id == #userId")
     public EntityModel<OrderDto> makePurchase(
             @PathVariable long certificateId,
             @PathVariable long userId) {
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/orders")
-    @PreAuthorize("authentication.principal.id == #userId or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.id == #userId")
     public CollectionModel<EntityModel<OrderDto>> findUserOrders(
             @PathVariable long userId,
             @RequestParam(required = false) Integer page,
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/orders/{orderId}")
-    @PreAuthorize("authentication.principal.id == #userId or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.id == #userId")
     public EntityModel<TruncatedOrderDto> getTruncatedOrderInfo(
             @PathVariable long userId,
             @PathVariable long orderId) {
