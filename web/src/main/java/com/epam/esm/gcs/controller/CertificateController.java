@@ -1,7 +1,7 @@
 package com.epam.esm.gcs.controller;
 
 import com.epam.esm.gcs.dto.CertificateDto;
-import com.epam.esm.gcs.hateoas.GiftCertificateAssembler;
+import com.epam.esm.gcs.hateoas.CertificateAssembler;
 import com.epam.esm.gcs.service.CertificateService;
 import com.epam.esm.gcs.spec.CertificateSearchCriteria;
 import com.epam.esm.gcs.util.PageRequestFactoryService;
@@ -31,10 +31,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
-public class GiftCertificateController {
+public class CertificateController {
 
     private final CertificateService certificateService;
-    private final GiftCertificateAssembler certificateAssembler;
+    private final CertificateAssembler certificateAssembler;
     private final PageRequestFactoryService paginationFactory;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

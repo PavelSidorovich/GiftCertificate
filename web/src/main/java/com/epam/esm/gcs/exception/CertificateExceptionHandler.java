@@ -16,7 +16,7 @@ import java.util.Locale;
 @AllArgsConstructor
 @RestControllerAdvice
 @Order(value = 1)
-public class GiftCertificateExceptionHandler {
+public class CertificateExceptionHandler {
 
     private static final String SEVERAL_FIELD_UPDATE = "model.fields.update";
     private static final String NO_FIELD_TO_UPDATE = "model.field.empty.update";

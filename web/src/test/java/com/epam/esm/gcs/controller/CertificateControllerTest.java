@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @ActiveProfiles({ "test" })
 @SpringBootTest
 @AutoConfigureMockMvc
-class GiftCertificateControllerTest {
+class CertificateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

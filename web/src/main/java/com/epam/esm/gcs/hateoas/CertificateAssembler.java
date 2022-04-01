@@ -1,6 +1,6 @@
 package com.epam.esm.gcs.hateoas;
 
-import com.epam.esm.gcs.controller.GiftCertificateController;
+import com.epam.esm.gcs.controller.CertificateController;
 import com.epam.esm.gcs.controller.TagController;
 import com.epam.esm.gcs.dto.CertificateDto;
 import org.springframework.hateoas.CollectionModel;
@@ -14,7 +14,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
-public class GiftCertificateAssembler
+public class CertificateAssembler
         implements RepresentationModelAssembler<CertificateDto, EntityModel<CertificateDto>> {
 
     private static final String CERTIFICATES_WITH_TAGS_REL = "certificatesWithTags";
@@ -34,10 +34,10 @@ public class GiftCertificateAssembler
     public EntityModel<CertificateDto> toModel(CertificateDto certificate) {
         return EntityModel.of(
                 certificate,
-                linkTo(methodOn(GiftCertificateController.class).findById(certificate.getId())).withSelfRel(),
-                linkTo(methodOn(GiftCertificateController.class).findByTags(
+                linkTo(methodOn(CertificateController.class).findById(certificate.getId())).withSelfRel(),
+                linkTo(methodOn(CertificateController.class).findByTags(
                         List.of(TAG_NAME_1, TAG_NAME_2), PAGE, PAGE_SIZE)).withRel(CERTIFICATES_WITH_TAGS_REL),
-                linkTo(methodOn(GiftCertificateController.class).findByFilter(
+                linkTo(methodOn(CertificateController.class).findByFilter(
                         TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, PAGE, PAGE_SIZE
                 )).withRel(CERTIFICATES_REL)
         );
@@ -54,9 +54,9 @@ public class GiftCertificateAssembler
         return CollectionModel.of(
                 certificateDtos,
                 linkTo(methodOn(TagController.class).findAll(PAGE, PAGE_SIZE)).withRel(TAGS_REL),
-                linkTo(methodOn(GiftCertificateController.class).findByTags(
+                linkTo(methodOn(CertificateController.class).findByTags(
                         List.of(TAG_NAME_1, TAG_NAME_2), PAGE, PAGE_SIZE)).withRel(CERTIFICATES_WITH_TAGS_REL),
-                linkTo(methodOn(GiftCertificateController.class).findByFilter(
+                linkTo(methodOn(CertificateController.class).findByFilter(
                         TAG_NAME_1, CERT_NAME, DESCRIPTION, SORT_BY_CREATED_DATE, SORT_BY_NAME, PAGE, PAGE_SIZE
                 )).withRel(CERTIFICATES_REL)
         );
