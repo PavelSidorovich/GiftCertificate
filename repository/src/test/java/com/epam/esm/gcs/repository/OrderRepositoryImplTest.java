@@ -7,7 +7,6 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @ActiveProfiles({ "dev" })
-@EnableAutoConfiguration
 @SpringBootTest(classes = { TestConfig.class })
 class OrderRepositoryImplTest {
 
