@@ -1,693 +1,690 @@
 {
-	"info": {
-		"_postman_id": "a3a66da4-fc77-4be9-8feb-cd1031053302",
-		"name": "Gift Certificate Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Tag",
-			"item": [
-				{
-					"name": "Create Tag",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NjczMjYsImlhdCI6MTY0Njc0OTMyNn0.QLLVsWQe61IbDPyguD73KnznEFZ7dSciLVnyLOpAX_4",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"self-development\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/tags",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"tags"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Tags Request",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NjczMjYsImlhdCI6MTY0Njc0OTMyNn0.QLLVsWQe61IbDPyguD73KnznEFZ7dSciLVnyLOpAX_4",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/tags?page=0&size=6",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"tags"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "6"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Read Tag By ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NjczMjYsImlhdCI6MTY0Njc0OTMyNn0.QLLVsWQe61IbDPyguD73KnznEFZ7dSciLVnyLOpAX_4",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/tags/656",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"tags",
-								"656"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Tag",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NDUyMTQsImlhdCI6MTY0NjcyNzIxNH0.hd8Wo2TPOpISeSBHajdMrkm_F_-0cTbhj1DUI5katNc",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept-Language",
-								"value": "ru-RU",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/tags/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"tags",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Certificate",
-			"item": [
-				{
-					"name": "Create Certificate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n        \"name\": \"dofacto\",\r\n        \"price\": 100,\r\n        \"description\":\"clothing discount (10%)\",\r\n        \"duration\": 10,\r\n        \"tags\": [\r\n            {\r\n                \"name\": \"super1\"\r\n            },\r\n            {\r\n                \"name\":\"family\"\r\n            },\r\n            {\r\n                \"name\":\"style\"\r\n            }\r\n        ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/certificates",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Certificates Request",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/certificates?page=0&size=10",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Filter Certificates",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/certificates",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates"
-							],
-							"query": [
-								{
-									"key": "tagName",
-									"value": "baselines",
-									"disabled": true
-								},
-								{
-									"key": "certName",
-									"value": "dofacto",
-									"disabled": true
-								},
-								{
-									"key": "sortByCreateDate",
-									"value": "ASC",
-									"disabled": true
-								},
-								{
-									"key": "description",
-									"value": "back",
-									"disabled": true
-								},
-								{
-									"key": "sortByName",
-									"value": "ASC",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "0",
-									"disabled": true
-								},
-								{
-									"key": "size",
-									"value": "10",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Read Certificate By ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/certificates/1043",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates",
-								"1043"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Find Certificates By Several Tags",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/certificates?tag=family&page=0&size=10",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates"
-							],
-							"query": [
-								{
-									"key": "tag",
-									"value": "family"
-								},
-								{
-									"key": "tag",
-									"value": "style",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Certificate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n         \"tags\": [\r\n            {\r\n                \"name\": \"family\"\r\n            }\r\n        ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/certificates/1023",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates",
-								"1023"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Certificate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NTA2NDIsImlhdCI6MTY0NjczMjY0Mn0.l3BSz9ySHM0fsG0emtJgv0di5YfuYL4h_RJ5IwWPV0g",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/certificates/146",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"certificates",
-								"146"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Read Users",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3NjgwMDgsImlhdCI6MTY0Njc1MDAwOH0.BXPd8aKK5PtCn83Ueshrk0zh3-vQcnd37HASS0KkER4",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/users?page=9&pageSize=80",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "9"
-								},
-								{
-									"key": "pageSize",
-									"value": "80"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get User Certificates",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/users/599",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"599"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Purchase Certificate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/users/599/certificates/626",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"599",
-								"certificates",
-								"626"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Read User By ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0Njc0NTA0NywiaWF0IjoxNjQ2NzI3MDQ3fQ.AsEH5do3bzNDqfbTVbPMPEK-zkMOZ8WtVtSyRqrYFvU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/users/1113",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"1113"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Log In",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/auth/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign Up",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\" : \"ivan4@mail.ru\",\r\n    \"password\":\"12345678\",\r\n    \"passwordRepeat\" :\"12345678\",\r\n    \"firstName\":\"Ivan\",\r\n    \"lastName\":\"Sidorovich\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/auth/signup",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"auth",
-								"signup"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Statistics",
-			"item": [
-				{
-					"name": "Widely tags",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDY3ODEzMDIsImlhdCI6MTY0Njc2MzMwMn0.HYXEbLTcU97awBRXVK-f35JQns3Uo_R4f__xOYa1S-8",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/stats/tags",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"stats",
-								"tags"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "a3a66da4-fc77-4be9-8feb-cd1031053302",
+    "name": "Gift Certificate Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Tag",
+      "item": [
+        {
+          "name": "Create Tag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"self-development\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/tags",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "tags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tags Request",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpdmFuOEBtYWlsLnJ1IiwiZXhwIjoxNjQ4ODA5NDgxLCJpYXQiOjE2NDg3OTE0ODF9.FUxg7CjUAIKVmQrLCKibQf1MR4HbU2O99-QLa0ki3ic",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/tags?page=0&size=6",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "tags"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Read Tag By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/tags/656",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "tags",
+                "656"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "ru-RU",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/tags/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "tags",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Certificate",
+      "item": [
+        {
+          "name": "Create Certificate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"name\": \"dofacto\",\r\n        \"price\": 100,\r\n        \"description\":\"clothing discount (10%)\",\r\n        \"duration\": 10,\r\n        \"tags\": [\r\n            {\r\n                \"name\": \"super1\"\r\n            },\r\n            {\r\n                \"name\":\"family\"\r\n            },\r\n            {\r\n                \"name\":\"style\"\r\n            }\r\n        ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/certificates",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Certificates Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpdmFuOEBtYWlsLnJ1IiwiZXhwIjoxNjQ4NjQwODM3LCJpYXQiOjE2NDg2MjI4Mzd9.Ax1yVei4fwhXY9W_R5p5hk-FN9XhAU0JO-lV-t3PTl4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/certificates?page=0&size=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Certificates",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/certificates?description=back&sortByName=ASC&page=0&size=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates"
+              ],
+              "query": [
+                {
+                  "key": "tagName",
+                  "value": "baselines",
+                  "disabled": true
+                },
+                {
+                  "key": "certName",
+                  "value": "dofacto",
+                  "disabled": true
+                },
+                {
+                  "key": "sortByCreateDate",
+                  "value": "ASC",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "back"
+                },
+                {
+                  "key": "sortByName",
+                  "value": "ASC"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Read Certificate By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/certificates/25",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates",
+                "25"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find Certificates By Several Tags",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/certificates?tag=family&page=0&size=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates"
+              ],
+              "query": [
+                {
+                  "key": "tag",
+                  "value": "family"
+                },
+                {
+                  "key": "tag",
+                  "value": "style",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Certificate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n         \"tags\": [\r\n            {\r\n                \"name\": \"family\"\r\n            }\r\n        ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/certificates/1023",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates",
+                "1023"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Certificate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNTI0OCwiaWF0IjoxNjQ4NDg3MjQ4fQ.9fOxBZ4gI85fhNFqvxdnWx89hw74mB0OsxvpOvZRuKY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/certificates/146",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "certificates",
+                "146"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Read Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDg1MDU0NjcsImlhdCI6MTY0ODQ4NzQ2N30.04qHTKHCJ3xK_JKSDDcUKQNzgBFj-jrAzIRRImoSHl4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users?page=9&pageSize=80",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "9"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "80"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Certificates",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDg1MDU0NjcsImlhdCI6MTY0ODQ4NzQ2N30.04qHTKHCJ3xK_JKSDDcUKQNzgBFj-jrAzIRRImoSHl4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/111/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "111",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Purchase Certificate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE2NDg1MDU0NjcsImlhdCI6MTY0ODQ4NzQ2N30.04qHTKHCJ3xK_JKSDDcUKQNzgBFj-jrAzIRRImoSHl4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/1119/certificates/626",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "1119",
+                "certificates",
+                "626"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Read User By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXZzaWRAbWFpbC5ydSIsImV4cCI6MTY0ODUwNDkyMSwiaWF0IjoxNjQ4NDg2OTIxfQ.UvszffnKI_ZkueZ646Hmajmwu55Zi-TQ6-UjVColTfM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/1119",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "1119"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log In",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\" : \"ivan8@mail.ru\",\r\n    \"password\":\"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\" : \"ivan8@mail.ru\",\r\n    \"password\":\"12345678\",\r\n    \"passwordRepeat\" :\"12345678\",\r\n    \"firstName\":\"Ivan\",\r\n    \"lastName\":\"Sidorovich\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/auth/signup",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Widely tags",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpdmFuOEBtYWlsLnJ1IiwiZXhwIjoxNjQ4Nzc2Mjg1LCJpYXQiOjE2NDg3NTgyODV9.e7clIUTbCf1LIHCRheQ45y9Ysf_qvr5AFiLMpMtElSQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/stats/tags",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "stats",
+                "tags"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }
