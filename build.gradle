@@ -4,6 +4,14 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.epam.esm.gcs.WebApplication'
+        )
+    }
+}
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
