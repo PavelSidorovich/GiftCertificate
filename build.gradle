@@ -1,11 +1,13 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '2.6.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 allprojects {
     apply plugin: 'java'
+    apply plugin: 'jacoco'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -59,8 +61,22 @@ allprojects {
         }
     }
 
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("${buildDir}/reports/jacoco/coverage")
+            xml.destination file("${buildDir}/reports/jacoco/jacoco.xml")
+        }
+    }
+
+    jacocoTestReport {
+        dependsOn test
+    }
+
     tasks.named('test') {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
     }
 
 }
