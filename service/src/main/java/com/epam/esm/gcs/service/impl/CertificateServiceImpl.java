@@ -173,7 +173,7 @@ public class CertificateServiceImpl implements CertificateService {
             certToUpdate.setTags(preparedTags);
         }
 
-        return entityMapper.map(certificateRepository.save(certToUpdate), CertificateDto.class);
+        return entityMapper.map(certificateRepository.saveAndFlush(certToUpdate), CertificateDto.class);
     }
 
     private void countFieldsToEdit(CertificateDto model) {

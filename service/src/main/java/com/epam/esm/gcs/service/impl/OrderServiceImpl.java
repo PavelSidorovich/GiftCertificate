@@ -5,12 +5,12 @@ import com.epam.esm.gcs.dto.OrderDto;
 import com.epam.esm.gcs.dto.TruncatedOrderDto;
 import com.epam.esm.gcs.dto.UserDto;
 import com.epam.esm.gcs.exception.EntityNotFoundException;
-import com.epam.esm.gcs.exception.NotEnoughMoneyException;
 import com.epam.esm.gcs.model.OrderModel;
 import com.epam.esm.gcs.model.OrderModel_;
 import com.epam.esm.gcs.repository.OrderRepository;
 import com.epam.esm.gcs.service.CertificateService;
 import com.epam.esm.gcs.service.OrderService;
+import com.epam.esm.gcs.service.OrderTransactionService;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserService userService;
     private final OrderRepository orderRepository;
+    private final OrderTransactionService orderTransactionService;
     private final CertificateService certificateService;
     private final ModelMapper modelMapper;
 
@@ -41,13 +41,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto purchase(long userId, long certificateId) {
-        OrderDto orderDto = new OrderDto();
-        UserDto user = userService.findById(userId);
-        CertificateDto certificate = certificateService.findById(certificateId);
+        final OrderDto orderDto = new OrderDto();
+        final CertificateDto certificate = certificateService.findById(certificateId);
+        final UserDto user = orderTransactionService.withdrawMoney(userService.findById(userId), certificate);
 
         orderDto.setUser(user);
         orderDto.setCertificate(certificate);
-        checkBalance(certificate, user);
 
         OrderModel orderModel = orderRepository.save(modelMapper.map(orderDto, OrderModel.class));
         return modelMapper.map(orderModel, OrderDto.class);
@@ -82,18 +81,6 @@ public class OrderServiceImpl implements OrderService {
                 () -> new EntityNotFoundException(OrderDto.class, OrderModel_.ID, orderId)
         );
         return modelMapper.map(certificate, TruncatedOrderDto.class);
-    }
-
-    private void checkBalance(CertificateDto certificate, UserDto userDto) {
-        final BigDecimal userDtoBalance = userDto.getBalance();
-        final BigDecimal certificateCost = certificate.getPrice();
-
-        if (userDtoBalance.subtract(certificateCost).compareTo(BigDecimal.ZERO) < 0) {
-            throw new NotEnoughMoneyException(
-                    OrderDto.class, certificate.getName(),
-                    certificateCost, userDtoBalance
-            );
-        }
     }
 
 }
