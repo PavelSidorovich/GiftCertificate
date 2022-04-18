@@ -30,7 +30,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ActiveProfiles({ "dev" })
+@ActiveProfiles("test")
 @EnableAutoConfiguration
 @SpringBootTest(classes = { TestConfig.class })
 class SpecificationUtilImplTest {

@@ -1,10 +1,11 @@
-package com.epam.esm.gcs.util.impl;
+package com.epam.esm.gcs.auth.impl;
 
-import com.epam.esm.gcs.util.JwtTokenUtil;
+import com.epam.esm.gcs.auth.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,8 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
-public class JwtTokenUtilImpl implements JwtTokenUtil {
+@PropertySource(value = "classpath:oauth2.properties")
+public class JwtTokenServiceImpl implements JwtTokenService {
 
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
     private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;

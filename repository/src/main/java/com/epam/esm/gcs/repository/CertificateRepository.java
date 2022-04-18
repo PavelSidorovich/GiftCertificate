@@ -19,9 +19,8 @@ public interface CertificateRepository
            "JOIN c.tags as t " +
            "WHERE lower(t.name) IN ?1 " +
            "group by c.id, c.name, c.price, c.duration, " +
-           "c.description, c.createDate, c.lastUpdateDate " +
-           "having count (t.id) = ?2")
-    List<CertificateModel> findByTags(List<String> tags, long size, Pageable pageable);
+           "c.description, c.createDate, c.lastUpdateDate")
+    List<CertificateModel> findByTags(List<String> tags, Pageable pageable);
 
     Optional<CertificateModel> findByNameIgnoreCase(String name);
 

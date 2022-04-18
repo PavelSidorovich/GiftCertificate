@@ -1,9 +1,9 @@
-package com.epam.esm.gcs.auth;
+package com.epam.esm.gcs.auth.impl;
 
-import com.epam.esm.gcs.exception.BadCredentialsException;
 import com.epam.esm.gcs.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @Component
 @AllArgsConstructor
-public class WebAuthenticationProvider implements AuthenticationManager {
+public class WebAuthenticationManager implements AuthenticationManager {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -29,9 +29,8 @@ public class WebAuthenticationProvider implements AuthenticationManager {
             final String storedPassword = userService.loadUserByUsername(email).getPassword();
 
             if (passwordEncoder.matches(password, storedPassword)) {
-                final Object principal = authentication.getPrincipal();
                 final UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(
-                        principal, authentication.getCredentials(),
+                        email, authentication.getCredentials(),
                         Collections.emptyList()
                 );
                 result.setDetails(authentication.getDetails());
@@ -39,7 +38,7 @@ public class WebAuthenticationProvider implements AuthenticationManager {
             }
         } catch (UsernameNotFoundException ignored) {
         }
-        throw new BadCredentialsException();
+        throw new BadCredentialsException("credentials are invalid");
     }
 
 }

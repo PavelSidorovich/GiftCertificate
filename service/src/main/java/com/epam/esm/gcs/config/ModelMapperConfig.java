@@ -24,8 +24,11 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper certificateUpdateMapper() {
-        final ModelMapper modelMapper = modelMapper();
+        final ModelMapper modelMapper = new ModelMapper();
 
+        modelMapper.getConfiguration()
+                   .setSkipNullEnabled(true)
+                   .setFieldAccessLevel(AccessLevel.PRIVATE);
         modelMapper.addMappings(skipModifiedFieldsMap());
 
         return modelMapper;

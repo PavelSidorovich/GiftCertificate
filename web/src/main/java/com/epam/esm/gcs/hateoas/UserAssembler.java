@@ -17,8 +17,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class UserAssembler implements RepresentationModelAssembler<UserDto, EntityModel<UserDto>> {
 
     private static final String USERS_REL = "users";
-    private static final int LIMIT = 10;
-    private static final int OFFSET = 0;
+    private static final int PAGE = 0;
+    private static final int PAGE_SIZE = 10;
     private static final long PURCHASE_ID = 1L;
 
     @Override
@@ -26,8 +26,8 @@ public class UserAssembler implements RepresentationModelAssembler<UserDto, Enti
         return EntityModel.of(
                 user,
                 linkTo(methodOn(UserController.class).findById(user.getId())).withSelfRel(),
-                linkTo(methodOn(UserController.class).findAll(LIMIT, OFFSET)).withRel(USERS_REL),
-                linkTo(methodOn(UserController.class).findUserOrders(user.getId(), LIMIT, OFFSET))
+                linkTo(methodOn(UserController.class).findAll(PAGE, PAGE_SIZE)).withRel(USERS_REL),
+                linkTo(methodOn(UserController.class).findUserOrders(user.getId(), PAGE, PAGE_SIZE))
                         .withRel(USERS_REL),
                 linkTo(methodOn(UserController.class).getTruncatedOrderInfo(user.getId(), PURCHASE_ID))
                         .withRel(USERS_REL)
@@ -43,7 +43,7 @@ public class UserAssembler implements RepresentationModelAssembler<UserDto, Enti
         ));
         return CollectionModel.of(
                 userDtos,
-                linkTo(methodOn(TagController.class).findAll(LIMIT, OFFSET)).withSelfRel()
+                linkTo(methodOn(TagController.class).findAll(PAGE, PAGE_SIZE)).withSelfRel()
         );
     }
 

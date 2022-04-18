@@ -7,7 +7,6 @@ import com.epam.esm.gcs.model.TagModel;
 import com.epam.esm.gcs.model.UserModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -23,8 +22,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ActiveProfiles({ "dev" })
-@EnableAutoConfiguration
+@ActiveProfiles("test")
 @SpringBootTest(classes = { TestConfig.class })
 class TagRepositoryImplTest {
 
@@ -149,7 +147,7 @@ class TagRepositoryImplTest {
     }
 
     @Test
-    void findTheMostUsedTag_shouldReturnTagOfBestUser_whenOrdersExist() {
+    void findMostUsedTag_shouldReturnTagOfBestUser_whenOrdersExist() {
         final TagModel tag1 = tagRepository.save(new TagModel("tag1"));
         final TagModel tag2 = tagRepository.save(new TagModel("tag2"));
         final TagModel tag3 = tagRepository.save(new TagModel("widely"));
@@ -167,15 +165,15 @@ class TagRepositoryImplTest {
         orderRepository.save(getPurchaseModel(user1, certificate2));
         orderRepository.save(getPurchaseModel(user2, certificate3));
 
-        Optional<TagModel> actual = tagRepository.findTheMostUsedTag();
+        Optional<TagModel> actual = tagRepository.findMostUsedTag();
 
         assertTrue(actual.isPresent());
         assertEquals("widely", actual.get().getName());
     }
 
     @Test
-    void findTheMostActiveUser_shouldReturnUserWithTheHighestExpenses_always() {
-        final Optional<TagModel> actual = tagRepository.findTheMostUsedTag();
+    void findMostUsedTag_shouldReturnOptionalEmpty_whenNotFound() {
+        final Optional<TagModel> actual = tagRepository.findMostUsedTag();
 
         assertFalse(actual.isPresent());
     }

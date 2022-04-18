@@ -11,4 +11,6 @@ dependencies {
     implementation project(':persistence')
     implementation project(':service')
     implementation project(':repository')
+
+    testImplementation 'io.rest-assured:spring-mock-mvc'
 }

@@ -76,7 +76,7 @@ public class TagServiceImpl implements TagService {
     public TagDto findByName(String name) {
         TagModel tag = tagRepository.findByNameIgnoreCase(name).orElseThrow(
                 () -> new EntityNotFoundException(
-                        CertificateDto.class, TagModel_.NAME, name
+                        TagDto.class, TagModel_.NAME, name
                 )
         );
         return modelMapper.map(tag, TagDto.class);
@@ -124,7 +124,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findTheMostUsedTag() {
-        TagModel tag = tagRepository.findTheMostUsedTag().orElseThrow(
+        TagModel tag = tagRepository.findMostUsedTag().orElseThrow(
                 () -> new NoWidelyUsedTagException(CertificateDto.class)
         );
         return modelMapper.map(tag, TagDto.class);

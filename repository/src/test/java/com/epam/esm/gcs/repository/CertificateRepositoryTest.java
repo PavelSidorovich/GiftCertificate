@@ -7,7 +7,6 @@ import com.epam.esm.gcs.model.TagModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,8 +25,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ActiveProfiles({ "dev" })
-@EnableAutoConfiguration
+@ActiveProfiles("test")
 @SpringBootTest(classes = { TestConfig.class })
 class CertificateRepositoryTest {
 
@@ -148,20 +146,20 @@ class CertificateRepositoryTest {
         certificateRepository.save(getTestGiftCertificates(tags3).get(2));
 
         final List<CertificateModel> actual1 =
-                certificateRepository.findByTags(Collections.emptyList(), 0L, pageRequest);
+                certificateRepository.findByTags(Collections.emptyList(), pageRequest);
         final List<CertificateModel> actual2 =
-                certificateRepository.findByTags(List.of("tagname1"), 1L, pageRequest);
+                certificateRepository.findByTags(List.of("tagname1"), pageRequest);
         final List<CertificateModel> actual3 =
-                certificateRepository.findByTags(List.of("tagname3", "tagname4"), 2L, pageRequest);
+                certificateRepository.findByTags(List.of("tagname3", "tagname4"), pageRequest);
         final List<CertificateModel> actual4 =
-                certificateRepository.findByTags(List.of("tagname4"), 1L, pageRequest);
+                certificateRepository.findByTags(List.of("tagname4"), pageRequest);
 
         assertNotNull(actual1);
         assertEquals(0, actual1.size());
         assertNotNull(actual2);
         assertEquals(2, actual2.size());
         assertNotNull(actual3);
-        assertEquals(1, actual3.size());
+        assertEquals(2, actual3.size());
         assertNotNull(actual4);
         assertEquals(1, actual4.size());
     }

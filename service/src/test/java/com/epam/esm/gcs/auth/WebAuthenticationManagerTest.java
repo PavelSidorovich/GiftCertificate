@@ -1,11 +1,12 @@
 package com.epam.esm.gcs.auth;
 
-import com.epam.esm.gcs.exception.BadCredentialsException;
+import com.epam.esm.gcs.auth.impl.WebAuthenticationManager;
 import com.epam.esm.gcs.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,19 +19,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class WebAuthenticationProviderTest {
+class WebAuthenticationManagerTest {
 
-    private final WebAuthenticationProvider webAuthProvider;
+    private final WebAuthenticationManager webAuthProvider;
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    public WebAuthenticationProviderTest(@Mock PasswordEncoder passwordEncoder,
-                                         @Mock UserService userService) {
+    public WebAuthenticationManagerTest(@Mock PasswordEncoder passwordEncoder,
+                                        @Mock UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.webAuthProvider =
-                new WebAuthenticationProvider(passwordEncoder, userService);
+                new WebAuthenticationManager(passwordEncoder, userService);
     }
 
     @Test
